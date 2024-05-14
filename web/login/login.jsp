@@ -12,6 +12,18 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+         <form action="login_auth" method="POST" class="login-form">
+                    <div class="input-container">
+                        Username: <input type="text" name="username"/>
+                    </div>
+                    <div class="input-container">
+                        Password: <input type="password" name="password"/>
+                    </div>
+                    <div class="button-container">
+                        <input type="submit" value="Login" style="background-color: #337ab7;
+                               background-image: linear-gradient(rgb(51, 122, 183), rgb(51, 122, 183));
+                               color: #fff; border: none; border-radius: 4px; box-shadow: #ffffff 0px 1px 0px 0px;padding: 4px 10px;  cursor: pointer;">
+                    </div>
+          </form>
     </body>
 </html>
