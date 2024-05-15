@@ -7,12 +7,6 @@
 </head>
 <body>
     <script>
-        function redirectToDisplay() {
-            window.location.href = "login_auth";
-        }
-
-        // Call the function when the page loads
-        redirectToDisplay();
     </script>
 </body>
 </html>
