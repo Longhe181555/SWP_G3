@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-<<<<<<< Updated upstream
-=======
+
     <servlet>
         <servlet-name>LoginController</servlet-name>
         <servlet-class>controller.authentication.LoginController</servlet-class>
@@ -18,5 +17,4 @@
         <servlet-name>admin.LoadedController</servlet-name>
         <url-pattern>/admin/loaded</url-pattern>
     </servlet-mapping>
->>>>>>> Stashed changes
 </web-app>
