@@ -43,6 +43,8 @@ public class LoadedController extends HttpServlet {
            request.setAttribute("ps", ps);
            
            
+           
+           
            request.getRequestDispatcher("loaded_test.jsp").forward(request, response);
          
         }
