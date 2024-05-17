@@ -5,12 +5,14 @@
 
 package entity;
 
+import java.util.ArrayList;
+
 
 public class Product implements IEntity {
   private int pid;
   private String pname;
   private float price;
-  private String productimg;
+  private ArrayList<ProductImg> productimgs;
   private Boolean isListed;
   private Brand brand;
   private Category category;
@@ -39,14 +41,6 @@ public class Product implements IEntity {
         this.price = price;
     }
 
-    public String getProductimg() {
-        return productimg;
-    }
-
-    public void setProductimg(String productimg) {
-        this.productimg = productimg;
-    }
-
     public Boolean getIsListed() {
         return isListed;
     }
@@ -70,5 +64,12 @@ public class Product implements IEntity {
     public void setCategory(Category category) {
         this.category = category;
     }
-  
+    
+     public ArrayList<ProductImg> getProductimgs() {
+        return productimgs;
+    }
+
+    public void setProductimgs(ArrayList<ProductImg> productimgs) {
+        this.productimgs = productimgs;
+    }
 }

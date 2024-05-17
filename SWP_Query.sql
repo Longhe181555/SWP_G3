@@ -1,5 +1,13 @@
---create database SWP_G3
---USE SWP_G3
+IF DB_ID('SWP_G3') IS NULL
+BEGIN
+    CREATE DATABASE SWP_G3;
+END
+GO
+
+
+USE SWP_G3;
+GO
+
 
 CREATE TABLE Size(
    sid INT IDENTITY(0,1) PRIMARY KEY,
@@ -31,9 +39,16 @@ CREATE TABLE Product(
    price float,
    catid int FOREIGN KEY (catid) REFERENCES Category(catid),
    bid int FOREIGN KEY (bid) REFERENCES Brand(bid),
-   productimg varchar(100),
    islisted BIT,
 )
+
+CREATE TABLE ProductImg(
+  iid INT IDENTITY(0,1) PRIMARY KEY,
+  imgpath varchar(100),
+  pid int FOREIGN KEY (pid) REFERENCES Product(pid)
+)
+
+
 -- islisted dung de quyet dinh hien thi tren page - de bit boolean T/F
 --productimg de du path den img trong file
 
@@ -137,4 +152,10 @@ insert into Color(cname) values('placeholder')
 insert into Brand(bname) values('placeholder')
 insert into Size(sname,height,weight,gender) values('ph','ph','ph',1)
 insert into Category(catname,cattype) values('ph','ph')
-insert into Product(pname,price,productimg,islisted,catid,bid) values('ph',0.0,'img/product_picture/placeholder.png',0,0,0)
+insert into Product(pname,price,islisted,catid,bid) values('ph',0.0,0,0,0)
+insert into ProductImg(pid,imgpath) values(0,'img/product_picture/placeholder.png'),
+(0,'img/product_picture/placeholder.png'),
+(0,'img/product_picture/placeholder.png')
+
+
+SELECT iid,pid,imgpath FROM ProductImg Where pid = 0
