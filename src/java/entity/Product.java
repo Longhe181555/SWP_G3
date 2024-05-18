@@ -11,11 +11,20 @@ import java.util.ArrayList;
 public class Product implements IEntity {
   private int pid;
   private String pname;
-  private float price;
+  private int price;
   private ArrayList<ProductImg> productimgs;
   private Boolean isListed;
   private Brand brand;
   private Category category;
+  private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public int getPid() {
         return pid;
@@ -33,11 +42,11 @@ public class Product implements IEntity {
         this.pname = pname;
     }
 
-    public float getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
