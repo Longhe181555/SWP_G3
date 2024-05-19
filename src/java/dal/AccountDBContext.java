@@ -6,6 +6,7 @@ package dal;
 
 import entity.Account;
 import entity.IEntity;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,6 +35,49 @@ public class AccountDBContext extends DBContext {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
             stm.setString(2, password);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                Account account = new Account();
+                account.setAid(rs.getInt("aid"));
+                account.setLoginname(rs.getString("loginname"));
+                account.setUsername(rs.getString("username"));
+                account.setPassword(rs.getString("password"));
+                account.setEmail(rs.getString("email"));
+                account.setPhonenumber(rs.getString("phonenumber"));
+                account.setGender(rs.getBoolean("gender"));
+                account.setBirthdate(rs.getDate("birthdate"));
+                account.setAddress(rs.getString("address"));
+                String img = rs.getString("img");
+                if (img == null || img.trim().isEmpty()) {
+                    img = "img/profile_picture/placeholder.png";
+                }
+                account.setImg(img);
+                account.setRole(rs.getString("role"));
+                return account;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public Account checkAccountExist(String username) {
+        try {
+            String sql = "SELECT [aid]\n"
+                    + "      ,[loginname]\n"
+                    + "      ,[username]\n"
+                    + "      ,[password]\n"
+                    + "      ,[email]\n"
+                    + "      ,[phonenumber]\n"
+                    + "      ,[gender]\n"
+                    + "      ,[birthdate]\n"
+                    + "      ,[address]\n"
+                    + "      ,[img]\n"
+                    + "      ,[role]\n"
+                    + "  FROM Account\n"
+                    + "  Where username = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 Account account = new Account();
@@ -197,8 +241,8 @@ public class AccountDBContext extends DBContext {
                     + "      ,[address]\n"
                     + "      ,[img]\n"
                     + "      ,[role]\n"
-                    + "  FROM Account\n" 
-                    +"WHERE aid=?";
+                    + "  FROM Account\n"
+                    + "WHERE aid=?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
@@ -227,4 +271,35 @@ public class AccountDBContext extends DBContext {
         return null;
     }
 
+    public void addNewdAccount(String username, String email, String password) {
+        String sql = "INSERT INTO [dbo].[Account]\n"
+                + "           ([loginname]\n"
+                + "           ,[username]\n"
+                + "           ,[password]\n"
+                + "           ,[email]\n"
+                + "           ,[phonenumber]\n"
+                + "           ,[gender]\n"
+                + "           ,[birthdate]\n"
+                + "           ,[address]\n"
+                + "           ,[img]\n"
+                + "           ,[role])\n"
+                + "     VALUES\n"
+                + "           (?,?,?,?,?,?,?,?,?,?)";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            stm.setString(2, username);
+            stm.setString(3, password);
+            stm.setString(4, email);
+            stm.setString(5, null);
+            stm.setBoolean(6, Boolean.valueOf(null));
+            stm.setDate(7, null);
+            stm.setString(8, null);
+            stm.setString(9, "img/profile_picture/placeholder.png");
+            stm.setString(10,"customer");
+            stm.execute();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }

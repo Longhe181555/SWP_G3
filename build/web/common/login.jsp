@@ -227,10 +227,10 @@
     </head>
     
     
-    
+    <!--Đây là form để đăng kí tài khoản-->
     <div class="container" id="container">
         <div class="form-container sign-up">
-            <form>
+            <form action="signup" method="POST">
                 <h1>Create Account</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -239,9 +239,9 @@
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
                 <span>or use your email for registeration</span>
-                <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
+                <input type="text" name="name" placeholder="Name">
+                <input type="email" name="email" placeholder="Email">
+                <input type="password" name="password" placeholder="Password">
                 <button>Sign Up</button>
             </form>
         </div>
@@ -295,6 +295,10 @@
         loginBtn.addEventListener('click', () => {
             container.classList.remove("active");
         });
+        // Check if there's an error and activate sign-up form
+        <% if (request.getAttribute("signupError") != null) { %>
+        container.classList.add("active");
+        <% } %>
     </script>
 </body>
     
