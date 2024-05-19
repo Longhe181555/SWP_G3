@@ -239,10 +239,11 @@
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
                 <span>or use your email for registeration</span>
-                <input type="text" placeholder="Name">
+                <input type="text" placeholder="Username">
                 <input type="email" placeholder="Email">
                 <input type="password" placeholder="Password">
                 <button>Sign Up</button>
+                <a href="logout" class="header-link">Press to go back to homepage</a>
             </form>
         </div>
         
@@ -257,11 +258,12 @@
                     <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
-                <span>or use your email password</span>
-                <input type="text" name="username" placeholder="User name"/>
+                <span>or use your username and password</span>
+                <input type="text" name="username" placeholder="Username"/>
                 <input type="password" placeholder="Password" name="password"/>
                 <a href="#">Forget Your Password?</a>
                 <input type="submit" value="Login">
+                <a href="logout" class="header-link">Press to go back to homepage</a>
             </form>
         </div>
         
@@ -278,6 +280,7 @@
                     <h1>Look like you are not Logged in</h1>
                     <p>Sign in/Login now</p>
                     <button class="hidden" id="register">Sign Up</button>
+                    
                 </div>
             </div>
         </div>

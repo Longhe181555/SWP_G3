@@ -108,9 +108,10 @@
                         <div class="mt-5 text-center">
                             <button class="btn btn-submit" type="submit">Save</button>
                             <button class="btn btn-cancel" type="reset">Cancel</button>
+                            <a href="homepage" class="btn btn-cancel">Back to Homepage</a>
                         </div>
                         <c:if test="${not empty message}">
-                            <div class="alert alert-info">${message}</div>
+                            <div class="alert alert-info" style="text-decoration: none">${message}</div>
                         </c:if>
                     </form>
                 </div>
