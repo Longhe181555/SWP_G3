@@ -5,7 +5,8 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="dal.ProductImgDBContext" %>
 
 <!DOCTYPE html>
 <html>
@@ -96,7 +97,7 @@
             .placeholder {
                 background-color: #f5f5f5; /* Light gray color */
                 width: 100%; /* Full width */
-                height: 400px; /* Adjust height as needed */
+                height: 200px; /* Adjust height as needed */
                 /* Other styles as needed */
             }
 
@@ -151,7 +152,17 @@
                 background-color: #f2f2f2; /* Slightly dark gray */
                 cursor: pointer;
             }
-
+            .header-link:hover {
+                color: #ffcc00; /* Change to any color you like */
+                text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Adjust glow effect */
+            }
+            .header-link {
+                margin: 0 10px;
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+                transition: color 0.3s ease, text-shadow 0.3s ease;
+            }
         </style>
     </head>
     <body>
@@ -162,12 +173,12 @@
             <div class="header-container">
                 <div class="header-options">
                     <div class="header-left"> 
-                        <p> Search |</p>
-                        <p>| Order history </p>    
+                        <p class="header-link">Search </p>||
+                        <p class="header-link"> Order history</p>    
                     </div>
                     <div class="header-right">
-                        <p> My Account |</p>  
-                        <p>| Checkout </p>
+                        <p class="header-link">My Account </p>||  
+                        <p class="header-link"> Checkout</p>
                     </div>
                 </div>
             </div>
@@ -193,7 +204,7 @@
                 <div class="col-10 offset-1">
                     <div class="banner-container">
                         <div class="banner-img">
-                            <img src="${pageContext.request.contextPath}/img/other_picture/banner.png" class="img-fluid" alt="Banner Image">
+                            <img src="img/other_picture/banner.png" class="img-fluid" alt="Banner Image">
                         </div>
                     </div>
                 </div>
@@ -260,8 +271,8 @@
                     <c:if test="${pageLoop.index + 1 == activePage}"> <!-- activePage should match page index + 1 -->
                         <c:forEach var="product" items="${productPage}" varStatus="productLoop">
                             <div class="col-md-3">
-                                <div class="product card" onclick="openProductDetails('${product.pname}', '${product.price}', '${product.description}', getImgPaths(${product.productimgs}))">
-                                    <img src="${pageContext.request.contextPath}/${product.productimgs[0].getImgpath()}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
+                                <div class="product card" onclick="openProductDetails('${product.pname}', '${product.price}', '${product.description}', '${product.productimgs[0].getImgpath()}')">
+                                    <img src="${product.productimgs[0].getImgpath()}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
                                     <div class="card-body">
                                         <h5 class="card-title">${product.pname}</h5>
                                         <p class="card-text">${product.price}d</p>
@@ -314,7 +325,7 @@
 
 
         <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="productModalLabel">Product Details</h5>
@@ -323,20 +334,10 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner" id="productImgContainer">
-                                <!-- Images will be dynamically added here -->
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
                         <div class="row">
+                            <div class="col-md-6">
+                                <img src="" id="productImg" class="img-fluid" alt="Product Image">
+                            </div>
                             <div class="col-md-6">
                                 <h5 id="productName"></h5>
                                 <p id="productPrice"></p>
@@ -378,46 +379,20 @@
                 }
             };
 
-
-            function openProductDetails(name, price, description, imgPaths) {
+            function openProductDetails(name, price, description, imgPath) {
                 // Update modal content with product details
                 document.getElementById('productName').innerText = name;
-                document.getElementById('productPrice').innerText = "Price: " + price;
+                document.getElementById('productPrice').innerText = "Price: " + price + "d";
                 document.getElementById('productDescription').innerText = "Description: " + description;
-
-                // Clear previous images
-                var imageContainer = document.getElementById('productImgContainer');
-                imageContainer.innerHTML = '';
-
-                // Add new images to the modal carousel
-                imgPaths.forEach(function (imgPath, index) {
-                    var imgDiv = document.createElement('div');
-                    imgDiv.classList.add('carousel-item');
-                    if (index === 0) {
-                        imgDiv.classList.add('active'); // Set the first image as active
-                    }
-
-                    var img = document.createElement('img');
-                    img.src = imgPath;
-                    img.classList.add('d-block');
-                    img.classList.add('w-100');
-                    img.alt = name;
-
-                    imgDiv.appendChild(img);
-                    imageContainer.appendChild(imgDiv);
-                });
+                document.getElementById('productImg').src = imgPath;
 
                 // Show the modal
                 $('#productModal').modal('show');
             }
 
-            function getImgPaths(productImgs) {
-                var imgPaths = [];
-                productImgs.forEach(function (productImg) {
-                    imgPaths.push('${pageContext.request.contextPath}/' + productImg.imgPath);
-                });
-                return imgPaths;
-            }
+
+
+
         </script>
 
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
