@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet-mapping>
+        <servlet-name>CheckLoginController</servlet-name>
+        <url-pattern>/account</url-pattern>
+        <url-pattern>/public/account</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>LogoutController</servlet-name>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
@@ -17,8 +22,16 @@
         <servlet-class>controller.public_.HomepageController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>CheckLoginController</servlet-name>
+        <servlet-class>controller.authentication.CheckLoginController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>LogoutController</servlet-name>
         <servlet-class>controller.authentication.LogoutController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SignupController</servlet-name>
+        <servlet-class>controller.authentication.SignupController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
@@ -33,6 +46,10 @@
         <servlet-name>admin.LoadedController</servlet-name>
         <url-pattern>/admin/loaded</url-pattern>
         <url-pattern>/loaded</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SignupController</servlet-name>
+        <url-pattern>/signup</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>public/homepage</welcome-file>

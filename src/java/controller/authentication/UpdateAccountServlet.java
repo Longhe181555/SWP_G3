@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.sql.Date;
 
 @WebServlet("/updateAccount")
-public class UpdateAccountServlet extends BaseRequiredAuthenticationController {
+public class UpdateAccountServlet extends HttpServlet {
     private AccountDBContext accountDBContext;
 
     @Override
@@ -27,7 +27,7 @@ public class UpdateAccountServlet extends BaseRequiredAuthenticationController {
         accountDBContext = new AccountDBContext();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String fullName = request.getParameter("fullname");
         String email = request.getParameter("email");
@@ -53,11 +53,6 @@ public class UpdateAccountServlet extends BaseRequiredAuthenticationController {
         session.setAttribute("message", "Saved!");
         session.setAttribute("account", currentUser);
 
-        response.sendRedirect("account");
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp, Account account) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        response.sendRedirect("profile");
     }
 }
