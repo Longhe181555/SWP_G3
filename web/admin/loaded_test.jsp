@@ -13,17 +13,17 @@
     </head>
     <body>
         <div class="table">
-                <h2>Account</h2>
+            <h2>Account</h2>
 
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>username</th>
-                            <th>role</th>
-                            <th>profile pic</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>username</th>
+                        <th>role</th>
+                        <th>profile pic</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <c:forEach var="ac" items="${acs}">
                         <tr>
                             <td>${ac.username}</td>
@@ -31,35 +31,44 @@
                             <td><img src="${pageContext.request.contextPath}/${ac.img}" height="100" width="100" alt="Product Image"></td>
                         </tr>
                     </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
+        </div>
         <br>
-    <div class="table">
-    <h2>Product</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Brand</th>
-                <th>Image</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach var="p" items="${ps}">
-                <tr>
-                    <td>${p.pname}</td>
-                    <td>${p.price}</td>
-                    <td>${p.category.catname}</td>
-                    <td>${p.brand.bname}</td>
-                    <<td><img src="${pageContext.request.contextPath}/${p.productimg}" height="100" width="100" alt="Product Image"></td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-</div>
+        <div class="table">
+            <h2>Product</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Brand</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="p" items="${ps}">
+                        <tr>
+                            <td>${p.pname}</td>
+                            <td>${p.price}</td>
+                            <td>${p.category.catname}</td>
+                            <td>${p.brand.bname}</td>
+                            <td>${test} hmm</td>
+                            <td>
+                                <c:forEach var="img" items="${p.productimgs}">
+                                    <img src="${pageContext.request.contextPath}/${img.imgpath}" height="100" width="100" alt="Product Image">
+                                </c:forEach>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
 
     </body>
 </html>

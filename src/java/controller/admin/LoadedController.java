@@ -40,7 +40,14 @@ public class LoadedController extends HttpServlet {
            
            ProductDBContext pdb = new ProductDBContext();
            List<Product> ps = pdb.list();
+           
+           ProductImgDBContext idb = new ProductImgDBContext();
+           int size = idb.getByPid(0).size();
+           
+           request.setAttribute("test", size);
            request.setAttribute("ps", ps);
+           
+           
            
            
            request.getRequestDispatcher("loaded_test.jsp").forward(request, response);

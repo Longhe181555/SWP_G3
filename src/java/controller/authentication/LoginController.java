@@ -62,7 +62,7 @@ public class LoginController extends HttpServlet {
             response.addCookie(c_pass);
             response.addCookie(c_user);
           
-          response.sendRedirect("admin/loaded");
+          response.sendRedirect("homepage");
 
         } else {
             //login failed!

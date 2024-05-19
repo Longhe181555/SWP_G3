@@ -8,7 +8,7 @@
 <body>
      <script>
         function redirectToDisplay() {
-            window.location.href = "login";
+            window.location.href = "homepage";
         }
 
         // Call the function when the page loads
