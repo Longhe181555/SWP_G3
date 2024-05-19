@@ -264,7 +264,7 @@
                                     <img src="${pageContext.request.contextPath}/${product.productimgs[0].getImgpath()}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
                                     <div class="card-body">
                                         <h5 class="card-title">${product.pname}</h5>
-                                        <p class="card-text">${product.price}</p>
+                                        <p class="card-text">${product.price}d</p>
                                     </div>
                                 </div>
                             </div>
