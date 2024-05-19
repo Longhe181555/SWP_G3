@@ -35,7 +35,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         ArrayList<ArrayList<Product>> productpage = pdb.listPage(sort, filter); // List of products paginated into pages
         request.setAttribute("productpaged", productpage); // Set the attribute for paginated products
         request.setAttribute("activePage", activePage); // Set the activePage attribute
-        request.getRequestDispatcher("../public/homepage.jsp").forward(request, response); // Forward the request to the JSP
+        request.getRequestDispatcher("/public/homepage.jsp").forward(request, response); // Forward the request to the JSP
     }
 }
 

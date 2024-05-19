@@ -248,17 +248,6 @@
         
         
         <div class="form-container sign-in">
-<!--            <form action="login" method="POST" class="login-form">
-            <div class="input-container">
-                Username: <input type="text" name="username"/>
-            </div>
-            <div class="input-container">
-                Password: <input type="password" name="password"/>
-            </div>
-            <div class="button-container">
-                <input type="submit" value="Login">
-            </div>
-        </form>-->
             
             <form action="login" method="POST">
                 <h1>Sign In</h1>
@@ -281,13 +270,13 @@
         <div class="toggle-container">
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
-                    <h1>Swp, Group 3!</h1>
-                    <p>Connection:[ ${connection} ]- If empty sql is not connected</p>
+                    <h1>Look like you are not Logged in</h1>
+                    <p>Sign in/Login now</p>
                     <button class="hidden" id="login">Sign In</button>
                 </div>
                 <div class="toggle-panel toggle-right">
-                    <h1>Swp, Group 3!</h1>
-                    <p>Connection:[ ${connection} ]- If empty sql is not connected</p>
+                    <h1>Look like you are not Logged in</h1>
+                    <p>Sign in/Login now</p>
                     <button class="hidden" id="register">Sign Up</button>
                 </div>
             </div>

@@ -56,12 +56,14 @@ public abstract class BaseRequiredAuthenticationController extends HttpServlet {
         Account account = getAuthenticatedAccount(req);
         if(account!=null)
         {
+            System.out.println("No account");
             doPost(req, resp, account);
         }
         else
         {
+            System.out.println("There is account");
             req.getSession().setAttribute("loginResult", "Session timer run out/ Access denied please try again!");
-            resp.sendRedirect(req.getContextPath() +"/login_auth");
+            resp.sendRedirect(req.getContextPath() +"/login");
         }
     
     }
@@ -78,7 +80,7 @@ public abstract class BaseRequiredAuthenticationController extends HttpServlet {
         else
         {
             req.getSession().setAttribute("loginResult", "Session timer run out/ Access denied please try again!");
-            resp.sendRedirect(req.getContextPath() +"/login_auth");
+            resp.sendRedirect(req.getContextPath() +"/login");
         }
     }
     

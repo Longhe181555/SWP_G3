@@ -177,7 +177,7 @@
                         <p class="header-link"> Order history</p>    
                     </div>
                     <div class="header-right">
-                        <p class="header-link">My Account </p>||  
+                        <a href="./account" class="header-link">My Account</a>||  
                         <p class="header-link"> Checkout</p>
                     </div>
                 </div>
@@ -204,7 +204,7 @@
                 <div class="col-10 offset-1">
                     <div class="banner-container">
                         <div class="banner-img">
-                            <img src="img/other_picture/banner.png" class="img-fluid" alt="Banner Image">
+                            <img src="${pageContext.request.contextPath}/img/other_picture/banner.png" class="img-fluid" alt="Banner Image">
                         </div>
                     </div>
                 </div>
@@ -271,8 +271,8 @@
                     <c:if test="${pageLoop.index + 1 == activePage}"> <!-- activePage should match page index + 1 -->
                         <c:forEach var="product" items="${productPage}" varStatus="productLoop">
                             <div class="col-md-3">
-                                <div class="product card" onclick="openProductDetails('${product.pname}', '${product.price}', '${product.description}', '${product.productimgs[0].getImgpath()}')">
-                                    <img src="${product.productimgs[0].getImgpath()}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
+                                <div class="product card" onclick="openProductDetails('${product.pname}', '${product.price}', '${product.description}', '${pageContext.request.contextPath}/${product.productimgs[0].getImgpath()}')">
+                                    <img src="${pageContext.request.contextPath}/${product.productimgs[0].getImgpath()}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
                                     <div class="card-body">
                                         <h5 class="card-title">${product.pname}</h5>
                                         <p class="card-text">${product.price}d</p>
