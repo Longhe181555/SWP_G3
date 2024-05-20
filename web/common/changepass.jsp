@@ -108,12 +108,7 @@
                 transition: all 0.6s ease-in-out;
             }
 
-            .sign-in{
-                left: 0;
-                width: 50%;
-                z-index: 2;
-            }
-
+            
             .container.active .sign-in{
                 transform: translateX(100%);
             }
@@ -227,83 +222,28 @@
     </head>
     
     
-    <!--Đây là form để đăng kí tài khoản-->
-    <div class="container" id="container">
-        <div class="form-container sign-up">
-            <form action="signup" method="POST">
-                <h1>Create Account</h1>
-                <div class="social-icons">
-                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
-                </div>
-                <span>or use your email for registeration</span>
-                <input type="text" name="name" placeholder="Name">
-                <input type="email" name="email" placeholder="Email">
-                <input type="password" name="password" placeholder="Password">
-                <button>Sign Up</button>
+    
+    <div class="container" id="container" style="display: flex; justify-content: center;">
+       
+        <div class="form-container sign-in" style="width: 400px;">
+            <form action="${pageContext.request.contextPath}/changepassword" method="POST">
+                <h1 style="margin-bottom: 25px">Change Password</h1>
                 
+                <span>Old password</span>
+                <input type="password" name="oldpass" placeholder="Old password"/>
+                <span>New password</span>
+                <input type="password" name="newpass" placeholder="New password"/>
+                <span>Confirm password</span>
+                <input type="password" name="renewpass" placeholder="Confirm password"/>
+                <p style="color: red">${mess}</p>
+                <input type="submit" value="Change">
+                <a href="${pageContext.request.contextPath}/homepage" class="header-link">Back to homepage</a>
             </form>
-        </div>
-        
-        
-        <div class="form-container sign-in">
-            
-            <form action="login" method="POST">
-                <h1>Sign In</h1>
-                <div class="social-icons">
-                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
-                </div>
-                <span>or use your email password</span>
-                <input type="text" name="username" placeholder="User name"/>
-                <input type="password" placeholder="Password" name="password"/>
-                <a href="#">Forget Your Password?</a>
-                <input type="submit" value="Login">
                 
-            </form>
         </div>
         
-        
-        
-        <div class="toggle-container">
-            <div class="toggle">
-                <div class="toggle-panel toggle-left">
-                    <h1>Look like you are not Logged in</h1>
-                    <p>Sign in/Login now</p>
-                    <button class="hidden" id="login">Sign In</button>
-                    <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
-                </div>
-                <div class="toggle-panel toggle-right">
-                    <h1>Look like you are not Logged in</h1>
-                    <p>Sign in/Login now</p>
-                    <button class="hidden" id="register">Sign Up</button>
-                    <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <script>
-        const container = document.getElementById('container');
-        const registerBtn = document.getElementById('register');
-        const loginBtn = document.getElementById('login');
-
-        registerBtn.addEventListener('click', () => {
-            container.classList.add("active");
-        });
-
-        loginBtn.addEventListener('click', () => {
-            container.classList.remove("active");
-        });
-        // Check if there's an error and activate sign-up form
-        <% if (request.getAttribute("signupError") != null) { %>
-        container.classList.add("active");
-        <% } %>
-    </script>
 </body>
     
     
@@ -328,3 +268,4 @@
         
     </body>-->
 </html>
+ 

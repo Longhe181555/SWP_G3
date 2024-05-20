@@ -89,7 +89,7 @@
                             <div class="col-md-12">
                                 <label class="labels">Password</label>
                                 <input type="password" class="form-control" placeholder="Password" value="${account.password}" readonly>
-                                <a href="common/ChangePassword.jsp">Change Password?</a></br>
+                                <a href="common/changepass.jsp">Change Password?</a></br>
                                 <label class="labels">Email</label>
                                 <input type="email" class="form-control" placeholder="Email" value="${account.email}" required name="email">
                                 <label class="labels">Phone</label>
@@ -113,6 +113,8 @@
                             <div class="alert alert-info">${message}</div>
                         </c:if>
                     </form>
+                                <a href="${pageContext.request.contextPath}/homepage" class="btn-cancel" style="text-decoration: none;padding: 5px">Back to homepage</a>
+
                 </div>
             </div>
         </div>

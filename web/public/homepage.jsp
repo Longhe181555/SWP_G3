@@ -177,8 +177,9 @@
                         <p class="header-link"> Order history</p>    
                     </div>
                     <div class="header-right">
-                        <a href="./account" class="header-link">My Account</a>||  
-                        <p class="header-link"> Checkout</p>
+                        <a href="account" class="header-link">My Account</a>||  
+                        <p class="header-link"> Checkout</p>||
+                        <a href="logout" class="header-link">Logout</a>
                     </div>
                 </div>
             </div>

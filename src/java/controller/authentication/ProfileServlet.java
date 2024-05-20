@@ -17,8 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/profile")
-public class ProfileServlet extends HttpServlet {
+public class ProfileServlet extends BaseRequiredAuthenticationController {
     private AccountDBContext accountDBContext;
 
     @Override
@@ -26,7 +25,7 @@ public class ProfileServlet extends HttpServlet {
         accountDBContext = new AccountDBContext();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response,Account account)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account currentUser = (Account) session.getAttribute("account");
@@ -38,5 +37,10 @@ public class ProfileServlet extends HttpServlet {
         } else {
             response.sendRedirect("common/login.jsp");
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp, Account account) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
