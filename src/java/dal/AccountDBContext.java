@@ -197,8 +197,8 @@ public class AccountDBContext extends DBContext {
                     + "      ,[address]\n"
                     + "      ,[img]\n"
                     + "      ,[role]\n"
-                    + "  FROM Account\n" 
-                    +"WHERE aid=?";
+                    + "  FROM Account\n"
+                    + "WHERE aid=?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
@@ -227,4 +227,15 @@ public class AccountDBContext extends DBContext {
         return null;
     }
 
+    public void changePassword(String uid, String pass) {
+        String sql = " update [Account] set [password]=? where [aid] = ?";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, pass);
+            stm.setString(2, uid);
+            stm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

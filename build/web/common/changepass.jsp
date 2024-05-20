@@ -108,12 +108,7 @@
                 transition: all 0.6s ease-in-out;
             }
 
-            .sign-in{
-                left: 0;
-                width: 50%;
-                z-index: 2;
-            }
-
+            
             .container.active .sign-in{
                 transform: translateX(100%);
             }
@@ -228,85 +223,25 @@
     
     
     
-    <div class="container" id="container">
-        <div class="form-container sign-up">
-            <form>
-                <h1>Create Account</h1>
-                <div class="social-icons">
-                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
-                </div>
-                <span>or use your email for registeration</span>
-                <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <button>Sign Up</button>
+    <div class="container" id="container" style="display: flex; justify-content: center;">
+       
+        <div class="form-container sign-in" style="width: 400px;">
+            <form action="ChangePass" method="POST">
+                <h1 style="margin-bottom: 25px">Change Password</h1>
+                
+                <span>Old password</span>
+                <input type="password" name="oldpass" placeholder="Old password"/>
+                <span>New password</span>
+                <input type="password" name="newpass" placeholder="New password"/>
+                <span>Confirm password</span>
+                <input type="password" name="renewpass" placeholder="Confirm password"/>
+                <p style="color: red">${mess}</p>
+                <input type="submit" value="Change">
             </form>
         </div>
         
-        
-        <div class="form-container sign-in">
-<!--            <form action="login" method="POST" class="login-form">
-            <div class="input-container">
-                Username: <input type="text" name="username"/>
-            </div>
-            <div class="input-container">
-                Password: <input type="password" name="password"/>
-            </div>
-            <div class="button-container">
-                <input type="submit" value="Login">
-            </div>
-        </form>-->
-            
-            <form action="login" method="POST">
-                <h1>Sign In</h1>
-                <div class="social-icons">
-                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
-                </div>
-                <span>or use your email password</span>
-                <input type="text" name="username" placeholder="User name"/>
-                <input type="password" placeholder="Password" name="password"/>
-                <a href="#">Forget Your Password?</a>
-                <input type="submit" value="Login">
-            </form>
-        </div>
-        
-        
-        
-        <div class="toggle-container">
-            <div class="toggle">
-                <div class="toggle-panel toggle-left">
-                    <h1>Swp, Group 3!</h1>
-                    <p>Connection:[ ${connection} ]- If empty sql is not connected</p>
-                    <button class="hidden" id="login">Sign In</button>
-                </div>
-                <div class="toggle-panel toggle-right">
-                    <h1>Swp, Group 3!</h1>
-                    <p>Connection:[ ${connection} ]- If empty sql is not connected</p>
-                    <button class="hidden" id="register">Sign Up</button>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <script>
-        const container = document.getElementById('container');
-        const registerBtn = document.getElementById('register');
-        const loginBtn = document.getElementById('login');
-
-        registerBtn.addEventListener('click', () => {
-            container.classList.add("active");
-        });
-
-        loginBtn.addEventListener('click', () => {
-            container.classList.remove("active");
-        });
-    </script>
 </body>
     
     
@@ -331,3 +266,4 @@
         
     </body>-->
 </html>
+ 
