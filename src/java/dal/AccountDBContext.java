@@ -302,4 +302,19 @@ public class AccountDBContext extends DBContext {
             System.out.println(e);
         }
     }
+    
+     public void changePassword(String uid, String pass) {
+        String sql = " update [Account] set [password]=? where [aid] = ?";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, pass);
+            stm.setString(2, uid);
+            stm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
 }

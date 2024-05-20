@@ -243,6 +243,7 @@
                 <input type="email" name="email" placeholder="Email">
                 <input type="password" name="password" placeholder="Password">
                 <button>Sign Up</button>
+                
             </form>
         </div>
         
@@ -262,6 +263,7 @@
                 <input type="password" placeholder="Password" name="password"/>
                 <a href="#">Forget Your Password?</a>
                 <input type="submit" value="Login">
+                
             </form>
         </div>
         
@@ -273,11 +275,13 @@
                     <h1>Look like you are not Logged in</h1>
                     <p>Sign in/Login now</p>
                     <button class="hidden" id="login">Sign In</button>
+                    <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
                 </div>
                 <div class="toggle-panel toggle-right">
                     <h1>Look like you are not Logged in</h1>
                     <p>Sign in/Login now</p>
                     <button class="hidden" id="register">Sign Up</button>
+                    <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
                 </div>
             </div>
         </div>
