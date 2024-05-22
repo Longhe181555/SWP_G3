@@ -28,11 +28,10 @@ public class ProfileServlet extends BaseRequiredAuthenticationController {
     protected void doGet(HttpServletRequest request, HttpServletResponse response,Account account)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        Account currentUser = (Account) session.getAttribute("account");
 
-        if (currentUser != null) {
-            Account userFromDb = (Account) accountDBContext.get(currentUser.getAid());
-            session.setAttribute("account", userFromDb);
+        if (account != null) {
+       
+            session.setAttribute("account", account);
             request.getRequestDispatcher("common/AccountPrivate.jsp").forward(request, response);
         } else {
             response.sendRedirect("common/login.jsp");

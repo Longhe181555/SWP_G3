@@ -62,7 +62,7 @@
                 background-color: #e0e0e0;
             }
             .nav-option.active {
-                text-decoration: underline; 
+                text-decoration: underline;
             }
 
             .banner-container {
@@ -80,46 +80,46 @@
             }
 
             .option {
-                color: #777777; 
-                text-decoration: none; 
-                transition: color 0.3s; 
+                color: #777777;
+                text-decoration: none;
+                transition: color 0.3s;
             }
 
             .option:hover {
-                color: #333333; 
+                color: #333333;
             }
 
             .selected {
-                font-weight: bold; 
-                text-decoration: underline; 
+                font-weight: bold;
+                text-decoration: underline;
             }
 
             .placeholder {
-                background-color: #f5f5f5; 
-                width: 100%; 
-                height: 200px; 
-               
+                background-color: #f5f5f5;
+                width: 100%;
+                height: 200px;
+
             }
 
             .custom-dropdown {
-                border: none; 
-                border-radius: 5px; 
-                background-color: #ffffff; 
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
-                padding: 5px 10px; 
-                outline: none; 
+                border: none;
+                border-radius: 5px;
+                background-color: #ffffff;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                padding: 5px 10px;
+                outline: none;
             }
 
             .custom-dropdown option {
-                padding: 5px 10px; 
-                border: none; 
-                border-radius: 5px; 
-                background-color: #ffffff; 
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                background-color: #ffffff;
                 box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             }
 
             .custom-dropdown:focus {
-                outline: none; 
+                outline: none;
             }
 
             .footer {
@@ -137,24 +137,24 @@
             }
 
             .product {
-                min-height: 300px; 
-                margin-bottom: 10px; 
+                min-height: 300px;
+                margin-bottom: 10px;
             }
             .product img {
                 max-width: 100%;
                 max-height: 100%;
-                object-fit: cover; 
+                object-fit: cover;
             }
             .product-body {
-                padding: 10px; 
+                padding: 10px;
             }
             .product:hover {
                 background-color: #f2f2f2;
                 cursor: pointer;
             }
             .header-link:hover {
-                color: #ffcc00; 
-                text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); 
+                color: #ffcc00;
+                text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
             }
             .header-link {
                 margin: 0 10px;
@@ -164,7 +164,7 @@
                 transition: color 0.3s ease, text-shadow 0.3s ease;
             }
         </style>
-        
+
     </head>
     <body>
 
@@ -178,7 +178,17 @@
                         <p class="header-link"> Order history</p>    
                     </div>
                     <div class="header-right">
-                        <a href="account" class="header-link">My Account</a>||  
+                        <a href="account" class="header-link">
+                            <c:choose>
+                                <c:when test="${empty Account}">
+                                    Login
+                                </c:when>
+                                <c:otherwise>
+                                    ${Account.loginname}
+                                    <img src="${Account.img}" alt="Profile Image" style="border-radius: 50%; width: 40px; height: 40px;">
+                                </c:otherwise>
+                            </c:choose>
+                        </a> ||
                         <p class="header-link"> Checkout</p>||
                         <a href="logout" class="header-link">Logout</a>
                     </div>
@@ -365,12 +375,12 @@
                 window.location.href = selectedValue;
             }
 
-            window.addEventListener('beforeunload', function() {
+            window.addEventListener('beforeunload', function () {
                 localStorage.setItem('scrollPosition', window.scrollY);
             });
 
             // Restore scroll position after page loads
-            window.addEventListener('load', function() {
+            window.addEventListener('load', function () {
                 const scrollPosition = localStorage.getItem('scrollPosition');
                 if (scrollPosition !== null) {
                     window.scrollTo(0, scrollPosition);

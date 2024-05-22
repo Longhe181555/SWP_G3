@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 
@@ -43,6 +44,13 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
 @Override
 protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    
+    Account currentUser = (Account) session.getAttribute("account");
+    if(currentUser!=null) {
+    System.out.println(currentUser.getLoginname());
+    request.setAttribute("Account", currentUser);
+    }
     String pageParam = request.getParameter("page");
     int activePage = 1; 
     if (pageParam != null && !pageParam.isEmpty()) {
