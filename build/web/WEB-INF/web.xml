@@ -13,10 +13,6 @@
         <servlet-class>controller.authentication.LoginController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>admin.LoadedController</servlet-name>
-        <servlet-class>controller.admin.LoadedController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>HomepageController</servlet-name>
         <servlet-class>controller.public_.HomepageController</servlet-class>
     </servlet>
@@ -44,11 +40,6 @@
         <servlet-name>HomepageController</servlet-name>
         <url-pattern>/public/homepage</url-pattern>
         <url-pattern>/homepage</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>admin.LoadedController</servlet-name>
-        <url-pattern>/admin/loaded</url-pattern>
-        <url-pattern>/loaded</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SignupController</servlet-name>
