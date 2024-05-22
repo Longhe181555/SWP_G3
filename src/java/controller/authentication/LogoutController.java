@@ -27,15 +27,15 @@ public class LogoutController extends HttpServlet {
             session.invalidate();
         }
 
-        // Remove specific session attributes
+       
         request.removeAttribute("account");
 
-        // Clear cookies
+       
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("username") || cookie.getName().equals("password")) {
-                    cookie.setMaxAge(0); // Set cookie age to 0 for removal
+                    cookie.setMaxAge(0); 
                     response.addCookie(cookie);
                 }
             }

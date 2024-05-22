@@ -48,7 +48,6 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
     
     Account currentUser = (Account) session.getAttribute("account");
     if(currentUser!=null) {
-    System.out.println(currentUser.getLoginname());
     request.setAttribute("Account", currentUser);
     }
     String pageParam = request.getParameter("page");

@@ -95,7 +95,8 @@ CREATE TABLE Account(
 aid INT IDENTITY(0,1) PRIMARY KEY,
 loginname varchar(50) not null,
 username varchar(MAX) not null,
-password varchar(50) not null,
+password varchar(max) not null,
+salt varchar(max),
 email varchar(50),
 phonenumber varchar(50),
 gender BIT,
@@ -170,12 +171,12 @@ Connection bit
 )
 insert into ConnectionStatus values(1);
 
-insert into Account(loginname,username,password,role) values
-('longvnhe181555', 'longvnhe181555','123','admin'),
-('minhtnhe180070', 'minhtnhe180070','123','admin'),
-('duyddhe173473', 'duyddhe173473','123','admin'),
-('binhthhe151011', 'binhthhe151011','123','admin'),
-('danglhhe161145', 'danglhhe161145','123','admin')
+insert into Account(loginname,username,password,role,salt) values
+('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
+('minhtnhe180070', 'minhtnhe180070','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
+('duyddhe173473', 'duyddhe173473','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
+('binhthhe151011', 'binhthhe151011','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
+('danglhhe161145', 'danglhhe161145','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==')
 
 
 insert into Color(cname) values('placeholder')

@@ -15,6 +15,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.EncryptionHelper;
 
 /**
  *
@@ -54,29 +59,44 @@ public class ChangePasswordController extends HttpServlet {
     } 
 
  
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String oldpass = request.getParameter("oldpass");
-        String newpass = request.getParameter("newpass");
-        String renewpass = request.getParameter("renewpass");
-        Account u = (Account) session.getAttribute("account");
-        if (!oldpass.equals(u.getPassword())) {
-            request.setAttribute("mess", "Old pass not correct. Try agian!");
-            request.getRequestDispatcher("common/changepass.jsp").forward(request, response);
-        } else if (!newpass.equals(renewpass)) {
-            request.setAttribute("mess", "Confirm password not match with pass. Try agian!");
-            request.getRequestDispatcher("common/changepass.jsp").forward(request, response);
-        } else {
-            AccountDBContext dao = new AccountDBContext();
-            dao.changePassword(String.valueOf(u.getAid()), newpass);
-            request.setAttribute("mess", "Change password successfully!");
-            request.getRequestDispatcher("common/changepass.jsp").forward(request, response);
+ @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    String oldpass = request.getParameter("oldpass");
+    String newpass = request.getParameter("newpass");
+    String renewpass = request.getParameter("renewpass");
+    Account u = (Account) session.getAttribute("account");
+     System.out.println("Lmaaoooooo" + u.getPassword());
 
-        }
-
+    String hashedOldPass = "";
+    try {
+        hashedOldPass = EncryptionHelper.hashPassword(oldpass, u.getSalt());
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+        Logger.getLogger(ChangePasswordController.class.getName()).log(Level.SEVERE, null, ex);
     }
+    if (!hashedOldPass.equals(u.getPassword())) {
+        request.setAttribute("mess", "Old password is incorrect. Try again!");
+        request.getRequestDispatcher("common/changepass.jsp").forward(request, response);
+    } else if (!newpass.equals(renewpass)) {
+        request.setAttribute("mess", "New password and confirm password do not match. Try again!");
+        request.getRequestDispatcher("common/changepass.jsp").forward(request, response);
+    } else {
+        AccountDBContext dao = new AccountDBContext();
+        String newSalt = EncryptionHelper.generateSalt();
+        String hashedNewPass = "";
+        try {
+            hashedNewPass = EncryptionHelper.hashPassword(newpass, newSalt);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            Logger.getLogger(ChangePasswordController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        // Update the account with the new hashed password and salt
+        dao.changePassword(String.valueOf(u.getAid()), hashedNewPass, newSalt);
+        
+        request.setAttribute("mess", "Password changed successfully!");
+        request.getRequestDispatcher("common/changepass.jsp").forward(request, response);
+    }
+}
 
     /** 
      * Returns a short description of the servlet.

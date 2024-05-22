@@ -100,10 +100,10 @@
                 background-color: #e0e0e0;
             }
             .nav-option.active {
-                text-decoration: underline; /* Underline the active option */
+                text-decoration: underline; 
             }
             .header-link:hover {
-                color: #ffcc00; /* Change to any color you like */
+                color: #ffcc00; 
                 text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Adjust glow effect */
             }
             .header-link {
