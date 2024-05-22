@@ -5,6 +5,7 @@
 
 package entity;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 
@@ -17,6 +18,15 @@ public class Product implements IEntity {
   private Brand brand;
   private Category category;
   private String description;
+  private java.sql.Date Date;
+
+    public Date getDate() {
+        return Date;
+    }
+
+    public void setDate(java.sql.Date Date) {
+        this.Date = Date;
+    }
 
     public String getDescription() {
         return description;

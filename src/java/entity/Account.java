@@ -11,6 +11,15 @@ public class Account implements IEntity{
   private String loginname;
   private String username;
   String password;
+  String salt;
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
   String email;
   String phonenumber;
   java.sql.Date birthdate;

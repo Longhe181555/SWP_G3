@@ -12,56 +12,74 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.EncryptionHelper;
 
 
 public abstract class BaseRequiredAuthenticationController extends HttpServlet {
     
-    private Account getAuthenticatedAccount(HttpServletRequest req)
-    {
-      Account account = (Account) req.getSession().getAttribute("account");
-      if(account == null)
-      {
-          Cookie[] cookies = req.getCookies();
-          if(cookies!=null)
-          {
-              String username = null;
-              String password = null;
-              for (Cookie cooky : cookies) {
-                  if(cooky.getName().equals("username"))
-                      username = cooky.getValue();
-                  
-                  if(cooky.getName().equals("password"))
-                      password = cooky.getValue();
-                  
-                  if(username !=null && password!=null)
-                      break;
-              }
-              
-              if(username !=null && password!=null)
-              {
-                  AccountDBContext db = new AccountDBContext();
-                  account = db.getByUsernamePassword(username, password);
-                  req.getSession().setAttribute("account", account);
-              }
-          }
-      }
-      return account;
+    private Account getAuthenticatedAccount(HttpServletRequest req) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    Account account = (Account) req.getSession().getAttribute("account");
+    if (account == null) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            String username = null;
+            String hashedPassword = null;
+            String salt = null;
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("username"))
+                    username = cookie.getValue();
+
+                if (cookie.getName().equals("hashedPassword"))
+                    hashedPassword = cookie.getValue();
+
+                if (username != null && hashedPassword != null)
+                    break;
+            }
+
+            if (username != null && hashedPassword != null) {
+                AccountDBContext db = new AccountDBContext();
+                account = db.checkAccountExist(username);
+                if (account != null) {
+                    salt = db.getSaltForUser(account.getAid());
+                    String hashedPasswordWithSalt = EncryptionHelper.hashPassword(hashedPassword, salt);
+                    // Check if the retrieved account exists and if the hashed password matches
+                    if (hashedPasswordWithSalt.equals(account.getPassword())) {
+                        req.getSession().setAttribute("account", account);
+                    } else {
+                        account = null; // Reset account if authentication fails
+                    }
+                }
+            }
+        }
     }
+    return account;
+}
     
     protected abstract void doPost(HttpServletRequest req, HttpServletResponse resp, Account account)
             throws ServletException, IOException; 
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Account account = getAuthenticatedAccount(req);
+        Account account = null;
+        try {
+            account = getAuthenticatedAccount(req);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(BaseRequiredAuthenticationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(BaseRequiredAuthenticationController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(account!=null)
         {
-            System.out.println("No account");
+     
             doPost(req, resp, account);
         }
         else
         {
-            System.out.println("There is account");
+          
             req.getSession().setAttribute("loginResult", "Session timer run out/ Access denied please try again!");
             resp.sendRedirect(req.getContextPath() +"/login");
         }
@@ -72,7 +90,14 @@ public abstract class BaseRequiredAuthenticationController extends HttpServlet {
             throws ServletException, IOException; 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    Account account = getAuthenticatedAccount(req);
+    Account account = null;
+        try {
+            account = getAuthenticatedAccount(req);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(BaseRequiredAuthenticationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(BaseRequiredAuthenticationController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if(account!=null)
         {
             doGet(req, resp, account);
