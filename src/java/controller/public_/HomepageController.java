@@ -31,11 +31,12 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         // Get sorting and filtering parameters from request
         String sort = request.getParameter("sort");
         String filter = request.getParameter("filter");
+        String orderby = request.getParameter("orderbydate");
         
-        ArrayList<ArrayList<Product>> productpage = pdb.listPage(sort, filter); // List of products paginated into pages
-        request.setAttribute("productpaged", productpage); // Set the attribute for paginated products
-        request.setAttribute("activePage", activePage); // Set the activePage attribute
-        request.getRequestDispatcher("/public/homepage.jsp").forward(request, response); // Forward the request to the JSP
+        ArrayList<ArrayList<Product>> productpage = pdb.listPage(sort, filter,orderby); 
+        request.setAttribute("productpaged", productpage); 
+        request.setAttribute("activePage", activePage);
+        request.getRequestDispatcher("/public/homepage.jsp").forward(request, response); 
     }
 }
 
@@ -43,7 +44,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
 protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     String pageParam = request.getParameter("page");
-    int activePage = 1; // Default to first page if parameter is not provided
+    int activePage = 1; 
     if (pageParam != null && !pageParam.isEmpty()) {
         activePage = Integer.parseInt(pageParam);
     }
