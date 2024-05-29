@@ -77,7 +77,10 @@ public class SignupController extends HttpServlet {
             request.setAttribute("signupError", signupError);
             request.getRequestDispatcher("common/login.jsp").forward(request, response);
         } else {
-            db.addNewdAccount(username, email, password);
+             // Encrypt the password
+            EncryptionHelper encryptionHelper = new EncryptionHelper();
+            String encryptedPassword = encryptionHelper.encrypt(password);
+            db.addNewdAccount(username, email, encryptedPassword);
             response.sendRedirect("login");
         }
     }
