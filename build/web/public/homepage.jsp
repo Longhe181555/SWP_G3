@@ -62,7 +62,7 @@
                 background-color: #e0e0e0;
             }
             .nav-option.active {
-                text-decoration: underline; /* Underline the active option */
+                text-decoration: underline;
             }
 
             .banner-container {
@@ -80,46 +80,46 @@
             }
 
             .option {
-                color: #777777; /* Default color */
-                text-decoration: none; /* Remove underline */
-                transition: color 0.3s; /* Smooth color transition */
+                color: #777777;
+                text-decoration: none;
+                transition: color 0.3s;
             }
 
             .option:hover {
-                color: #333333; /* Darker shade on hover */
+                color: #333333;
             }
 
             .selected {
-                font-weight: bold; /* Bold font for selected option */
-                text-decoration: underline; /* Underline for selected option */
+                font-weight: bold;
+                text-decoration: underline;
             }
 
             .placeholder {
-                background-color: #f5f5f5; /* Light gray color */
-                width: 100%; /* Full width */
-                height: 200px; /* Adjust height as needed */
-                /* Other styles as needed */
+                background-color: #f5f5f5;
+                width: 100%;
+                height: 200px;
+
             }
 
             .custom-dropdown {
-                border: none; /* Remove border */
-                border-radius: 5px; /* Add some border-radius for rounded corners */
-                background-color: #ffffff; /* Set background color */
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Add a faint box-shadow */
-                padding: 5px 10px; /* Add padding */
-                outline: none; /* Remove default focus outline */
+                border: none;
+                border-radius: 5px;
+                background-color: #ffffff;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                padding: 5px 10px;
+                outline: none;
             }
 
             .custom-dropdown option {
-                padding: 5px 10px; /* Add padding to dropdown options */
-                border: none; /* Remove border */
-                border-radius: 5px; /* Add some border-radius for rounded corners */
-                background-color: #ffffff; /* Set background color */
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Add a faint box-shadow */
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                background-color: #ffffff;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             }
 
             .custom-dropdown:focus {
-                outline: none; /* Remove default focus outline */
+                outline: none;
             }
 
             .footer {
@@ -137,24 +137,24 @@
             }
 
             .product {
-                min-height: 300px; /* Adjust the height as needed */
-                margin-bottom: 10px; /* Add space below each product box */
+                min-height: 300px;
+                margin-bottom: 10px;
             }
             .product img {
                 max-width: 100%;
                 max-height: 100%;
-                object-fit: cover; /* Ensures the image covers the entire box */
+                object-fit: cover;
             }
             .product-body {
-                padding: 10px; /* Add padding to the product body */
+                padding: 10px;
             }
             .product:hover {
-                background-color: #f2f2f2; /* Slightly dark gray */
+                background-color: #f2f2f2;
                 cursor: pointer;
             }
             .header-link:hover {
-                color: #ffcc00; /* Change to any color you like */
-                text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Adjust glow effect */
+                color: #ffcc00;
+                text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
             }
             .header-link {
                 margin: 0 10px;
@@ -164,6 +164,7 @@
                 transition: color 0.3s ease, text-shadow 0.3s ease;
             }
         </style>
+
     </head>
     <body>
 
@@ -177,7 +178,17 @@
                         <p class="header-link"> Order history</p>    
                     </div>
                     <div class="header-right">
-                        <a href="account" class="header-link">My Account</a>||  
+                        <a href="account" class="header-link">
+                            <c:choose>
+                                <c:when test="${empty Account}">
+                                    Login
+                                </c:when>
+                                <c:otherwise>
+                                    ${Account.loginname}
+                                    <img src="${Account.img}" alt="Profile Image" style="border-radius: 50%; width: 40px; height: 40px;">
+                                </c:otherwise>
+                            </c:choose>
+                        </a> ||
                         <p class="header-link"> Checkout</p>||
                         <a href="logout" class="header-link">Logout</a>
                     </div>
@@ -191,11 +202,11 @@
             </div> 
         </div>
         <div class="nav-bar">
-            <div class="nav-option ${param.nav == 'homepage' ? 'active' : ''}" data-nav-option="homepage">HOME</div>
-            <div class="nav-option ${param.nav == 'option2' ? 'active' : ''}" data-nav-option="option2">OPTION 2</div>
+            <div class="nav-option ${param.nav == 'homepage' ? 'active' : ''}" data-nav-option="homepage" onclick="goToHomepage()">HOME</div>
+<!--            <div class="nav-option ${param.nav == 'option2' ? 'active' : ''}" data-nav-option="option2">OPTION 2</div>
             <div class="nav-option ${param.nav == 'option3' ? 'active' : ''}" data-nav-option="option3">OPTION 3</div>
             <div class="nav-option ${param.nav == 'option4' ? 'active' : ''}" data-nav-option="option4">OPTION 4</div>
-            <div class="nav-option ${param.nav == 'option5' ? 'active' : ''}" data-nav-option="option5">OPTION 5</div>
+            <div class="nav-option ${param.nav == 'option5' ? 'active' : ''}" data-nav-option="option5">OPTION 5</div>-->
         </div>
 
         <div class="row" id="pagination-section"></div>
@@ -272,8 +283,10 @@
                     <c:if test="${pageLoop.index + 1 == activePage}"> <!-- activePage should match page index + 1 -->
                         <c:forEach var="product" items="${productPage}" varStatus="productLoop">
                             <div class="col-md-3">
-                                <div class="product card" onclick="openProductDetails('${product.pname}', '${product.price}', '${product.description}', '${pageContext.request.contextPath}/${product.productimgs[0].getImgpath()}')">
-                                    <img src="${pageContext.request.contextPath}/${product.productimgs[0].getImgpath()}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
+                                <div class="product card">
+                                    <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}">
+                                        <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
+                                    </a>
                                     <div class="card-body">
                                         <h5 class="card-title">${product.pname}</h5>
                                         <p class="card-text">${product.price}d</p>
@@ -362,34 +375,19 @@
                 window.location.href = selectedValue;
             }
 
-            function scrollToPagination() {
-                const paginationSection = document.getElementById('pagination-section');
-                if (paginationSection) {
-                    paginationSection.scrollIntoView({behavior: 'instant'});
+            window.addEventListener('beforeunload', function () {
+                localStorage.setItem('scrollPosition', window.scrollY);
+            });
+
+            // Restore scroll position after page loads
+            window.addEventListener('load', function () {
+                const scrollPosition = localStorage.getItem('scrollPosition');
+                if (scrollPosition !== null) {
+                    window.scrollTo(0, scrollPosition);
+                    localStorage.removeItem('scrollPosition'); // Clean up
                 }
-            }
+            });
 
-            window.onload = function () {
-                const urlParams = new URLSearchParams(window.location.search);
-                const pageParam = urlParams.get('page');
-                const path = window.location.pathname; // Get the current URL path
-
-                // Check if the path is NOT exactly "/homepage" and if the pageParam exists and is not equal to '1'
-                if (path !== '/homepage' && pageParam) {
-                    scrollToPagination();
-                }
-            };
-
-            function openProductDetails(name, price, description, imgPath) {
-                // Update modal content with product details
-                document.getElementById('productName').innerText = name;
-                document.getElementById('productPrice').innerText = "Price: " + price + "d";
-                document.getElementById('productDescription').innerText = "Description: " + description;
-                document.getElementById('productImg').src = imgPath;
-
-                // Show the modal
-                $('#productModal').modal('show');
-            }
 
 
 

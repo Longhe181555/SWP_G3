@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 
@@ -31,19 +32,26 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         // Get sorting and filtering parameters from request
         String sort = request.getParameter("sort");
         String filter = request.getParameter("filter");
+        String orderby = request.getParameter("orderbydate");
         
-        ArrayList<ArrayList<Product>> productpage = pdb.listPage(sort, filter); // List of products paginated into pages
-        request.setAttribute("productpaged", productpage); // Set the attribute for paginated products
-        request.setAttribute("activePage", activePage); // Set the activePage attribute
-        request.getRequestDispatcher("/public/homepage.jsp").forward(request, response); // Forward the request to the JSP
+        ArrayList<ArrayList<Product>> productpage = pdb.listPage(sort, filter,orderby); 
+        request.setAttribute("productpaged", productpage); 
+        request.setAttribute("activePage", activePage);
+        request.getRequestDispatcher("/public/homepage.jsp").forward(request, response); 
     }
 }
 
 @Override
 protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    
+    Account currentUser = (Account) session.getAttribute("account");
+    if(currentUser!=null) {
+    request.setAttribute("Account", currentUser);
+    }
     String pageParam = request.getParameter("page");
-    int activePage = 1; // Default to first page if parameter is not provided
+    int activePage = 1; 
     if (pageParam != null && !pageParam.isEmpty()) {
         activePage = Integer.parseInt(pageParam);
     }

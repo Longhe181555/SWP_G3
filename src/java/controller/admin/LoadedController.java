@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author ADMIN
  */
-@WebServlet(name="LoadedController")
+
 public class LoadedController extends HttpServlet {
    
     /** 
