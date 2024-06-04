@@ -13,6 +13,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.EncryptionHelper;
 
 public class LoginController extends HttpServlet {
 
@@ -29,8 +34,8 @@ public class LoginController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AccountDBContext adb = new AccountDBContext();
-        Boolean check = adb.checkConnection();
-        request.setAttribute("connection", check);
+
+      
         request.getRequestDispatcher("common/login.jsp").forward(request, response);
     }
 
@@ -42,36 +47,45 @@ public class LoginController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        AccountDBContext db = new AccountDBContext();
-        Account account = db.getByUsernamePassword(username, password);
-        
-        if (account != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("account", account);
+   @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+    
+    AccountDBContext db = new AccountDBContext();
+    Account account = db.checkAccountExist(username);
 
-            // Setting cookies
-            Cookie c_user = new Cookie("username", username);
-            Cookie c_pass = new Cookie("password", password);
-            c_user.setMaxAge(5000);
-            c_pass.setMaxAge(5000);
-            response.addCookie(c_pass);
-            response.addCookie(c_user);
-          
-          response.sendRedirect("homepage");
-
-        } else {
-            //login failed!
-            String loginResult = "Login failed, please try again";// Store the login result in the session
-            request.getSession().setAttribute("loginResult", loginResult);
-            // Redirect to the login_auth page
-            response.sendRedirect("login");
+    if (account != null) {
+        String storedSalt = account.getSalt();
+        String hashedPassword = "";
+        try {
+            hashedPassword = EncryptionHelper.hashPassword(password, storedSalt);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        
+        
+        if (account.getPassword().equals(hashedPassword)) {
+            HttpSession session = request.getSession();
+            session.setAttribute("account", account);
+            
+            // Setting cookies
+            Cookie c_user = new Cookie("username", username);
+            c_user.setMaxAge(5000);
+            response.addCookie(c_user);
+            
+            response.sendRedirect("homepage");
+            return;
+        } else {
+            // Password did not match
+            request.setAttribute("loginError", "Invalid username or password");
+            response.sendRedirect("login");
+        }
+    } else {
+        // Account does not exist
+        request.setAttribute("loginError", "Invalid username or password");
+        response.sendRedirect("login");
     }
-
+}
 }

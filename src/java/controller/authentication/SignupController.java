@@ -14,6 +14,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.EncryptionHelper;
 
 /**
  *
@@ -62,26 +67,35 @@ public class SignupController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String username = request.getParameter("name");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        AccountDBContext db = new AccountDBContext();
-        Account account = db.checkAccountExist(username);
-        System.out.println(username);
-        if (account != null) {
-            String signupError = "Username is existed";
-            System.out.println(signupError);
-            request.setAttribute("signupError", signupError);
-            request.getRequestDispatcher("common/login.jsp").forward(request, response);
-        } else {
-            db.addNewdAccount(username, email, password);
-            response.sendRedirect("login");
+  @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    String username = request.getParameter("name");
+    String email = request.getParameter("email");
+    String password = request.getParameter("password");
+    
+    AccountDBContext db = new AccountDBContext();
+    Account account = db.checkAccountExist(username);
+    
+    if (account != null) {
+        String signupError = "Username is existed";
+        request.setAttribute("signupError", signupError);
+        request.getRequestDispatcher("common/login.jsp").forward(request, response);
+    } else {
+        String salt = EncryptionHelper.generateSalt();
+        String hashedPassword = "";
+        try {
+            hashedPassword = EncryptionHelper.hashPassword(password, salt);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(SignupController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(SignupController.class.getName()).log(Level.SEVERE, null, ex);
         }
+       
+        db.addNewAccount(username, email, hashedPassword, salt);
+        response.sendRedirect("login");
     }
-
+}
     /**
      * Returns a short description of the servlet.
      *

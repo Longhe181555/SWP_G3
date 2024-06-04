@@ -18,19 +18,7 @@
         .border-right {
             border-right: 1px solid #dee2e6;
         }
-        .mt-5 {
-            margin-top: 3rem;
-        }
-        .mb-5 {
-            margin-bottom: 3rem;
-        }
-        .p-3 {
-            padding: 1rem;
-        }
-        .py-5 {
-            padding-top: 3rem;
-            padding-bottom: 3rem;
-        }
+    
         .labels {
             font-weight: bold;
         }
@@ -62,9 +50,96 @@
             color: white;
             border: none;
         }
+        
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            .header-container{
+                padding: 10px 0px;
+                width: 100%;
+                background-color: black;
+                color: white;
+            }
+            .header-content{
+                padding-top: 5px;
+                padding-bottom: 10px;
+                text-align: center;
+                font-size: 25px;
+                font-family: "Arial", sans-serif;
+            }
+            .header-right,.header-left{
+                font-family: "Arial", sans-serif;
+                display:flex;
+                color:white;
+            }
+
+            .header-options{
+                display:flex;
+                justify-content: space-around;
+            }
+            .nav-bar {
+                background-color: #f5f5f5;
+                padding: 10px;
+                display: flex;
+                justify-content: center;
+            }
+
+            .nav-option {
+                padding: 8px 16px;
+                margin: 0 10px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            .nav-option{
+                color:#666666;
+                font-family: "Arial", sans-serif;
+                font-weight: bold;
+            }
+            .nav-option:hover {
+                background-color: #e0e0e0;
+            }
+            .nav-option.active {
+                text-decoration: underline; 
+            }
+            .header-link:hover {
+                color: #ffcc00; 
+                text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Adjust glow effect */
+            }
+            .header-link {
+                margin: 0 10px;
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+                transition: color 0.3s ease, text-shadow 0.3s ease;
+            }
     </style>
 </head>
 <body>
+    
+    <div class="header">
+            <div class="header-container">
+                <div class="header-options">
+                    <div class="header-left"> 
+                        <p class="header-link">Search </p>||
+                        <p class="header-link"> Order history</p>    
+                    </div>
+                    <div class="header-right">
+                        <a href="account" class="header-link">My Account</a>||  
+                        <a href="logout" class="header-link">Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-container">
+                <div class="header-content">
+                    <p>MEN'S WEAR</p>
+                </div>
+            </div> 
+        </div>
+    
+    
+    
     <hr style="width: 90%">
     <div class="container rounded bg-white mt-5 mb-5">
         <div class="row">
