@@ -113,6 +113,49 @@ public class AccountDBContext extends DBContext {
         }
         return accounts;
     }
+    
+    public ArrayList<Account> getAllAccountByRole(String role) {
+        ArrayList<Account> accounts = new ArrayList<>();
+        try {
+            String sql = "SELECT [aid]\n"
+                    + "      ,[loginname]\n"
+                    + "      ,[username]\n"
+                    + "      ,[email]\n"
+                    + "      ,[phonenumber]\n"
+                    + "      ,[gender]\n"
+                    + "      ,[birthdate]\n"
+                    + "      ,[address]\n"
+                    + "      ,[img]\n"
+                    + "      ,[role]\n"
+                    + "  FROM Account\n"
+                    + " WHERE [role] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, role);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Account account = new Account();
+                account.setAid(rs.getInt("aid"));
+                account.setLoginname(rs.getString("loginname"));
+                account.setUsername(rs.getString("username"));
+                account.setEmail(rs.getString("email"));
+                account.setPhonenumber(rs.getString("phonenumber"));
+                account.setGender(rs.getBoolean("gender"));
+                account.setBirthdate(rs.getDate("birthdate"));
+                account.setAddress(rs.getString("address"));
+                String img = rs.getString("img");
+                if (img == null || img.trim().isEmpty()) {
+                    img = "img/profile_picture/placeholder.png";
+                }
+                account.setImg(img);
+                account.setRole(rs.getString("role"));
+
+                accounts.add(account);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return accounts;
+    }
 
     
 
