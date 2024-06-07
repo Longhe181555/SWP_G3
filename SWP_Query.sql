@@ -1,4 +1,4 @@
--- Check if the database exists
+﻿-- Check if the database exists
 IF DB_ID('SWP_G3') IS NULL
 BEGIN
     -- Create the database if it does not exist
@@ -260,7 +260,7 @@ INSERT INTO Product(pname,price,catid,bid,islisted,description,Date) VALUES
 ('AIRism Cotton Half Sleeve Oversized T-Shirt', 391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-6),
 ('AIRism Cotton Striped Crew Neck Oversized T-Shirt',391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-9),
 ('Crew Neck Short Sleeve T-Shirt',293000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-8),
-('Supima Cotton Crew Neck Short Sleeve T-Shirt',191000,1,1,1,'- Smooth, premium 100% SUPIMA� cotton. Basic design styles on its own or in layered looks. Designed with meticulous attention to detail, down to the collar width and stitching.',GETDATE()-7),
+('Supima Cotton Crew Neck Short Sleeve T-Shirt',191000,1,1,1,'- Smooth, premium 100% SUPIMA® cotton. Basic design styles on its own or in layered looks. Designed with meticulous attention to detail, down to the collar width and stitching.',GETDATE()-7),
 --Shirt insert somi omen
 ('Somi Cotton Linen Cat-style 1',250000,4,2,1,'Cute cat-stack textures',GETDATE()-6),
 ('Somi Cotton Linen Cat-style 2',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-6),
@@ -270,7 +270,7 @@ INSERT INTO Product(pname,price,catid,bid,islisted,description,Date) VALUES
 
 --Short Pant insert uniqlo
 ('Stretch Slim Fit Shorts',588000,2,1,1,'Stretch twill cotton fabric with a soft texture and an elegant look. Slim fit with minimal stitching. Comfortable elasticated waist',GETDATE()-6),
-('Chino Shorts',588000,2,1,1,'Newly updated with light fabric for an airy feel. Long, roomy cut creates a relaxed look. We�ve adjusted the fit and length for easier pairing with oversized tops. These chino shorts are a casual wardrobe essential.',GETDATE()-6),
+('Chino Shorts',588000,2,1,1,'Newly updated with light fabric for an airy feel. Long, roomy cut creates a relaxed look. We’ve adjusted the fit and length for easier pairing with oversized tops. These chino shorts are a casual wardrobe essential.',GETDATE()-6),
 ('Parachute Cargo Shorts',391000,2,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-7),
 ('Geared Shorts',291000,2,1,1,'Nylon ripstop material with a water-repellent finish. The finish is not permanent. Convenient side pocket with slide fastener. Utility design includes an easy buckle belt and pockets with high storage capacity. Perfect for everyday wear or the great outdoors.',GETDATE()-9),
 ('Linen Blend Shorts',199000,2,1,1,'Premium twill weave material combines the benefits of linen and cotton. The distinctive texture of linen, blended with cotton for a soft touch. Gathered elastic waist for comfort.',GETDATE()-10),
@@ -516,7 +516,48 @@ VALUES
 
 
 
+/*SELECT  
+       p.pid,
+       p.pname, 
+       p.price, 
+       MIN(CASE 
+              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) 
+              WHEN dt.type = 'fixedAmount' THEN p.price - d.value 
+              ELSE p.price 
+           END) AS discountedPrice, 
+       CASE 
+           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') 
+           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') 
+           ELSE NULL 
+       END AS discountDescription, 
+       AVG(f.rating) AS avgRating, 
+       p.description, 
+       p.Date, 
+       p.catid, 
+       c.catname, 
+       c.cattype, 
+       p.bid, 
+       b.bname 
+FROM Product p 
+LEFT JOIN ProductItem pi ON p.pid = pi.pid 
+LEFT JOIN Discount d ON pi.piid = d.piid 
+LEFT JOIN DiscountType dt ON d.dtid = dt.dtid 
+LEFT JOIN Feedback f ON p.pid = f.pid 
+JOIN Category c ON p.catid = c.catid 
+JOIN Brand b ON p.bid = b.bid 
+WHERE p.pid != 0
+  AND (GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)
+  and d.did is not null
+GROUP BY p.pid, 
+         p.pname, 
+         p.price, 
+         p.description, 
+         p.Date, 
+         p.catid, 
+         c.catname, 
+         c.cattype, 
+         p.bid, 
+         b.bname;
 
-
-
+		 */
 

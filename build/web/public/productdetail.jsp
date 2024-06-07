@@ -140,7 +140,7 @@
                         <p class="font-weight-bold">${product.price}d</p>
                         <p>${product.description}</p>
                         <p><strong>Brand:</strong> ${product.brand.bname}</p>
-                                            <div class="rating-stars">
+                        <div class="rating-stars">
                         <c:forEach var="i" begin="1" end="5">
                             <c:choose>
                                 <c:when test="${i <= avr}">
