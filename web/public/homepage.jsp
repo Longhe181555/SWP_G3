@@ -79,6 +79,9 @@
             .discounted-price, .discount-description {
                 color: red;
             }
+            .rating-star{
+                color:gold;
+            }
         </style>
 
     </head>
@@ -181,7 +184,23 @@
                             <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <h5 class="card-title product-title">${product.pname}</h5>
-                                <p class="card-text">
+                                <c:if test="${product.avarageRating > 0}">
+                                    <p class="card-text rating-star">
+                                        <c:forEach var="i" begin="1" end="5">
+                                            <c:choose>
+                                                <c:when test="${i <= product.avarageRating}">
+                                                    <i class="bi bi-star-fill"></i>
+                                                </c:when>
+                                                <c:when test="${i > product.avarageRating && i - 1 < product.avarageRating}">
+                                                    <i class="bi bi-star-half"></i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="bi bi-star"></i>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </p>
+                                </c:if>                                <p class="card-text">
                                     <c:if test="${not empty product.discountDescription}">
                                         <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
                                         <span class="badge bg-warning position-absolute top-0 end-0 mt-4">NEW</span>
@@ -221,6 +240,23 @@
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
                                 <h5 class="card-title product-title">${product.pname}</h5>
+                                <c:if test="${product.avarageRating > 0}">
+                                    <p class="card-text rating-star">
+                                        <c:forEach var="i" begin="1" end="5">
+                                            <c:choose>
+                                                <c:when test="${i <= product.avarageRating}">
+                                                    <i class="bi bi-star-fill"></i>
+                                                </c:when>
+                                                <c:when test="${i > product.avarageRating && i - 1 < product.avarageRating}">
+                                                    <i class="bi bi-star-half"></i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="bi bi-star"></i>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </p>
+                                </c:if>
                                 <p class="card-text">
                                     <span class="discount-description">Up to ${product.discountDescription} values</span><br>
                                     <span class="original-price">${product.price}đ</span> -
@@ -235,108 +271,61 @@
             </div>
         </div>
 
+        <hr/>
 
-        <hr/>      
-
-        <div class="container">
+        <div class="container mt-3">
             <div class="row">
-                <div class="col-md-3">
-                    <a href="?sort=all<%= request.getParameter("page") != null ? "&page=" + request.getParameter("page") : "" %><%= request.getParameter("filter") != null ? "&filter=" + request.getParameter("filter") : "" %>" class="option <%= (request.getParameter("sort") == null || "all".equals(request.getParameter("sort"))) ? "selected" : "" %>">All products</a>
+                <div class="col-6">
+                    <h2>Loved by all</h2>
                 </div>
-                <div class="col-md-3">
-                    <a href="?sort=desc<%= request.getParameter("page") != null ? "&page=" + request.getParameter("page") : "" %><%= request.getParameter("filter") != null ? "&filter=" + request.getParameter("filter") : "" %>" class="option <%= "desc".equals(request.getParameter("sort")) ? "selected" : "" %>">High price</a>
-                </div>
-                <div class="col-md-3">
-                    <a href="?sort=asc<%= request.getParameter("page") != null ? "&page=" + request.getParameter("page") : "" %><%= request.getParameter("filter") != null ? "&filter=" + request.getParameter("filter") : "" %>" class="option <%= "asc".equals(request.getParameter("sort")) ? "selected" : "" %>">Low price</a>
-                </div>
-                <div class="col-md-3">
-                    <div class="filter-option">
-                        <span>Filter by:</span>
-                        <select id="filterDropdown" onchange="applyFilter()" class="custom-dropdown">
-                            <option value="?<%= request.getParameter("sort") != null ? "sort=" + request.getParameter("sort") : "" %><%= request.getParameter("page") != null ? "&page=" + request.getParameter("page") : "" %>"
-                                    <%= (request.getParameter("filter") == null || "all".equals(request.getParameter("filter"))) ? "selected" : "" %>>All</option>
-                            <option value="?filter=shirt<%= request.getParameter("sort") != null ? "&sort=" + request.getParameter("sort") : "" %><%= request.getParameter("page") != null ? "&page=" + request.getParameter("page") : "" %>"
-                                    <%= "shirt".equals(request.getParameter("filter")) ? "selected" : "" %>>Shirt</option>
-                            <option value="?filter=pant<%= request.getParameter("sort") != null ? "&sort=" + request.getParameter("sort") : "" %><%= request.getParameter("page") != null ? "&page=" + request.getParameter("page") : "" %>"
-                                    <%= "pant".equals(request.getParameter("filter")) ? "selected" : "" %>>Pant</option>
-                        </select>
-                    </div>
+                <div class="col-6 text-end">
+                    <a href="allProducts" class="btn btn-primary">See More</a>
                 </div>
             </div>
-        </div>
-
-
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <c:if test="${activePage > 1}">
-                        <a href="?page=${activePage - 1}&sort=${param.sort}&filter=${param.filter}" class="btn btn-primary">Previous</a>
-                    </c:if>
-                    <c:forEach var="page" begin="1" end="${productpaged.size()}">
-                        <c:if test="${activePage == page}">
-                            <span class="btn btn-secondary">${page}</span>
-                        </c:if>
-                        <c:if test="${activePage != page}">
-                            <a href="?page=${page}&sort=${param.sort}&filter=${param.filter}" class="btn btn-primary">${page}</a>
-                        </c:if>
-                    </c:forEach>
-                    <c:if test="${activePage < productpaged.size()}">
-                        <a href="?page=${activePage + 1}&sort=${param.sort}&filter=${param.filter}" class="btn btn-primary">Next</a>
-                    </c:if>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
-
-        <div class="container product-container">
-            <div class="row">
-                <c:forEach var="productPage" items="${productpaged}" varStatus="pageLoop">
-                    <c:if test="${pageLoop.index + 1 == activePage}"> <!-- activePage should match page index + 1 -->
-                        <c:forEach var="product" items="${productPage}" varStatus="productLoop">
-                            <div class="col-md-3">
-                                <div class="product card">
-                                    <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}">
-                                        <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}" style="max-width: 100%; max-height: 200px;">
-                                    </a>
-                                    <div class="card-body">
-                                        <h5 class="card-title">${product.pname}</h5>
-                                        <p class="card-text">${product.price}d</p>
-                                    </div>
-                                </div>
+            <div class="row row-cols-6 mt-3"> <!-- Adjust the number of columns as needed -->
+                <c:forEach var="product" items="${highRatingProducts}">
+                    <div class="col">
+                        <div class="card h-100 d-flex flex-column position-relative">
+                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <h5 class="card-title product-title">${product.pname}</h5>
+                                <c:if test="${product.avarageRating > 0}">
+                                    <p class="card-text rating-star">
+                                        <c:forEach var="i" begin="1" end="5">
+                                            <c:choose>
+                                                <c:when test="${i <= product.avarageRating}">
+                                                    <i class="bi bi-star-fill"></i>
+                                                </c:when>
+                                                <c:when test="${i > product.avarageRating && i - 1 < product.avarageRating}">
+                                                    <i class="bi bi-star-half"></i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="bi bi-star"></i>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </p>
+                                </c:if>
+                                <p class="card-text">
+                                    <c:if test="${not empty product.discountDescription}">
+                                        <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
+                                        <span class="discount-description">Up to ${product.discountDescription} values</span><br>
+                                        <span class="original-price" style="text-decoration: line-through;">${product.price}đ</span> -
+                                        <span class="discounted-price">${product.discountedPrice}đ</span>
+                                    </c:if>
+                                    <c:if test="${empty product.discountDescription}">
+                                        $${product.price}đ
+                                    </c:if>
+                                </p>
+                                <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}" class="btn btn-primary mt-auto">View Details</a>
                             </div>
-                        </c:forEach>
-                    </c:if>
+                        </div>
+                    </div>
                 </c:forEach>
             </div>
         </div>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <c:if test="${activePage > 1}">
-                        <a href="?page=${activePage - 1}&sort=${param.sort}&filter=${param.filter}" class="btn btn-primary">Previous</a>
-                    </c:if>
-                    <c:forEach var="page" begin="1" end="${productpaged.size()}">
-                        <c:if test="${activePage == page}">
-                            <span class="btn btn-secondary">${page}</span>
-                        </c:if>
-                        <c:if test="${activePage != page}">
-                            <a href="?page=${page}&sort=${param.sort}&filter=${param.filter}" class="btn btn-primary">${page}</a>
-                        </c:if>
-                    </c:forEach>
-                    <c:if test="${activePage < productpaged.size()}">
-                        <a href="?page=${activePage + 1}&sort=${param.sort}&filter=${param.filter}" class="btn btn-primary">Next</a>
-                    </c:if>
-                </div>
-            </div>
-        </div>
-
-
-
+        <hr/>      
         <div class="container mt-3">
             <div class="row">
                 <div class="col-12">

@@ -20,30 +20,46 @@ public class ProductDBContext extends DBContext {
     public ArrayList<Product> list() {
         ArrayList<Product> products = new ArrayList<>();
         try {
-            String sql = "SELECT p.pid, p.pname, p.price, "
-                    + "MIN(CASE "
-                    + "    WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) "
-                    + "    WHEN dt.type = 'fixedAmount' THEN p.price - d.value "
-                    + "    ELSE p.price "
-                    + "END) AS discountedPrice, "
-                    + "CASE "
-                    + "    WHEN dt.type = 'percentage' THEN CONCAT(d.value, '%') "
-                    + "    WHEN dt.type = 'fixedAmount' THEN CONCAT('-', d.value, 'đ') "
-                    + "    ELSE NULL "
-                    + "END AS discountDescription, "
-                    + "AVG(f.rating) AS avgRating, "
-                    + "p.description, p.Date, p.catid, c.catname, c.cattype, "
-                    + "p.bid, b.bname "
-                    + "FROM Product p "
-                    + "LEFT JOIN ProductItem pi ON p.pid = pi.pid "
-                    + "LEFT JOIN Discount d ON pi.piid = d.piid "
-                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid "
-                    + "LEFT JOIN Feedback f ON p.pid = f.pid "
-                    + "JOIN Category c ON p.catid = c.catid "
-                    + "JOIN Brand b ON p.bid = b.bid "
-                    + "GROUP BY p.pid, p.pname, p.price, "
-                    + "p.description, p.Date, p.catid, c.catname, c.cattype, "
-                    + "p.bid, b.bname";
+            String sql =     "SELECT  p.pid,\n"
+                    + "       p.pname, \n"
+                    + "       p.price, \n"
+                    + "       MIN(CASE \n"
+                    + "              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) \n"
+                    + "              WHEN dt.type = 'fixedAmount' THEN p.price - d.value \n"
+                    + "              ELSE p.price \n"
+                    + "           END) AS discountedPrice, \n"
+                    + "       CASE \n"
+                    + "           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') \n"
+                    + "           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') \n"
+                    + "           ELSE NULL \n"
+                    + "       END AS discountDescription, \n"
+                    + "       AVG(f.rating) AS avgRating, \n"
+                    + "       p.description, \n"
+                    + "       p.Date, \n"
+                    + "       p.catid, \n"
+                    + "       c.catname, \n"
+                    + "       c.cattype, \n"
+                    + "       p.bid, \n"
+                    + "       b.bname \n"
+                    + "FROM Product p \n"
+                    + "LEFT JOIN ProductItem pi ON p.pid = pi.pid \n"
+                    + "LEFT JOIN Discount d ON pi.piid = d.piid \n"
+                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid \n"
+                    + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
+                    + "JOIN Category c ON p.catid = c.catid \n"
+                    + "JOIN Brand b ON p.bid = b.bid \n"
+                    + "Where p.pid != 0\n"   
+                    + "AND (GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)\n"
+                    + "GROUP BY p.pid, \n"
+                    + "         p.pname, \n"
+                    + "         p.price, \n"
+                    + "         p.description, \n"
+                    + "         p.Date, \n"
+                    + "         p.catid, \n"
+                    + "         c.catname, \n"
+                    + "         c.cattype, \n"
+                    + "         p.bid, \n"
+                    + "         b.bname\n";
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
@@ -51,9 +67,9 @@ public class ProductDBContext extends DBContext {
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
-                p.setDiscountedPrice(rs.getObject("discountedPrice") != null ? rs.getInt("discountedPrice") : null);
+                p.setDiscountedPrice(rs.getInt("discountedPrice"));
                 p.setDiscountDescription(rs.getString("discountDescription"));
-                p.setAvarageRating(rs.getObject("avgRating") != null ? rs.getFloat("avgRating") : null);
+                p.setAvarageRating(rs.getFloat("avgRating"));
                 p.setDescription(rs.getString("description"));
                 p.setDate(rs.getDate("Date"));
 
@@ -306,42 +322,60 @@ public class ProductDBContext extends DBContext {
     public ArrayList<Product> getDiscountedProducts() {
         ArrayList<Product> products = new ArrayList<>();
         try {
-            String sql = "SELECT p.pid, p.pname, p.price, "
-                    + "MIN(CASE "
-                    + "    WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) "
-                    + "    WHEN dt.type = 'fixedAmount' THEN p.price - d.value "
-                    + "    ELSE p.price "
-                    + "END) AS discountedPrice, "
-                    + "MIN(CASE "
-                    + "    WHEN dt.type = 'percentage' THEN CONCAT('-', d.value, '%') "
-                    + "    WHEN dt.type = 'fixedAmount' THEN CONCAT('-', d.value) "
-                    + "    ELSE '' "
-                    + "END) AS discountDescription, "
-                    + "p.description, p.Date, p.catid, c.catname, c.cattype, "
-                    + "p.bid, b.bname "
-                    + "FROM Product p "
-                    + "JOIN ProductItem pi ON p.pid = pi.pid "
-                    + "LEFT JOIN Discount d ON pi.piid = d.piid "
-                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid "
-                    + "JOIN Category c ON p.catid = c.catid "
-                    + "JOIN Brand b ON p.bid = b.bid "
-                    + "WHERE d.piid IS NOT NULL "
-                    + "AND GETDATE() BETWEEN d.[from] AND d.[to] "
-                    + "GROUP BY p.pid, p.pname, p.price, "
-                    + "p.description, p.Date, p.catid, c.catname, c.cattype, "
-                    + "p.bid, b.bname";
+            String sql = "SELECT Top 6\n"
+                    + "       p.pid, \n"
+                    + "       p.pname, \n"
+                    + "       p.price, \n"
+                    + "       MIN(CASE \n"
+                    + "              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) \n"
+                    + "              WHEN dt.type = 'fixedAmount' THEN p.price - d.value \n"
+                    + "              ELSE p.price \n"
+                    + "           END) AS discountedPrice, \n"
+                    + "       CASE \n"
+                    + "           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') \n"
+                    + "           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') \n"
+                    + "           ELSE NULL \n"
+                    + "       END AS discountDescription, \n"
+                    + "       AVG(f.rating) AS avgRating, \n"
+                    + "       p.description, \n"
+                    + "       p.Date, \n"
+                    + "       p.catid, \n"
+                    + "       c.catname, \n"
+                    + "       c.cattype, \n"
+                    + "       p.bid, \n"
+                    + "       b.bname \n"
+                    + "FROM Product p \n"
+                    + "LEFT JOIN ProductItem pi ON p.pid = pi.pid \n"
+                    + "LEFT JOIN Discount d ON pi.piid = d.piid \n"
+                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid \n"
+                    + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
+                    + "JOIN Category c ON p.catid = c.catid \n"
+                    + "JOIN Brand b ON p.bid = b.bid \n"
+                    + "Where p.pid != 0\n"
+                    + "AND d.did is not null \n"
+                    + "GROUP BY p.pid, \n"
+                    + "         p.pname, \n"
+                    + "         p.price, \n"
+                    + "         p.description, \n"
+                    + "         p.Date, \n"
+                    + "         p.catid, \n"
+                    + "         c.catname, \n"
+                    + "         c.cattype, \n"
+                    + "         p.bid, \n"
+                    + "         b.bname\n"
+                    + "ORDER BY [Date] DESC";
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
-                Product p = new Product();
+                 Product p = new Product();
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
                 p.setDiscountedPrice(rs.getInt("discountedPrice"));
                 p.setDiscountDescription(rs.getString("discountDescription"));
+                p.setAvarageRating(rs.getFloat("avgRating"));
                 p.setDescription(rs.getString("description"));
                 p.setDate(rs.getDate("Date"));
-
                 Category c = new Category();
                 c.setCatid(rs.getInt("catid"));
                 c.setCatname(rs.getString("catname"));

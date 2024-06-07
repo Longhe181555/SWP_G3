@@ -51,7 +51,7 @@ public class FeedbackDBContext extends DBContext<IEntity> {
                     + "		,f.pid\n"
                     + "		,f.date\n"
                     + "		,a.img\n"
-                    + "		,a.loginname\n"
+                    + "		,a.fullname\n"
                     + "	from Feedback f\n"
                     + "	join Account a on f.aid = a.aid\n"
                     + "	join Product p on f.pid = p.pid\n"
@@ -63,7 +63,7 @@ public class FeedbackDBContext extends DBContext<IEntity> {
                 Feedback f = new Feedback();
                 Account a = new Account();
                 a.setAid(rs.getInt("aid"));
-                a.setFullname(rs.getString("loginname"));
+                a.setFullname(rs.getString("fullname"));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";

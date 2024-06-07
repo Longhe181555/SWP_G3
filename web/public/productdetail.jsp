@@ -173,7 +173,7 @@
                             <div class="d-flex align-items-center">
                                 <img src="${pageContext.request.contextPath}/${feedback.account.img}" alt="Profile Image" style="border-radius: 50%; width: 40px; height: 40px;" class="mr-3">
                                 <div>
-                                    <h5 class="card-title d-inline">${feedback.account.loginname}</h5>
+                                    <h5 class="card-title d-inline">${feedback.account.fullname}</h5>
                                     <span class="card-text ml-3 rating-stars">
                                         <c:forEach var="i" begin="1" end="5">
                                             <c:choose>

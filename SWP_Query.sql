@@ -187,14 +187,14 @@ CREATE TABLE Cart(
 
 insert into Account(fullname,username,password,role,salt) values
 ('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('minhtnhe180070', 'minhtnhe180070','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('duyddhe173473', 'duyddhe173473','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('binhthhe151011', 'binhthhe151011','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('danglhhe161145', 'danglhhe161145','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==')
+('minhtnhe180070', 'minhtnhe180070','5DExJq2Tg429tJe+49JlKW3K656T8hongRAx4eK7JTEibToltE6Zzlafl1WJ/3OvHFJvbNX/V+oKYw3jgrFVyw==','admin','w51cFkFMQFSsjyT2YThmPw=='),
+('duyddhe173473', 'duyddhe173473','dOuNAbJRoxe4bDhXeiiiHzQVtebLrCxvybKfgHeLL1EI6K9uwUc700f2xzykx4sp7d96ZxpavpQj6RvqV09XEA==','admin','5yQ0jZsmtsEUHQR8CVgCrg=='),
+('binhthhe151011', 'binhthhe151011','rGEutTob/BSpz5YtqXyXBJsaepDh9SRF8EfI4SlQ+eadPiHRst/GITju5ydMfaUKMsiAw6QXpu8UogMykIkKWQ==','admin','qnvXvpwbsWdgDtKmf69sag=='),
+('danglhhe161145', 'danglhhe161145','46l9N+161aQAD2LY1SkNsLOj5Uus6oqnYHTPO9Ab8fZDACb8YZf5473sl1cH3Mpm3kXOEDT/8rC6hi6itOxTFw==','admin','AoaQBLzOP+YBa7Zgqo0BkQ==')
 
 INSERT INTO Account(fullname, username, password, role, salt) VALUES 
-('nguyenvana', 'nguyenvana', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
-('tranthib', 'tranthib', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
+('nguyenvana', 'nguyenvana', 'Qp3BYQ18K/26dzuMGF0u+/JLtKVriQ4tcevm5dhtJNOzQqgiEPfhSRFRGZIf3XdKEgAOKJMa0ICOoc0fIhH/0A==', 'customer', '8siFHy6/+GPfGcGQyE71DA=='),
+('tranthib', 'tranthib', 'EZ00+9qKTXyNfomW/8zCj/XdPh3TEIDnX+TSc1GRX0GHvYQlO8xwHF6unSIZuXVBxHaOgHkca2rThTF5j0LSMg==', 'customer', 'KAvxAu9ro0z+inKPCwD9jg=='),
 ('phamvand', 'phamvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw=='),
 ('lethiec', 'lethiec', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
 ('hoangminhf', 'hoangminhf', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw=='),
@@ -492,7 +492,8 @@ INSERT INTO ProductItem (pid, cid, sid,stockcount) VALUES
 (8,2,4,50),
 (19,2,1,100),
 (19,2,2,100),
-(19,2,3,100)
+(19,2,3,100),
+(3,1,1,40)
 --Select * from ProductItem
 --Select * from Product
 --Select * from Color
@@ -510,7 +511,9 @@ VALUES
 (0,40,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0,41,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0,46,15, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
-(0,45,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE()))
+(0,45,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,47,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
+
 
 
 
