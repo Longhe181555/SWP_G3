@@ -94,7 +94,7 @@ CREATE TABLE ProductItem(
 
 CREATE TABLE Account(
 aid INT IDENTITY(0,1) PRIMARY KEY,
-loginname varchar(50) not null,
+fullname varchar(50) not null,
 username varchar(MAX) not null,
 password varchar(max) not null,
 salt varchar(max),
@@ -116,18 +116,6 @@ CREATE TABLE Payment(
  aid int FOREIGN KEY (aid) REFERENCES Account(aid)
 )
 
-
-CREATE TABLE Cart(
-   cartid INT IDENTITY(0,1) PRIMARY KEY,
-   amount int not null,
-   totalprice int,
-   aid int FOREIGN KEY (aid) REFERENCES Account(aid),
-   piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
-   stockstatus bit
-)
-
--- vi cart se luu lai cho nguoi co account the nen can aid
--- chac la giu color o day
 
 
 CREATE TABLE [Order](
@@ -167,19 +155,44 @@ CREATE TABLE Feedback(
 -- feed back co the de aid ko co reference key de them kha nang de anonymous comment
 
 
-CREATE TABLE ConnectionStatus(
-Connection bit
+CREATE TABLE DiscountType(
+ dtid INT IDENTITY(0,1) PRIMARY KEY,
+ type varchar(100),
 )
-insert into ConnectionStatus values(1);
 
-insert into Account(loginname,username,password,role,salt) values
+CREATE TABLE Discount (
+    did INT IDENTITY(1,1) PRIMARY KEY,
+    dtid INT,
+    piid INT,
+    value DECIMAL(10, 2),
+    [from] DATE,
+    [to] DATE,
+    FOREIGN KEY (dtid) REFERENCES DiscountType(dtid),
+    FOREIGN KEY (piid) REFERENCES ProductItem(piid)
+);
+
+CREATE TABLE Cart(
+   cartid INT IDENTITY(0,1) PRIMARY KEY,
+   amount int not null,
+   totalprice int,
+   aid int FOREIGN KEY (aid) REFERENCES Account(aid),
+   piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
+   stockstatus bit,
+   did int FOREIGN KEY(did) REFERENCES Discount(did)
+)
+
+-- vi cart se luu lai cho nguoi co account the nen can aid
+-- chac la giu color o day
+
+
+insert into Account(fullname,username,password,role,salt) values
 ('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
 ('minhtnhe180070', 'minhtnhe180070','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
 ('duyddhe173473', 'duyddhe173473','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
 ('binhthhe151011', 'binhthhe151011','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
 ('danglhhe161145', 'danglhhe161145','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==')
 
-INSERT INTO Account(loginname, username, password, role, salt) VALUES 
+INSERT INTO Account(fullname, username, password, role, salt) VALUES 
 ('nguyenvana', 'nguyenvana', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
 ('tranthib', 'tranthib', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
 ('phamvand', 'phamvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw=='),
@@ -206,18 +219,25 @@ insert into ProductImg(pid,imgpath) values(0,'img/product_picture/placeholder.pn
 -----------------------------------------------------------------------------------------------------------------------------------
 --Insert 
 
+
+
+INSERT INTO DiscountType (type) VALUES ('percentage');
+INSERT INTO DiscountType (type) VALUES ('fixedAmount');
+
+
+
 INSERT INTO Category(catname,cattype) values
 --('','shirt'),      ('','pant'),
-('T-shirt','shirt'),
-('short','pant'),
-('jean','pant'),
-('somi','shirt'),
-('polo','shirt')
+('T-shirt','shirt'),  --1
+('short','pant'),   --2
+('jean','pant'),   --3
+('somi','shirt'), --4
+('polo','shirt')  --5
 
 
 
-INSERT INTO Brand(bname) VALUES
-('uniqlo'),('somi omen'),('nike'),('adidas'),('gucci'),('chanel')
+INSERT INTO Brand(bname,img) VALUES
+('uniqlo','img/other_picture/uniqlo.png'),('somi omen','img/other_picture/somi-omen.png'),('nike','img/other_picture/nike.png'),('adidas','img/other_picture/adidas.png')--,('gucci','img/other/gucci.png'),('chanel','img/other/chanel.png')
 
 INSERT INTO Color(cname) VALUES
 ('white'),('black'),('gray'),('blue'),('pink'),('yellow'),('green'),('red')
@@ -266,10 +286,10 @@ INSERT INTO Product(pname,price,catid,bid,islisted,description,Date) VALUES
 ('Men Dri-FIT 13cm (approx.) Unlined Versatile Shorts',1019000,2,3,1,'Designed for running, training and yoga, the versatile Form shorts are built to handle those days when you need to shake up your exercise routine.',GETDATE()-10),
 
 --adidas stuff   --('',0,0,4,0,'',GETDATE()-3)
-('SPORTSWEAR UNDENIABLE TEE',950000,1,4,1,'Dotted with sneakers, this adidas t-shirt is versatile yet playful. Made from cotton single jersey, it feels comfortable against your torso, and the classic crewneck cut is always a winner. A great option for weekends, this tee will get plenty of wear just like your favourite adidas kicks.',GETDATE()-1)
-
-
-
+('SPORTSWEAR UNDENIABLE TEE',950000,1,4,1,'Dotted with sneakers, this adidas t-shirt is versatile yet playful. Made from cotton single jersey, it feels comfortable against your torso, and the classic crewneck cut is always a winner. A great option for weekends, this tee will get plenty of wear just like your favourite adidas kicks.',GETDATE()-1),
+('ESSENTIALS SINGLE JERSEY LINEAR EMBROIDERED LOGO TEE',550000,1,4,1,'Made from soft cotton jersey, it feels great against your skin. Our cotton products support more sustainable cotton farming',GETDATE()),
+('MANCHESTER UNITED TIRO 24 POLO SHIRT',300000,5,4,1,'This adidas polo shirt is made from soft cotton-blend fabric that keeps you feeling comfortable during your downtime. An embroidered club badge on the chest displays your football fandom so you can proudly show your support wherever life leads.',GETDATE()),
+('PREMIUM POLO SHIRT',499000,5,4,1,'Woven with lightweight jacquard, it keeps you cool and comfortable while subtly signalling your connection to adidas heritage. Signature details like the embroidered Trefoil on the chest and iconic 3-Stripes down the sleeve twist a sporty look into an everyday essential. ',GETDATE())
 INSERT INTO ProductImg(pid,imgpath) VALUES
 --(,'img/product_picture/'),
 (1,'img/product_picture/alrism-cotton-half-sleeve-0.avif'),
@@ -312,7 +332,19 @@ INSERT INTO ProductImg(pid,imgpath) VALUES
 
 (21,'img/product_picture/Sportswear_Undeniable_Tee_Black_0.avif'),
 (21,'img/product_picture/Sportswear_Undeniable_Tee_Black_1.avif'),
-(21,'img/product_picture/Sportswear_Undeniable_Tee_Black_2.avif')
+(21,'img/product_picture/Sportswear_Undeniable_Tee_Black_2.avif'),
+
+(22,'img/product_picture/Essentials_Single_Jersey_Linear_Embroidered_Logo_Tee_White_0.png'),
+(22,'img/product_picture/Essentials_Single_Jersey_Linear_Embroidered_Logo_Tee_White_1.png'),
+(22,'img/product_picture/Essentials_Single_Jersey_Linear_Embroidered_Logo_Tee_White_2.png'),
+
+(23,'img/product_picture/Manchester_United_Tiro_24_Polo_Shirt_Blue_0.png'),
+(23,'img/product_picture/Manchester_United_Tiro_24_Polo_Shirt_Blue_1.png'),
+(23,'img/product_picture/Manchester_United_Tiro_24_Polo_Shirt_Blue_2.png'),
+
+(24,'img/product_picture/Premium_Polo_Shirt_Blue_0.png'),
+(24,'img/product_picture/Premium_Polo_Shirt_Blue_1.png'),
+(24,'img/product_picture/Premium_Polo_Shirt_Blue_2.png')
 
 -- User 1 feedback
 INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
@@ -409,3 +441,79 @@ INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES
 (8, 'Well made.', 4.5, 21, DATEADD(day, -3, GETDATE())),
 (6, 'Stylish.', 3.5, 21, DATEADD(day, -4, GETDATE())),
 (14, 'Great quality.', 5, 21, DATEADD(day, -1, GETDATE()))
+
+
+
+
+INSERT INTO ProductItem (pid, cid, sid,stockcount) VALUES
+(1, 1, 1,30),
+(1, 2, 2,30),
+(1, 3, 3,30),
+(1, 4, 4,30), 
+(2, 1, 1,30),
+(2, 2, 2,30), 
+(2, 3, 3,30), 
+(2, 4, 4,30),
+(3, 1, 1,30), 
+(3, 2, 2,30), 
+(3, 3, 3,30), 
+(3, 4, 4,30), 
+(4, 1, 1,30), 
+(4, 2, 2,30), 
+(4, 3, 3,30), 
+(4, 4, 4,30),
+(10, 1, 1,30),
+(10, 2, 2,30),
+(10, 3, 3,30),
+(10, 4, 4,30), 
+(11, 1, 1,30),
+(11, 2, 2,30), 
+(11, 3, 3,30), 
+(11, 4, 4,30),
+(12, 1, 1,30), 
+(12, 2, 2,30), 
+(12, 3, 3,30), 
+(12, 4, 4,30), 
+(13, 1, 1,30), 
+(13, 2, 2,30), 
+(13, 3, 3,30), 
+(13, 4, 4,30),
+(5, 1, 1,50),
+(5, 1, 2,50),
+(5, 1, 3,50),
+(5, 1, 4,50),
+(6,6,1,50),
+(6,6,2,50),
+(6,6,3,50),
+(6,6,4,50),
+(8,2,1,50),
+(8,2,2,50),
+(8,2,3,50),
+(8,2,4,50),
+(19,2,1,100),
+(19,2,2,100),
+(19,2,3,100)
+--Select * from ProductItem
+--Select * from Product
+--Select * from Color
+INSERT INTO Discount (dtid, piid, value, [from], [to])
+VALUES 
+(0, 0, 20,DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 1, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 2, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 3, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 4, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,32,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,33,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,37,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,38,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,40,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,41,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,46,15, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,45,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE()))
+
+
+
+
+
+

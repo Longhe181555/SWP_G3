@@ -19,6 +19,33 @@ public class Product implements IEntity {
   private Category category;
   private String description;
   private java.sql.Date Date;
+  private int discountedPrice;
+  private String discountDescription;
+  private float avarageRating;
+
+    public float getAvarageRating() {
+        return avarageRating;
+    }
+
+    public void setAvarageRating(float avarageRating) {
+        this.avarageRating = avarageRating;
+    }
+
+    public String getDiscountDescription() {
+        return discountDescription;
+    }
+
+    public void setDiscountDescription(String discountDescription) {
+        this.discountDescription = discountDescription;
+    }
+
+    public int getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public void setDiscountedPrice(int discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
 
     public Date getDate() {
         return Date;

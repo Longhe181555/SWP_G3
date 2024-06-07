@@ -28,11 +28,19 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
         ProductDBContext pdb = new ProductDBContext();
+        BrandDBContext bdb = new BrandDBContext();
         
         // Get sorting and filtering parameters from request
         String sort = request.getParameter("sort");
         String filter = request.getParameter("filter");
         String orderby = request.getParameter("orderbydate");
+        ArrayList<Product> newProduct = pdb.orderByDate();
+        request.setAttribute("newProduct", newProduct);
+        ArrayList<Product> discountedProduct = pdb.getDiscountedProducts();
+        ArrayList<Brand> brands = bdb.list();
+        request.setAttribute("brands", brands);
+        
+        request.setAttribute("discountedProduct", discountedProduct);
         
         ArrayList<ArrayList<Product>> productpage = pdb.listPage(sort, filter,orderby); 
         request.setAttribute("productpaged", productpage); 

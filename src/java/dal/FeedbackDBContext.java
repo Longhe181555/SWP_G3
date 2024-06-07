@@ -63,7 +63,7 @@ public class FeedbackDBContext extends DBContext<IEntity> {
                 Feedback f = new Feedback();
                 Account a = new Account();
                 a.setAid(rs.getInt("aid"));
-                a.setLoginname(rs.getString("loginname"));
+                a.setFullname(rs.getString("loginname"));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";
