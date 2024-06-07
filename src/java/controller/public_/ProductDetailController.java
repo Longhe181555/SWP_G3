@@ -5,7 +5,9 @@
 
 package controller.public_;
 
+import dal.FeedbackDBContext;
 import dal.ProductDBContext;
+import entity.Feedback;
 import entity.Product;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 /**
  *
@@ -40,7 +43,7 @@ public class ProductDetailController extends HttpServlet {
 
    
     private ProductDBContext productDB = new ProductDBContext();
-
+    private FeedbackDBContext feedbackDB = new FeedbackDBContext();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pidStr = request.getParameter("pid");
         if (pidStr != null) {
@@ -48,6 +51,10 @@ public class ProductDetailController extends HttpServlet {
                 int pid = Integer.parseInt(pidStr);
                 Product product = productDB.get(pid);
                 request.setAttribute("product", product);
+                ArrayList<Feedback> fs = feedbackDB.getByPid(pid);
+                float temp = feedbackDB.getAverageRatingByPid(pid);
+                request.setAttribute("avr", temp);
+                request.setAttribute("fs", fs);
                 request.getRequestDispatcher("public/productdetail.jsp").forward(request, response);
             } catch (NumberFormatException e) {
                 // handle error

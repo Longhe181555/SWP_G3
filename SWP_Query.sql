@@ -1,4 +1,4 @@
--- Check if the database exists
+﻿-- Check if the database exists
 IF DB_ID('SWP_G3') IS NULL
 BEGIN
     -- Create the database if it does not exist
@@ -55,6 +55,7 @@ CREATE TABLE Category(
 CREATE TABLE Brand(
    bid INT IDENTITY(0,1) PRIMARY KEY,
    bname varchar(100) NOT NULL,
+   img varchar(100)
 )
 CREATE TABLE Color(
    cid INT IDENTITY(0,1) PRIMARY KEY,
@@ -93,7 +94,7 @@ CREATE TABLE ProductItem(
 
 CREATE TABLE Account(
 aid INT IDENTITY(0,1) PRIMARY KEY,
-loginname varchar(50) not null,
+fullname varchar(50) not null,
 username varchar(MAX) not null,
 password varchar(max) not null,
 salt varchar(max),
@@ -115,18 +116,6 @@ CREATE TABLE Payment(
  aid int FOREIGN KEY (aid) REFERENCES Account(aid)
 )
 
-
-CREATE TABLE Cart(
-   cartid INT IDENTITY(0,1) PRIMARY KEY,
-   amount int not null,
-   totalprice int,
-   aid int FOREIGN KEY (aid) REFERENCES Account(aid),
-   piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
-   stockstatus bit
-)
-
--- vi cart se luu lai cho nguoi co account the nen can aid
--- chac la giu color o day
 
 
 CREATE TABLE [Order](
@@ -158,7 +147,7 @@ CREATE TABLE Feedback(
  fid INT IDENTITY(0,1) PRIMARY KEY,
  aid int FOREIGN KEY (aid) REFERENCES Account(aid),
  comment varchar(MAX),
- rating int,
+ rating float,
  pid int FOREIGN KEY (pid) REFERENCES Product(pid),
  date DATE
 )
@@ -166,17 +155,55 @@ CREATE TABLE Feedback(
 -- feed back co the de aid ko co reference key de them kha nang de anonymous comment
 
 
-CREATE TABLE ConnectionStatus(
-Connection bit
+CREATE TABLE DiscountType(
+ dtid INT IDENTITY(0,1) PRIMARY KEY,
+ type varchar(100),
 )
-insert into ConnectionStatus values(1);
 
-insert into Account(loginname,username,password,role,salt) values
+CREATE TABLE Discount (
+    did INT IDENTITY(1,1) PRIMARY KEY,
+    dtid INT,
+    piid INT,
+    value DECIMAL(10, 2),
+    [from] DATE,
+    [to] DATE,
+    FOREIGN KEY (dtid) REFERENCES DiscountType(dtid),
+    FOREIGN KEY (piid) REFERENCES ProductItem(piid)
+);
+
+CREATE TABLE Cart(
+   cartid INT IDENTITY(0,1) PRIMARY KEY,
+   amount int not null,
+   totalprice int,
+   aid int FOREIGN KEY (aid) REFERENCES Account(aid),
+   piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
+   stockstatus bit,
+   did int FOREIGN KEY(did) REFERENCES Discount(did)
+)
+
+-- vi cart se luu lai cho nguoi co account the nen can aid
+-- chac la giu color o day
+
+
+insert into Account(fullname,username,password,role,salt) values
 ('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('minhtnhe180070', 'minhtnhe180070','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('duyddhe173473', 'duyddhe173473','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('binhthhe151011', 'binhthhe151011','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('danglhhe161145', 'danglhhe161145','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==')
+('minhtnhe180070', 'minhtnhe180070','5DExJq2Tg429tJe+49JlKW3K656T8hongRAx4eK7JTEibToltE6Zzlafl1WJ/3OvHFJvbNX/V+oKYw3jgrFVyw==','admin','w51cFkFMQFSsjyT2YThmPw=='),
+('duyddhe173473', 'duyddhe173473','dOuNAbJRoxe4bDhXeiiiHzQVtebLrCxvybKfgHeLL1EI6K9uwUc700f2xzykx4sp7d96ZxpavpQj6RvqV09XEA==','admin','5yQ0jZsmtsEUHQR8CVgCrg=='),
+('binhthhe151011', 'binhthhe151011','rGEutTob/BSpz5YtqXyXBJsaepDh9SRF8EfI4SlQ+eadPiHRst/GITju5ydMfaUKMsiAw6QXpu8UogMykIkKWQ==','admin','qnvXvpwbsWdgDtKmf69sag=='),
+('danglhhe161145', 'danglhhe161145','46l9N+161aQAD2LY1SkNsLOj5Uus6oqnYHTPO9Ab8fZDACb8YZf5473sl1cH3Mpm3kXOEDT/8rC6hi6itOxTFw==','admin','AoaQBLzOP+YBa7Zgqo0BkQ==')
+
+INSERT INTO Account(fullname, username, password, role, salt) VALUES 
+('nguyenvana', 'nguyenvana', 'Qp3BYQ18K/26dzuMGF0u+/JLtKVriQ4tcevm5dhtJNOzQqgiEPfhSRFRGZIf3XdKEgAOKJMa0ICOoc0fIhH/0A==', 'customer', '8siFHy6/+GPfGcGQyE71DA=='),
+('tranthib', 'tranthib', 'EZ00+9qKTXyNfomW/8zCj/XdPh3TEIDnX+TSc1GRX0GHvYQlO8xwHF6unSIZuXVBxHaOgHkca2rThTF5j0LSMg==', 'customer', 'KAvxAu9ro0z+inKPCwD9jg=='),
+('phamvand', 'phamvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw=='),
+('lethiec', 'lethiec', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
+('hoangminhf', 'hoangminhf', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw=='),
+('nguyenthuh', 'nguyenthuh', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
+('doanvand', 'doanvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
+('dangthil', 'dangthil', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
+('buiquynhm', 'buiquynhm', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
+('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==');
+
 
 
 insert into Color(cname) values('placeholder')
@@ -192,18 +219,25 @@ insert into ProductImg(pid,imgpath) values(0,'img/product_picture/placeholder.pn
 -----------------------------------------------------------------------------------------------------------------------------------
 --Insert 
 
+
+
+INSERT INTO DiscountType (type) VALUES ('percentage');
+INSERT INTO DiscountType (type) VALUES ('fixedAmount');
+
+
+
 INSERT INTO Category(catname,cattype) values
 --('','shirt'),      ('','pant'),
-('T-shirt','shirt'),
-('short','pant'),
-('jean','pant'),
-('somi','shirt'),
-('polo','shirt')
+('T-shirt','shirt'),  --1
+('short','pant'),   --2
+('jean','pant'),   --3
+('somi','shirt'), --4
+('polo','shirt')  --5
 
 
 
-INSERT INTO Brand(bname) VALUES
-('uniqlo'),('somi omen')
+INSERT INTO Brand(bname,img) VALUES
+('uniqlo','img/other_picture/uniqlo.png'),('somi omen','img/other_picture/somi-omen.png'),('nike','img/other_picture/nike.png'),('adidas','img/other_picture/adidas.png')--,('gucci','img/other/gucci.png'),('chanel','img/other/chanel.png')
 
 INSERT INTO Color(cname) VALUES
 ('white'),('black'),('gray'),('blue'),('pink'),('yellow'),('green'),('red')
@@ -223,37 +257,47 @@ INSERT INTO Product(pname,price,catid,bid,islisted,description,Date) VALUES
 --('', 0,0,0,1)
 
 --Shirt insert uniqlo
-('AIRism Cotton Half Sleeve Oversized T-Shirt', 391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-1),
-('AIRism Cotton Striped Crew Neck Oversized T-Shirt',391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-2),
-('Crew Neck Short Sleeve T-Shirt',293000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-3),
-('Supima Cotton Crew Neck Short Sleeve T-Shirt',191000,1,1,1,'- Smooth, premium 100% SUPIMA� cotton. Basic design styles on its own or in layered looks. Designed with meticulous attention to detail, down to the collar width and stitching.',GETDATE()-5),
+('AIRism Cotton Half Sleeve Oversized T-Shirt', 391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-6),
+('AIRism Cotton Striped Crew Neck Oversized T-Shirt',391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-9),
+('Crew Neck Short Sleeve T-Shirt',293000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-8),
+('Supima Cotton Crew Neck Short Sleeve T-Shirt',191000,1,1,1,'- Smooth, premium 100% SUPIMA® cotton. Basic design styles on its own or in layered looks. Designed with meticulous attention to detail, down to the collar width and stitching.',GETDATE()-7),
 --Shirt insert somi omen
-('Somi Cotton Linen Cat-style 1',250000,4,2,1,'Cute cat-stack textures',GETDATE()-4),
+('Somi Cotton Linen Cat-style 1',250000,4,2,1,'Cute cat-stack textures',GETDATE()-6),
 ('Somi Cotton Linen Cat-style 2',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-6),
 ('Somi Cotton Linen Cat-style 3',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-10),
 ('Somi Cotton Linen Cat-style 4',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-10),
 ('Somi Cotton Linen Cat-style 5',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-8),
 
 --Short Pant insert uniqlo
-('Stretch Slim Fit Shorts',588000,2,1,1,'Stretch twill cotton fabric with a soft texture and an elegant look. Slim fit with minimal stitching. Comfortable elasticated waist',GETDATE()),
-('Chino Shorts',588000,2,1,1,'Newly updated with light fabric for an airy feel. Long, roomy cut creates a relaxed look. We�ve adjusted the fit and length for easier pairing with oversized tops. These chino shorts are a casual wardrobe essential.',GETDATE()-5),
-('Parachute Cargo Shorts',391000,2,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-4),
-('Geared Shorts',291000,2,1,1,'Nylon ripstop material with a water-repellent finish. The finish is not permanent. Convenient side pocket with slide fastener. Utility design includes an easy buckle belt and pockets with high storage capacity. Perfect for everyday wear or the great outdoors.',GETDATE()),
-('Linen Blend Shorts',199000,2,1,1,'Premium twill weave material combines the benefits of linen and cotton. The distinctive texture of linen, blended with cotton for a soft touch. Gathered elastic waist for comfort.',GETDATE()-1),
+('Stretch Slim Fit Shorts',588000,2,1,1,'Stretch twill cotton fabric with a soft texture and an elegant look. Slim fit with minimal stitching. Comfortable elasticated waist',GETDATE()-6),
+('Chino Shorts',588000,2,1,1,'Newly updated with light fabric for an airy feel. Long, roomy cut creates a relaxed look. We’ve adjusted the fit and length for easier pairing with oversized tops. These chino shorts are a casual wardrobe essential.',GETDATE()-6),
+('Parachute Cargo Shorts',391000,2,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-7),
+('Geared Shorts',291000,2,1,1,'Nylon ripstop material with a water-repellent finish. The finish is not permanent. Convenient side pocket with slide fastener. Utility design includes an easy buckle belt and pockets with high storage capacity. Perfect for everyday wear or the great outdoors.',GETDATE()-9),
+('Linen Blend Shorts',199000,2,1,1,'Premium twill weave material combines the benefits of linen and cotton. The distinctive texture of linen, blended with cotton for a soft touch. Gathered elastic waist for comfort.',GETDATE()-10),
 
 --Jean Pant insert uniqlo
-('Relaxed Ankle Jeans',980000,3,1,1,'Exceptionally soft fabric ensures a comfortable fit. Made with soft twist and double-ply threads for added durability. Soft yet shape-retaining fabric prevents bagginess at the knees. Wide fit with roomy cut at the thighs.',GETDATE()-2),
-('Ultra Stretch Color Jeans',784000,3,1,1,'Ultra stretch satin fabric. Comfortable skinny fit. - Finer yarns create an elegant, glossy brushed texture. Comfortable yet sleek elastic waist design. Drawstring waist means they can be worn without a belt.',GETDATE()-1),
-('Slim Fit Jeans',489000,3,1,1,'Stretch denim combines an authentic denim look with a soft feel. Versatile sleek slim fit. Washed using a water-saving process developed at our Jeans Innovation Center and treated with an innovative laser process to create an authentic worn-in look.',GETDATE()-12)
+('Relaxed Ankle Jeans',980000,3,1,1,'Exceptionally soft fabric ensures a comfortable fit. Made with soft twist and double-ply threads for added durability. Soft yet shape-retaining fabric prevents bagginess at the knees. Wide fit with roomy cut at the thighs.',GETDATE()-6),
+('Ultra Stretch Color Jeans',784000,3,1,1,'Ultra stretch satin fabric. Comfortable skinny fit. - Finer yarns create an elegant, glossy brushed texture. Comfortable yet sleek elastic waist design. Drawstring waist means they can be worn without a belt.',GETDATE()-7),
+('Slim Fit Jeans',489000,3,1,1,'Stretch denim combines an authentic denim look with a soft feel. Versatile sleek slim fit. Washed using a water-saving process developed at our Jeans Innovation Center and treated with an innovative laser process to create an authentic worn-in look.',GETDATE()-12),
 
+-- nike stuff
+('Zion Men T-Shirt',919000,1,3,1,'Made from midweight cotton that feels soft and has a slight drape, this classic tee is a comfortable way to show off your admiration for Zion.',GETDATE()-6),
+('Nike Sportswear Men Max90 T-Shirt',1279000,1,3,1,'Throwback hoops style meets soft-cotton comfort in this roomy tee. Dropped shoulders and a loose fit through the body give our Max90 tee a relaxed and casual look, while soft, midweight cotton fabric has you feeling like an all-star.',GETDATE()-6),
+('Men Dri-FIT 13cm (approx.) Unlined Versatile Shorts',1019000,2,3,1,'Designed for running, training and yoga, the versatile Form shorts are built to handle those days when you need to shake up your exercise routine.',GETDATE()-10),
 
-
-
-
+--adidas stuff   --('',0,0,4,0,'',GETDATE()-3)
+('SPORTSWEAR UNDENIABLE TEE',950000,1,4,1,'Dotted with sneakers, this adidas t-shirt is versatile yet playful. Made from cotton single jersey, it feels comfortable against your torso, and the classic crewneck cut is always a winner. A great option for weekends, this tee will get plenty of wear just like your favourite adidas kicks.',GETDATE()-1),
+('ESSENTIALS SINGLE JERSEY LINEAR EMBROIDERED LOGO TEE',550000,1,4,1,'Made from soft cotton jersey, it feels great against your skin. Our cotton products support more sustainable cotton farming',GETDATE()),
+('MANCHESTER UNITED TIRO 24 POLO SHIRT',300000,5,4,1,'This adidas polo shirt is made from soft cotton-blend fabric that keeps you feeling comfortable during your downtime. An embroidered club badge on the chest displays your football fandom so you can proudly show your support wherever life leads.',GETDATE()),
+('PREMIUM POLO SHIRT',499000,5,4,1,'Woven with lightweight jacquard, it keeps you cool and comfortable while subtly signalling your connection to adidas heritage. Signature details like the embroidered Trefoil on the chest and iconic 3-Stripes down the sleeve twist a sporty look into an everyday essential. ',GETDATE())
 INSERT INTO ProductImg(pid,imgpath) VALUES
 --(,'img/product_picture/'),
 (1,'img/product_picture/alrism-cotton-half-sleeve-0.avif'),
+(1,'img/product_picture/alrism-cotton-half-sleeve-1.avif'),
+(1,'img/product_picture/alrism-cotton-half-sleeve-2.avif'),
 (2,'img/product_picture/alrism-cotton-striped-crew-neck-0.avif'),
+(2,'img/product_picture/alrism-cotton-striped-crew-neck-1.avif'),
+(2,'img/product_picture/alrism-cotton-striped-crew-neck-2.avif'),
 (3,'img/product_picture/crew-neck-short-sleeve-0.avif'),
 (4,'img/product_picture/supima-cotton-crew-neck-0.avif'),
 
@@ -272,4 +316,248 @@ INSERT INTO ProductImg(pid,imgpath) VALUES
 
 (15,'img/product_picture/relaxed-ankle-jeans-0.avif'),
 (16,'img/product_picture/ultra-stretch-color-jeans-0.avif'),
-(17,'img/product_picture/slim-fit-jeans-0.avif')
+(17,'img/product_picture/slim-fit-jeans-0.avif'),
+
+(18,'img/product_picture/zion-t-shirt-0.png'),
+(18,'img/product_picture/zion-t-shirt-1.png'),
+(18,'img/product_picture/zion-t-shirt-2.png'),
+
+(19,'img/product_picture/sportswear-max90-t-shirt-0.png'),
+(19,'img/product_picture/sportswear-max90-t-shirt-1.png'),
+(19,'img/product_picture/sportswear-max90-t-shirt-2.png'),
+
+(20,'img/product_picture/form-dri-fit-13cm-unlined-versatile-shorts-0.png'),
+(20,'img/product_picture/form-dri-fit-13cm-unlined-versatile-shorts-1.png'),
+(20,'img/product_picture/form-dri-fit-13cm-unlined-versatile-shorts-2.png'),
+
+(21,'img/product_picture/Sportswear_Undeniable_Tee_Black_0.avif'),
+(21,'img/product_picture/Sportswear_Undeniable_Tee_Black_1.avif'),
+(21,'img/product_picture/Sportswear_Undeniable_Tee_Black_2.avif'),
+
+(22,'img/product_picture/Essentials_Single_Jersey_Linear_Embroidered_Logo_Tee_White_0.png'),
+(22,'img/product_picture/Essentials_Single_Jersey_Linear_Embroidered_Logo_Tee_White_1.png'),
+(22,'img/product_picture/Essentials_Single_Jersey_Linear_Embroidered_Logo_Tee_White_2.png'),
+
+(23,'img/product_picture/Manchester_United_Tiro_24_Polo_Shirt_Blue_0.png'),
+(23,'img/product_picture/Manchester_United_Tiro_24_Polo_Shirt_Blue_1.png'),
+(23,'img/product_picture/Manchester_United_Tiro_24_Polo_Shirt_Blue_2.png'),
+
+(24,'img/product_picture/Premium_Polo_Shirt_Blue_0.png'),
+(24,'img/product_picture/Premium_Polo_Shirt_Blue_1.png'),
+(24,'img/product_picture/Premium_Polo_Shirt_Blue_2.png')
+
+-- User 1 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(5, 'Great product!', 5.0, 1, DATEADD(day, -1, GETDATE())),
+(5, 'Very comfortable.', 4.5, 2, DATEADD(day, -2, GETDATE())),
+(5, 'Good value for money.', 4.0, 3, DATEADD(day, -3, GETDATE())),
+(5, 'Nice quality.', 3.5, 4, DATEADD(day, -4, GETDATE())),
+(5, 'Very stylish.', 4.5, 5, DATEADD(day, -5, GETDATE()));
+
+-- User 2 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(6, 'Highly recommended.', 5.0, 1, DATEADD(day, -1, GETDATE())),
+(6, 'Perfect fit.', 4.0, 2, DATEADD(day, -2, GETDATE())),
+(6, 'Would buy again.', 3.5, 3, DATEADD(day, -3, GETDATE())),
+(6, 'Exceeded expectations.', 4.5, 4, DATEADD(day, -4, GETDATE())),
+(6, 'Very satisfied.', 5.0, 5, DATEADD(day, -5, GETDATE()));
+
+-- User 3 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(7, 'Excellent quality.', 5.0, 1, DATEADD(day, -1, GETDATE())),
+(7, 'Good product.', 4.0, 2, DATEADD(day, -2, GETDATE())),
+(7, 'Very durable.', 3.5, 3, DATEADD(day, -3, GETDATE())),
+(7, 'Love it!', 4.5, 4, DATEADD(day, -4, GETDATE())),
+(7, 'Good material.', 4.0, 5, DATEADD(day, -5, GETDATE()));
+
+-- User 4 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(8, 'Awesome!', 5.0, 1, DATEADD(day, -1, GETDATE())),
+(8, 'Very good.', 4.0, 2, DATEADD(day, -2, GETDATE())),
+(8, 'Nice design.', 3.5, 3, DATEADD(day, -3, GETDATE())),
+(8, 'Well-made.', 4.5, 4, DATEADD(day, -4, GETDATE())),
+(8, 'Happy with purchase.', 5.0, 5, DATEADD(day, -5, GETDATE()));
+
+-- User 5 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(9, 'Amazing quality!', 5.0, 6, DATEADD(day, -1, GETDATE())),
+(9, 'Very pleased.', 4.5, 7, DATEADD(day, -2, GETDATE())),
+(9, 'Worth the price.', 4.0, 8, DATEADD(day, -3, GETDATE())),
+(9, 'Great fabric.', 3.5, 9, DATEADD(day, -4, GETDATE())),
+(9, 'Love this item.', 4.5, 10, DATEADD(day, -5, GETDATE())),
+(9, 'Great gift.', 4.5, 18, DATEADD(day, -5, GETDATE()))
+
+-- User 6 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(10, 'Good product.', 5.0, 11, DATEADD(day, -1, GETDATE())),
+(10, 'Highly recommend.', 4.0, 12, DATEADD(day, -2, GETDATE())),
+(10, 'Well worth it.', 3.5, 13, DATEADD(day, -3, GETDATE())),
+(10, 'Excellent fit.', 4.5, 14, DATEADD(day, -4, GETDATE())),
+(10, 'Very happy.', 5.0, 15, DATEADD(day, -5, GETDATE())),
+(10, 'Amzing material.', 4, 18, DATEADD(day, -5, GETDATE()))
+
+-- User 7 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(11, 'Superb quality.', 5.0, 16, DATEADD(day, -1, GETDATE())),
+(11, 'Very comfortable.', 4.0, 17, DATEADD(day, -2, GETDATE())),
+(11, 'Nice item.', 3.5, 1, DATEADD(day, -3, GETDATE())),
+(11, 'Happy purchase.', 4.5, 2, DATEADD(day, -4, GETDATE())),
+(11, 'Good value.', 4.0, 3, DATEADD(day, -5, GETDATE())),
+(11, 'Liked the design.', 4, 18, DATEADD(day, -5, GETDATE()))
+
+-- User 8 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(12, 'Quality product.', 5.0, 4, DATEADD(day, -1, GETDATE())),
+(12, 'Perfect fit.', 4.0, 5, DATEADD(day, -2, GETDATE())),
+(12, 'Stylish.', 3.5, 6, DATEADD(day, -3, GETDATE())),
+(12, 'Well made.', 4.5, 7, DATEADD(day, -4, GETDATE())),
+(12, 'Very nice.', 4.0, 8, DATEADD(day, -5, GETDATE()))
+
+-- User 9 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(13, 'Great buy.', 5.0, 9, DATEADD(day, -1, GETDATE())),
+(13, 'Satisfied.', 4.5, 10, DATEADD(day, -2, GETDATE())),
+(13, 'Good material.', 4.0, 11, DATEADD(day, -3, GETDATE())),
+(13, 'Very good.', 3.5, 12, DATEADD(day, -4, GETDATE())),
+(13, 'Nice quality.', 4.5, 13, DATEADD(day, -5, GETDATE()))
+
+-- User 10 feedback
+INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES 
+(14, 'Excellent!', 5.0, 14, DATEADD(day, -1, GETDATE())),
+(14, 'Highly recommend.', 4.0, 15, DATEADD(day, -2, GETDATE())),
+(14, 'Love it.', 3.5, 16, DATEADD(day, -3, GETDATE())),
+(14, 'Very pleased.', 4.5, 17, DATEADD(day, -4, GETDATE())),
+(14, 'Great quality.', 4.0, 1, DATEADD(day, -5, GETDATE())),
+
+(5, 'Love it <3.', 4.5, 19, DATEADD(day, -3, GETDATE())),
+(6, 'Amazing.', 5, 19, DATEADD(day, -4, GETDATE())),
+(9, 'Saved up just for this.', 4.5, 19, DATEADD(day, -2, GETDATE())),
+(13, 'Very cool design but slow shipping.', 4, 19, DATEADD(day, -1, GETDATE())),
+(6, 'Hate the feel.', 3, 20, DATEADD(day, -1, GETDATE())),
+(7, 'So expensive, not worth it.', 3.5, 20, DATEADD(day, -4, GETDATE())),
+(8, 'Good design, but bad material.', 4, 20, DATEADD(day, -3, GETDATE())),
+(10, 'Love it!.', 5, 20, DATEADD(day, -5, GETDATE())),
+(10, 'Amazing.', 4, 21, DATEADD(day, -4, GETDATE())),
+(8, 'Well made.', 4.5, 21, DATEADD(day, -3, GETDATE())),
+(6, 'Stylish.', 3.5, 21, DATEADD(day, -4, GETDATE())),
+(14, 'Great quality.', 5, 21, DATEADD(day, -1, GETDATE()))
+
+
+
+
+INSERT INTO ProductItem (pid, cid, sid,stockcount) VALUES
+(1, 1, 1,30),
+(1, 2, 2,30),
+(1, 3, 3,30),
+(1, 4, 4,30), 
+(2, 1, 1,30),
+(2, 2, 2,30), 
+(2, 3, 3,30), 
+(2, 4, 4,30),
+(3, 1, 1,30), 
+(3, 2, 2,30), 
+(3, 3, 3,30), 
+(3, 4, 4,30), 
+(4, 1, 1,30), 
+(4, 2, 2,30), 
+(4, 3, 3,30), 
+(4, 4, 4,30),
+(10, 1, 1,30),
+(10, 2, 2,30),
+(10, 3, 3,30),
+(10, 4, 4,30), 
+(11, 1, 1,30),
+(11, 2, 2,30), 
+(11, 3, 3,30), 
+(11, 4, 4,30),
+(12, 1, 1,30), 
+(12, 2, 2,30), 
+(12, 3, 3,30), 
+(12, 4, 4,30), 
+(13, 1, 1,30), 
+(13, 2, 2,30), 
+(13, 3, 3,30), 
+(13, 4, 4,30),
+(5, 1, 1,50),
+(5, 1, 2,50),
+(5, 1, 3,50),
+(5, 1, 4,50),
+(6,6,1,50),
+(6,6,2,50),
+(6,6,3,50),
+(6,6,4,50),
+(8,2,1,50),
+(8,2,2,50),
+(8,2,3,50),
+(8,2,4,50),
+(19,2,1,100),
+(19,2,2,100),
+(19,2,3,100),
+(3,1,1,40)
+--Select * from ProductItem
+--Select * from Product
+--Select * from Color
+INSERT INTO Discount (dtid, piid, value, [from], [to])
+VALUES 
+(0, 0, 20,DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 1, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 2, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 3, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 4, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,32,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,33,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,37,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,38,20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,40,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,41,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,46,15, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,45,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0,47,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
+
+
+
+/*SELECT  
+       p.pid,
+       p.pname, 
+       p.price, 
+       MIN(CASE 
+              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) 
+              WHEN dt.type = 'fixedAmount' THEN p.price - d.value 
+              ELSE p.price 
+           END) AS discountedPrice, 
+       CASE 
+           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') 
+           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') 
+           ELSE NULL 
+       END AS discountDescription, 
+       AVG(f.rating) AS avgRating, 
+       p.description, 
+       p.Date, 
+       p.catid, 
+       c.catname, 
+       c.cattype, 
+       p.bid, 
+       b.bname 
+FROM Product p 
+LEFT JOIN ProductItem pi ON p.pid = pi.pid 
+LEFT JOIN Discount d ON pi.piid = d.piid 
+LEFT JOIN DiscountType dt ON d.dtid = dt.dtid 
+LEFT JOIN Feedback f ON p.pid = f.pid 
+JOIN Category c ON p.catid = c.catid 
+JOIN Brand b ON p.bid = b.bid 
+WHERE p.pid != 0
+  AND (GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)
+  and d.did is not null
+GROUP BY p.pid, 
+         p.pname, 
+         p.price, 
+         p.description, 
+         p.Date, 
+         p.catid, 
+         c.catname, 
+         c.cattype, 
+         p.bid, 
+         b.bname;
+
+		 */
+

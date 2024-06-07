@@ -16,11 +16,12 @@ public class BrandDBContext extends DBContext {
     public ArrayList<Brand> list() {
         ArrayList<Brand> brands = new ArrayList<>();
         try {
-            String sql = "SELECT bid,bname FROM Brand";
+            String sql = "SELECT bid,bname,img FROM Brand WHERE bid != 0";
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
                 Brand brand = new Brand();
+                brand.setImg(rs.getString("img"));
                 brand.setBid(rs.getInt("bid"));
                 brand.setBname(rs.getString("bname"));
                 brands.add(brand);

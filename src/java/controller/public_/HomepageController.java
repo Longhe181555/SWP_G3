@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import util.ProductSortHelper;
 
 
 @WebServlet(name="HomepageController")
@@ -28,15 +29,16 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
         ProductDBContext pdb = new ProductDBContext();
-        
-        // Get sorting and filtering parameters from request
-        String sort = request.getParameter("sort");
-        String filter = request.getParameter("filter");
-        String orderby = request.getParameter("orderbydate");
-        
-        ArrayList<ArrayList<Product>> productpage = pdb.listPage(sort, filter,orderby); 
-        request.setAttribute("productpaged", productpage); 
-        request.setAttribute("activePage", activePage);
+        BrandDBContext bdb = new BrandDBContext();
+        ProductSortHelper ps = new ProductSortHelper();
+        ArrayList<Product> newProduct =  pdb.orderByDate();
+        request.setAttribute("newProduct", newProduct);
+        ArrayList<Product> discountedProduct = pdb.getDiscountedProducts();
+        ArrayList<Product> highRatingProducts = ps.getFirstSixElements(ps.sortByRatingDescending(pdb.list()));
+        request.setAttribute("highRatingProducts", highRatingProducts);
+        ArrayList<Brand> brands = bdb.list();
+        request.setAttribute("brands", brands);   
+        request.setAttribute("discountedProduct", discountedProduct);
         request.getRequestDispatcher("/public/homepage.jsp").forward(request, response); 
     }
 }
