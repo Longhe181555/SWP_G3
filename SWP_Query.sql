@@ -229,15 +229,15 @@ INSERT INTO DiscountType (type) VALUES ('fixedAmount');
 INSERT INTO Category(catname,cattype) values
 --('','shirt'),      ('','pant'),
 ('T-shirt','shirt'),  --1
-('short','pant'),   --2
-('jean','pant'),   --3
-('somi','shirt'), --4
-('polo','shirt')  --5
+('Short','pant'),   --2
+('Jean','pant'),   --3
+('Somi','shirt'), --4
+('Polo','shirt')  --5
 
 
 
 INSERT INTO Brand(bname,img) VALUES
-('uniqlo','img/other_picture/uniqlo.png'),('somi omen','img/other_picture/somi-omen.png'),('nike','img/other_picture/nike.png'),('adidas','img/other_picture/adidas.png')--,('gucci','img/other/gucci.png'),('chanel','img/other/chanel.png')
+('Uniqlo','img/other_picture/uniqlo.png'),('Somi omen','img/other_picture/somi-omen.png'),('Nike','img/other_picture/nike.png'),('Adidas','img/other_picture/adidas.png')--,('gucci','img/other/gucci.png'),('chanel','img/other/chanel.png')
 
 INSERT INTO Color(cname) VALUES
 ('white'),('black'),('gray'),('blue'),('pink'),('yellow'),('green'),('red')
