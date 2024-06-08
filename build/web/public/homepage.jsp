@@ -142,13 +142,13 @@
             <div id="bannerCarousel" class="carousel slide mx-auto" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <a href="productitem">
-                            <img src="${pageContext.request.contextPath}/img/other_picture/Banner1.png" class="d-block w-100" alt="Banner Image 1">
+                        <a href="productlist">
+                            <img src="${pageContext.request.contextPath}/img/other_picture/Banner1.png" class="d-block w-100" alt="Banner Image 1" style="max-height: 350px">
                         </a>
                     </div>
                     <div class="carousel-item">
-                        <a href="url2">
-                            <img src="${pageContext.request.contextPath}/img/other_picture/banner2.png" class="d-block w-100" alt="Banner Image 2">
+                        <a href="productlist?order=dateDesc">
+                            <img src="${pageContext.request.contextPath}/img/other_picture/banner2.png" class="d-block w-100" alt="Banner Image 2" style="max-height: 350px">
                         </a>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
                     <h2>NEWLY ADDED</h2>
                 </div>
                 <div class="col-6 text-end">
-                    <a href="allProducts" class="btn btn-primary">See More</a>
+                    <a href="productlist?order=dateDesc" class="btn btn-primary">See More</a>
                 </div>
             </div>
             <div class="row row-cols-6 mt-3"> <!-- Adjust the number of columns as needed -->
@@ -229,7 +229,7 @@
                     <h2>DISCOUNTED</h2>
                 </div>
                 <div class="col-6 text-end">
-                    <a href="allProducts" class="btn btn-primary">See More</a>
+                    <a href="productlist?discount=on" class="btn btn-primary">See More</a>
                 </div>
             </div>
             <div class="row mt-3 product-row">
@@ -279,7 +279,7 @@
                     <h2>Loved by all</h2>
                 </div>
                 <div class="col-6 text-end">
-                    <a href="allProducts" class="btn btn-primary">See More</a>
+                    <a href="productlist?order=ratingDesc" class="btn btn-primary">See More</a>
                 </div>
             </div>
             <div class="row row-cols-6 mt-3"> <!-- Adjust the number of columns as needed -->

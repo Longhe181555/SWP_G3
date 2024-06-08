@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 
 public class ProductSortHelper {
-     public  ArrayList<Product> sortByPriceAscending(ArrayList<Product> products) {
+     public static ArrayList<Product> sortByPriceAscending(ArrayList<Product> products) {
         ArrayList<Product> sortedProducts = new ArrayList<>(products);
         Collections.sort(sortedProducts, new Comparator<Product>() {
             @Override
@@ -24,7 +24,7 @@ public class ProductSortHelper {
     }
 
     // Function to sort products by price in descending order
-    public  ArrayList<Product> sortByPriceDescending(ArrayList<Product> products) {
+    public static ArrayList<Product> sortByPriceDescending(ArrayList<Product> products) {
         ArrayList<Product> sortedProducts = new ArrayList<>(products);
         Collections.sort(sortedProducts, new Comparator<Product>() {
             @Override
@@ -34,7 +34,7 @@ public class ProductSortHelper {
         });
         return sortedProducts;
     }
-    public  ArrayList<Product> sortByDateAscending(ArrayList<Product> products) {
+    public static ArrayList<Product> sortByDateAscending(ArrayList<Product> products) {
         ArrayList<Product> sortedProducts = new ArrayList<>(products);
         Collections.sort(sortedProducts, new Comparator<Product>() {
             @Override
@@ -46,7 +46,7 @@ public class ProductSortHelper {
     }
 
     // Function to sort products by date in descending order
-    public ArrayList<Product> sortByDateDescending(ArrayList<Product> products) {
+    public static ArrayList<Product> sortByDateDescending(ArrayList<Product> products) {
         ArrayList<Product> sortedProducts = new ArrayList<>(products);
         Collections.sort(sortedProducts, new Comparator<Product>() {
             @Override
@@ -56,7 +56,7 @@ public class ProductSortHelper {
         });
         return sortedProducts;
     }
-    public ArrayList<Product> getFirstSixElements(ArrayList<Product> products) {
+    public static ArrayList<Product> getFirstSixElements(ArrayList<Product> products) {
         if (products.size() <= 6) {
             return products;
         } else {
@@ -109,7 +109,7 @@ public class ProductSortHelper {
 }
     
     
-    public  ArrayList<Product> filterByRating(ArrayList<Product> products, float minRating) {
+    public static ArrayList<Product> filterByRating(ArrayList<Product> products, float minRating) {
         ArrayList<Product> filteredProducts = new ArrayList<>();
         
         for (Product product : products) {
@@ -119,5 +119,17 @@ public class ProductSortHelper {
         }
         
         return filteredProducts; 
+}
+    
+     public static ArrayList<Product> haveDiscount(ArrayList<Product> products) {
+    ArrayList<Product> filteredProducts = new ArrayList<>();
+
+    for (Product product : products) {
+        if (product.getDiscountDescription() != null) {
+            filteredProducts.add(product);
+        }
+    }
+
+    return filteredProducts;
 }
 }
