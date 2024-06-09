@@ -7,8 +7,10 @@ package controller.public_;
 
 import dal.FeedbackDBContext;
 import dal.ProductDBContext;
+import dal.ProductItemDBContext;
 import entity.Feedback;
 import entity.Product;
+import entity.ProductItem;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -52,6 +54,12 @@ public class ProductDetailController extends HttpServlet {
                 Product product = productDB.get(pid);
                 request.setAttribute("product", product);
                 ArrayList<Feedback> fs = feedbackDB.getByPid(pid);
+                ProductItemDBContext pidb = new ProductItemDBContext();
+                ArrayList<ProductItem> pis = pidb.getByPid(pid);
+                for(ProductItem p : pis) {
+                    System.out.println(p.getColor());
+                }
+                request.setAttribute("pis", pis);
                 float temp = feedbackDB.getAverageRatingByPid(pid);
                 request.setAttribute("avr", temp);
                 request.setAttribute("fs", fs);

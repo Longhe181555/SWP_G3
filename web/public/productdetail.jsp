@@ -9,111 +9,100 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
         <title>JSP Page</title>
         <style>
 
-            * {
-                margin: 0;
-                padding: 0;
-            }
-            .header-container{
-                padding: 10px 0px;
-                width: 100%;
-                background-color: black;
-                color: white;
-            }
-            .header-content{
-                padding-top: 5px;
-                padding-bottom: 10px;
-                text-align: center;
-                font-size: 25px;
-                font-family: "Arial", sans-serif;
-            }
-            .header-right,.header-left{
-                font-family: "Arial", sans-serif;
-                display:flex;
-                color:white;
-            }
-
-            .header-options{
-                display:flex;
-                justify-content: space-around;
-            }
-            .nav-bar {
-                background-color: #f5f5f5;
-                padding: 10px;
-                display: flex;
-                justify-content: center;
-            }
-
-            .nav-option {
-                padding: 8px 16px;
-                margin: 0 10px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-            }
-            .nav-option{
-                color:#666666;
-                font-family: "Arial", sans-serif;
-                font-weight: bold;
-            }
-            .nav-option:hover {
-                background-color: #e0e0e0;
-            }
-            .nav-option.active {
-                text-decoration: underline; /* Underline the active option */
-            }
-            .header-link:hover {
-                color: #ffcc00; /* Change to any color you like */
-                text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Adjust glow effect */
-            }
-            .header-link {
-                margin: 0 10px;
-                color: white;
-                text-decoration: none;
-                cursor: pointer;
-                transition: color 0.3s ease, text-shadow 0.3s ease;
+            .placeholder{
+                height: 64px;
             }
             .rating-stars {
                 color: gold;
             }
+            .color-boxes {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 10px;
+    }
+    .color-box {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        border: 1px solid #ddd;
+    }
+    .color-details {
+        font-size: 12px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+    .stock-count {
+        color: gray;
+    }
         </style>
     </head>
     <body>
 
-        <div class="header">
-            <div class="header-container">
-                <div class="header-options">
-                    <div class="header-left"> 
-                        <p class="header-link">Search </p>||
-                        <p class="header-link"> Order history</p>    
-                    </div>
-                    <div class="header-right">
-                        <a href="account" class="header-link">My Account</a>||  
-                        <p class="header-link"> Checkout</p>||
-                        <a href="logout" class="header-link">Logout</a>
-                    </div>
+
+
+        <div class="placeholder"></div>
+
+
+        <nav class="navbar navbar-expand-lg bg-dark text-white fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand text-white fs-2" href="homepage">MEN'S WEAR</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <form class="d-flex ms-auto" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success text-white" type="submit">Search</button>
+                    </form>
+                    <ul class="navbar-nav ms-3 me-3">
+                        <c:choose>
+                            <c:when test="${empty Account}">
+                                <li class="nav-item d-flex align-items-center">
+                                    <a class="nav-link text-white" href="account">Login/Register</a>
+                                </li>
+                            </c:when>
+                            <c:otherwise>
+                                <li class="nav-item d-flex align-items-center">
+                                    <div class="dropdown">
+                                        <a class="nav-link text-white dropdown-toggle" href="#" role="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            ${Account.fullname}
+                                            <img src="${Account.img}" alt="Profile Image" style="border-radius: 50%; width: 40px; height: 40px;">
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+                                            <li><a class="dropdown-item" href="account">Account Detail</a></li>
+                                            <li><a class="dropdown-item" href="#">Order History</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="logout">Logout</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                        <li class="nav-item d-flex align-items-center">
+                            <a class="nav-link text-white" href="#"><i class="bi bi-bell"></i></a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
+                            <a class="nav-link text-white" href="#"><i class="bi bi-bag"></i></a>
+                        </li>
+
+                    </ul>
                 </div>
             </div>
+        </nav>
 
-            <div class="header-container">
-                <div class="header-content">
-                    <p>MEN'S WEAR</p>
-                </div>
-            </div> 
-        </div>
-        <div class="nav-bar">
-            <div class="nav-option ${param.nav == 'homepage' ? 'active' : ''}" data-nav-option="homepage" onclick="goToHomepage()">HOME</div>
-<!--            <div class="nav-option ${param.nav == 'option2' ? 'active' : ''}" data-nav-option="option2">OPTION 2</div>
-            <div class="nav-option ${param.nav == 'option3' ? 'active' : ''}" data-nav-option="option3">OPTION 3</div>
-            <div class="nav-option ${param.nav == 'option4' ? 'active' : ''}" data-nav-option="option4">OPTION 4</div>
-            <div class="nav-option ${param.nav == 'option5' ? 'active' : ''}" data-nav-option="option5">OPTION 5</div>-->
-        </div>
+
 
         <div class="container product_detail mt-5">
             <h1>Product Details</h1>
+            <button onclick="goBack()" style="margin-bottom: 20px">Back</button>
             <c:if test="${not empty product}">
                 <div class="row">
                     <div class="col-md-6">
@@ -137,27 +126,34 @@
                     </div>
                     <div class="col-md-6">
                         <h2>${product.pname}</h2>
+                        <c:if test="${product.avarageRating > 0}">
+                            <p class="card-text rating-star">
+                                <c:forEach var="i" begin="1" end="5">
+                                    <c:choose>
+                                        <c:when test="${i <= product.avarageRating}">
+                                            <i class="bi bi-star-fill"></i>
+                                        </c:when>
+                                        <c:when test="${i > product.avarageRating && i - 1 < product.avarageRating}">
+                                            <i class="bi bi-star-half"></i>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <i class="bi bi-star"></i>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </p>
+                        </c:if>
                         <p class="font-weight-bold">${product.price}d</p>
+                        <div class="color-boxes">
+                            <c:forEach var="pi" items="${pis}">
+                                <div class="color-box" style="background-color: ${pi.color};"></div>
+                                <span class="color-details">${pi.color} (${pi.size}) - <span class="stock-count">${pi.stockcount}</span></span>
+                                </c:forEach>
+                        </div>                   
                         <p>${product.description}</p>
                         <p><strong>Brand:</strong> ${product.brand.bname}</p>
-                        <div class="rating-stars">
-                        <c:forEach var="i" begin="1" end="5">
-                            <c:choose>
-                                <c:when test="${i <= avr}">
-                                    <i class="fas fa-star"></i>
-                                </c:when>
-                                <c:when test="${i > avr && i - 1 < avr}">
-                                    <i class="fas fa-star-half-alt"></i>
-                                </c:when>
-                                <c:otherwise>
-                                    <i class="far fa-star"></i>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                        <span>(${avr})</span>
                     </div>
                 </div>
-                    </div>
             </c:if>
             <c:if test="${empty product}">
                 <p>Product not found.</p>
@@ -178,13 +174,13 @@
                                         <c:forEach var="i" begin="1" end="5">
                                             <c:choose>
                                                 <c:when test="${i <= feedback.rating}">
-                                                    <i class="fas fa-star"></i>
+                                                    <i class="bi bi-star-fill"></i>
                                                 </c:when>
                                                 <c:when test="${i > feedback.rating && i - 1 < feedback.rating}">
-                                                    <i class="fas fa-star-half-alt"></i>
+                                                    <i class="bi bi-star-half"></i>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <i class="far fa-star"></i>
+                                                    <i class="bi bi-star"></i>
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:forEach>
@@ -203,12 +199,13 @@
 
 
 
+
         <script>
-            function goToHomepage() {
-                window.location.href = '<%= request.getContextPath() %>/homepage';
+            // Function to navigate back to the previous page
+            function goBack() {
+                window.history.back();
             }
         </script>
-
 
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
