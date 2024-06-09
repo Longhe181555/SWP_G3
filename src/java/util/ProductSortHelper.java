@@ -6,9 +6,13 @@
 package util;
 
 import entity.Product;
+import entity.ProductItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class ProductSortHelper {
@@ -132,4 +136,9 @@ public class ProductSortHelper {
 
     return filteredProducts;
 }
+   public static Map<String, List<ProductItem>> groupBySize(List<ProductItem> pis) {
+        return pis.stream()
+                  .collect(Collectors.groupingBy(ProductItem::getSize));
+    }  
+     
 }

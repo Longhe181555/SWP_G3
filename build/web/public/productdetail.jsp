@@ -20,28 +20,24 @@
             .rating-stars {
                 color: gold;
             }
-            .color-boxes {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        margin-top: 10px;
-    }
-    .color-box {
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-        margin-bottom: 5px;
-        border: 1px solid #ddd;
-    }
-    .color-details {
-        font-size: 12px;
-        margin-right: 10px;
-        display: flex;
-        align-items: center;
-    }
-    .stock-count {
-        color: gray;
-    }
+
+            .size-dropdowns {
+                margin-top: 10px;
+            }
+            .size-group {
+                margin-bottom: 10px;
+            }
+            .color-select {
+                display: inline-block;
+                margin-left: 10px;
+                padding: 5px;
+            }
+            /* Additional CSS to ensure the background color is displayed */
+            select.color-select option {
+                color: #fff; /* Text color to ensure readability */
+                padding: 5px;
+            }
+
         </style>
     </head>
     <body>
@@ -144,12 +140,20 @@
                             </p>
                         </c:if>
                         <p class="font-weight-bold">${product.price}d</p>
-                        <div class="color-boxes">
-                            <c:forEach var="pi" items="${pis}">
-                                <div class="color-box" style="background-color: ${pi.color};"></div>
-                                <span class="color-details">${pi.color} (${pi.size}) - <span class="stock-count">${pi.stockcount}</span></span>
-                                </c:forEach>
-                        </div>                   
+                        <div class="size-dropdowns">
+                            <c:forEach var="entry" items="${groupedBySize}">
+                                <div class="size-group">
+                                    <label>${entry.key}</label>
+                                    <select class="color-select">
+                                        <c:forEach var="pi" items="${entry.value}">
+                                            <option value="${pi.color}" style="background-color: ${pi.color}; color: #000;">
+                                                ${pi.color} (${pi.stockcount})
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </c:forEach>
+                        </div>                  
                         <p>${product.description}</p>
                         <p><strong>Brand:</strong> ${product.brand.bname}</p>
                     </div>
