@@ -7,6 +7,7 @@ package controller.public_;
 import dal.FeedbackDBContext;
 import dal.ProductDBContext;
 import dal.ProductItemDBContext;
+import entity.Account;
 import entity.Feedback;
 import entity.Product;
 import entity.ProductItem;
@@ -17,6 +18,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,11 @@ public class ProductDetailController extends HttpServlet {
     private FeedbackDBContext feedbackDB = new FeedbackDBContext();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser != null) {
+            request.setAttribute("Account", currentUser);
+        }
         String pidStr = request.getParameter("pid");
         if (pidStr != null) {
             try {
@@ -66,7 +73,7 @@ public class ProductDetailController extends HttpServlet {
                 request.setAttribute("groupedBySize", groupedBySize);
                 float temp = feedbackDB.getAverageRatingByPid(pid);
                 request.setAttribute("avr", temp);
-                request.setAttribute("fs", fs);
+                request.setAttribute("fs", ph.getFirstAmountElements(fs, 3));
                 request.getRequestDispatcher("public/productdetail.jsp").forward(request, response);
             } catch (NumberFormatException e) {
                 // handle error
@@ -79,6 +86,7 @@ public class ProductDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         processRequest(request, response);
     }
 

@@ -5,6 +5,7 @@
 
 package util;
 
+import entity.Feedback;
 import entity.Product;
 import entity.ProductItem;
 import java.util.ArrayList;
@@ -65,6 +66,13 @@ public class ProductSortHelper {
             return products;
         } else {
             return new ArrayList<>(products.subList(0, 6));
+        }
+    }
+    public static ArrayList<Feedback> getFirstAmountElements(ArrayList<Feedback> feedbacks,int amount) {
+        if (feedbacks.size() <= amount) {
+            return feedbacks;
+        } else {
+            return new ArrayList<>(feedbacks.subList(0, amount));
         }
     }
      // New method to sort products by rating in ascending order

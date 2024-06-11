@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import util.ProductSortHelper;
 
@@ -26,7 +27,7 @@ public class ProductListController extends HttpServlet {
             BrandDBContext bdb = new BrandDBContext();
             ArrayList<Category> cats = catdb.list();
             ArrayList<Brand> brands = bdb.list();
-            
+
             ArrayList<Product> products = new ArrayList<>();
 
             String search = request.getParameter("search");
@@ -46,19 +47,18 @@ public class ProductListController extends HttpServlet {
             if (maxPriceParam != null && !maxPriceParam.isEmpty()) {
                 maxPrice = Integer.parseInt(maxPriceParam);
             }
-           
-            
+
             // Call the method to filter products based on parameters
             products = pdb.listFilter(search, category, brand, minPrice, maxPrice);
-            
-             if (discount != null && !discount.isEmpty()) {
-              products = ProductSortHelper.haveDiscount(products);
+
+            if (discount != null && !discount.isEmpty()) {
+                products = ProductSortHelper.haveDiscount(products);
             }
-             if (ratingParam != null && !ratingParam.isEmpty()) {
+            if (ratingParam != null && !ratingParam.isEmpty()) {
                 rating = Float.parseFloat(ratingParam);
                 products = ProductSortHelper.filterByRating(products, rating);
             }
-            
+
             String order = request.getParameter("order");
             if (order != null) {
                 switch (order) {
@@ -93,6 +93,11 @@ public class ProductListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser != null) {
+            request.setAttribute("Account", currentUser);
+        }
         processRequest(request, response);
     }
 
