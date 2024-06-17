@@ -38,7 +38,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         request.setAttribute("highRatingProducts", highRatingProducts);
         ArrayList<Brand> brands = bdb.list();
         request.setAttribute("brands", brands);   
-        request.setAttribute("discountedProduct", discountedProduct);
+        request.setAttribute("discountedProduct", ps.getFirstSixElements(discountedProduct));
         request.getRequestDispatcher("/public/homepage.jsp").forward(request, response); 
     }
 }
