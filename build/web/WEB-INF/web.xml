@@ -4,6 +4,10 @@
         <servlet-name>ProductDetailController</servlet-name>
         <servlet-class>controller.public_.ProductDetailController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateProductController</servlet-name>
+        <servlet-class>controller.public_.UpdateProductController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LogoutController</servlet-name>
         <url-pattern>/logout</url-pattern>
@@ -59,6 +63,10 @@
         <servlet-name>ProductDetailController</servlet-name>
         <url-pattern>/public/productdetail</url-pattern>
         <url-pattern>/productdetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateProductController</servlet-name>
+        <url-pattern>/updateproduct</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>public/homepage</welcome-file>

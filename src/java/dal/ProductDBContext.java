@@ -6,10 +6,12 @@ package dal;
 
 import entity.IEntity;
 import entity.*;
+import jakarta.servlet.http.Part;
 import java.sql.*;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -255,5 +257,25 @@ public class ProductDBContext extends DBContext {
         Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
     }
     return null;
+}
+     public void updateProduct(Product product, List<Part> imageParts) {
+        
+        try {
+            String updateQuery = "UPDATE Product SET pname = ?, price = ?, description = ?, bid = ? WHERE pid = ?";
+            PreparedStatement stm = connection.prepareStatement(updateQuery);
+            stm.setString(1, product.getPname());
+            stm.setDouble(2, product.getPrice());
+            stm.setString(3, product.getDescription());
+            stm.setInt(4, product.getBrand().getBid());
+            stm.setInt(5, product.getPid());
+            stm.executeUpdate();
+            
+            // Handle image upload if necessary
+            if (!imageParts.isEmpty()) {
+                // Implement your logic to save the uploaded images
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 }
 }

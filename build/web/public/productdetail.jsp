@@ -136,7 +136,10 @@
                         <p class="font-weight-bold">${product.price}d</p>
                         <p>${product.description}</p>
                         <p><strong>Brand:</strong> ${product.brand.bname}</p>
+                        
+                        <p><a href="updateproduct?pid=${product.pid}">UPDATE</a><p>
                     </div>
+                    
                 </div>
             </c:if>
             <c:if test="${empty product}">
