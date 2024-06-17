@@ -40,6 +40,7 @@ public class ProductDBContext extends DBContext {
                     + "       c.catname, \n"
                     + "       c.cattype, \n"
                     + "       p.bid, \n"
+                    + "       p.isListed, \n"
                     + "       b.bname \n"
                     + "FROM Product p \n"
                     + "LEFT JOIN ProductItem pi ON p.pid = pi.pid \n"
@@ -57,6 +58,7 @@ public class ProductDBContext extends DBContext {
                     + "         p.Date, \n"
                     + "         p.catid, \n"
                     + "         c.catname, \n"
+                    + "         p.isListed, \n"
                     + "         c.cattype, \n"
                     + "         p.bid, \n"
                     + "         b.bname\n";
@@ -72,13 +74,13 @@ public class ProductDBContext extends DBContext {
                 p.setAvarageRating(rs.getFloat("avgRating"));
                 p.setDescription(rs.getString("description"));
                 p.setDate(rs.getDate("Date"));
-
+                p.setIsListed(rs.getBoolean("isListed"));
                 Category c = new Category();
                 c.setCatid(rs.getInt("catid"));
                 c.setCatname(rs.getString("catname"));
                 c.setCattype(rs.getString("cattype"));
                 p.setCategory(c);
-
+ 
                 Brand b = new Brand();
                 b.setBid(rs.getInt("bid"));
                 b.setBname(rs.getString("bname"));
@@ -122,7 +124,7 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid "
                     + "JOIN Category c ON p.catid = c.catid "
                     + "JOIN Brand b ON p.bid = b.bid "
-                    + "WHERE p.pid != 0 ";
+                    + "WHERE p.isListed != 0 ";
 
             // Add filters based on parameters
             if (search != null && !search.isEmpty()) {
@@ -480,7 +482,7 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where p.pid != 0\n"
+                    + "Where p.isListed != 0\n"
                     + "AND d.did is not null \n"
                     + "GROUP BY p.pid, \n"
                     + "         p.pname, \n"
@@ -528,5 +530,21 @@ public class ProductDBContext extends DBContext {
         }
         return null;
     }
-    
+    public boolean updateIsListed(int pid, boolean isListed) {
+        boolean success = false;
+        try {
+            String sql = "UPDATE Product SET isListed = ? WHERE pid = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setBoolean(1, isListed);
+            ps.setInt(2, pid);
+
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                success = true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return success;
+    }
 }

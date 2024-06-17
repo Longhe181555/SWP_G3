@@ -18,7 +18,7 @@ public class Product implements IEntity {
   private Brand brand;
   private Category category;
   private String description;
-  private java.sql.Date Date;
+  private java.sql.Date date;
   private int discountedPrice;
   private String discountDescription;
   private float avarageRating;
@@ -48,11 +48,11 @@ public class Product implements IEntity {
     }
 
     public Date getDate() {
-        return Date;
+        return date;
     }
 
     public void setDate(java.sql.Date Date) {
-        this.Date = Date;
+        this.date = Date;
     }
 
     public String getDescription() {
