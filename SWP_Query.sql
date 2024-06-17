@@ -229,15 +229,15 @@ INSERT INTO DiscountType (type) VALUES ('fixedAmount');
 INSERT INTO Category(catname,cattype) values
 --('','shirt'),      ('','pant'),
 ('T-shirt','shirt'),  --1
-('short','pant'),   --2
-('jean','pant'),   --3
-('somi','shirt'), --4
-('polo','shirt')  --5
+('Short','pant'),   --2
+('Jean','pant'),   --3
+('Somi','shirt'), --4
+('Polo','shirt')  --5
 
 
 
 INSERT INTO Brand(bname,img) VALUES
-('uniqlo','img/other_picture/uniqlo.png'),('somi omen','img/other_picture/somi-omen.png'),('nike','img/other_picture/nike.png'),('adidas','img/other_picture/adidas.png')--,('gucci','img/other/gucci.png'),('chanel','img/other/chanel.png')
+('Uniqlo','img/other_picture/uniqlo.png'),('Somi omen','img/other_picture/somi-omen.png'),('Nike','img/other_picture/nike.png'),('Adidas','img/other_picture/adidas.png')--,('gucci','img/other/gucci.png'),('chanel','img/other/chanel.png')
 
 INSERT INTO Color(cname) VALUES
 ('white'),('black'),('gray'),('blue'),('pink'),('yellow'),('green'),('red')
@@ -516,48 +516,46 @@ VALUES
 
 
 
-/*SELECT  
-       p.pid,
-       p.pname, 
-       p.price, 
-       MIN(CASE 
-              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) 
-              WHEN dt.type = 'fixedAmount' THEN p.price - d.value 
-              ELSE p.price 
-           END) AS discountedPrice, 
-       CASE 
-           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') 
-           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') 
-           ELSE NULL 
-       END AS discountDescription, 
-       AVG(f.rating) AS avgRating, 
-       p.description, 
-       p.Date, 
-       p.catid, 
-       c.catname, 
-       c.cattype, 
-       p.bid, 
-       b.bname 
-FROM Product p 
-LEFT JOIN ProductItem pi ON p.pid = pi.pid 
-LEFT JOIN Discount d ON pi.piid = d.piid 
-LEFT JOIN DiscountType dt ON d.dtid = dt.dtid 
-LEFT JOIN Feedback f ON p.pid = f.pid 
-JOIN Category c ON p.catid = c.catid 
-JOIN Brand b ON p.bid = b.bid 
-WHERE p.pid != 0
-  AND (GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)
-  and d.did is not null
-GROUP BY p.pid, 
-         p.pname, 
-         p.price, 
-         p.description, 
-         p.Date, 
-         p.catid, 
-         c.catname, 
-         c.cattype, 
-         p.bid, 
-         b.bname;
-
-		 */
+                    SELECT
+                           p.pid, 
+                         p.pname, 
+                         p.price, 
+                          MIN(CASE 
+                              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) 
+                                  WHEN dt.type = 'fixedAmount' THEN p.price - d.value 
+                                  ELSE p.price 
+                               END) AS discountedPrice, 
+                           CASE 
+                               WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') 
+                               WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') 
+                               ELSE NULL 
+                           END AS discountDescription, 
+                           AVG(f.rating) AS avgRating, 
+                           p.description, 
+                           p.Date,
+                           p.catid, 
+                           c.catname, 
+                           c.cattype, 
+                           p.bid, 
+                           b.bname 
+                    FROM Product p 
+                    LEFT JOIN ProductItem pi ON p.pid = pi.pid 
+                    LEFT JOIN Discount d ON pi.piid = d.piid 
+                    LEFT JOIN DiscountType dt ON d.dtid = dt.dtid 
+                    LEFT JOIN Feedback f ON p.pid = f.pid 
+                    JOIN Category c ON p.catid = c.catid 
+                    JOIN Brand b ON p.bid = b.bid 
+                    Where p.pid = 1
+                    GROUP BY p.pid, 
+                             p.pname, 
+                             p.price, 
+                             p.description, 
+                             p.Date, 
+                             p.catid, 
+                             c.catname, 
+                             c.cattype, 
+                             p.bid, 
+                             b.bname
+                    ORDER BY [Date] DESC
+		
 

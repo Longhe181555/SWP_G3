@@ -20,7 +20,7 @@ public class ProductDBContext extends DBContext {
     public ArrayList<Product> list() {
         ArrayList<Product> products = new ArrayList<>();
         try {
-            String sql =     "SELECT  p.pid,\n"
+            String sql = "SELECT  p.pid,\n"
                     + "       p.pname, \n"
                     + "       p.price, \n"
                     + "       MIN(CASE \n"
@@ -48,7 +48,7 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where p.pid != 0\n"   
+                    + "Where p.pid != 0\n"
                     + "AND (GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)\n"
                     + "GROUP BY p.pid, \n"
                     + "         p.pname, \n"
@@ -97,14 +97,107 @@ public class ProductDBContext extends DBContext {
         return null;
     }
 
-//SELECT [pid]
-    //     ,[pname]
-    //    ,[price]
-    //   ,[catid]
-    //  ,[bid]
-    //    ,[productimg]
-    //    ,[islisted]
-    // FROM [Product]
+    public ArrayList<Product> listFilter(String search, String category, String brand, int minPrice, int maxPrice) {
+        ArrayList<Product> products = new ArrayList<>();
+        try {
+            String sql = "SELECT p.pid, p.pname, p.price, "
+                    + "MIN(CASE "
+                    + "    WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) "
+                    + "    WHEN dt.type = 'fixedAmount' THEN p.price - d.value "
+                    + "    ELSE p.price "
+                    + "END) AS discountedPrice, "
+                    + "CASE "
+                    + "    WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') "
+                    + "    WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') "
+                    + "    ELSE NULL "
+                    + "END AS discountDescription, "
+                    + "AVG(f.rating) AS avgRating, "
+                    + "p.description, p.Date, "
+                    + "p.catid, c.catname, c.cattype, "
+                    + "p.bid, b.bname "
+                    + "FROM Product p "
+                    + "LEFT JOIN ProductItem pi ON p.pid = pi.pid "
+                    + "LEFT JOIN Discount d ON pi.piid = d.piid "
+                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid "
+                    + "LEFT JOIN Feedback f ON p.pid = f.pid "
+                    + "JOIN Category c ON p.catid = c.catid "
+                    + "JOIN Brand b ON p.bid = b.bid "
+                    + "WHERE p.pid != 0 ";
+
+            // Add filters based on parameters
+            if (search != null && !search.isEmpty()) {
+                sql += "AND p.pname LIKE ? ";
+            }
+            if (category != null && !category.isEmpty()) {
+                sql += "AND p.catid = ? ";
+            }
+            if (brand != null && !brand.isEmpty()) {
+                sql += "AND p.bid = ? ";
+            }
+            if (minPrice > 0) {
+                sql += "AND p.price >= ? ";
+            }
+            if (maxPrice > 0) {
+                sql += "AND p.price <= ? ";
+            }
+            sql += "AND (GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL) "
+                    + "GROUP BY p.pid, p.pname, p.price, p.description, p.Date, p.catid, c.catname, c.cattype, p.bid, b.bname";
+
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            int index = 1;
+            // Set parameters
+            if (search != null && !search.isEmpty()) {
+                pstmt.setString(index++, "%" + search + "%");
+            }
+            if (category != null && !category.isEmpty()) {
+                pstmt.setString(index++, category);
+            }
+            if (brand != null && !brand.isEmpty()) {
+                pstmt.setString(index++, brand);
+            }
+            if (minPrice > 0) {
+                pstmt.setInt(index++, minPrice);
+            }
+            if (maxPrice > 0) {
+                pstmt.setInt(index++, maxPrice);
+            }
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                 Product p = new Product();
+                p.setPid(rs.getInt("pid"));
+                p.setPname(rs.getString("pname"));
+                p.setPrice(rs.getInt("price"));
+                p.setDiscountedPrice(rs.getInt("discountedPrice"));
+                p.setDiscountDescription(rs.getString("discountDescription"));
+                p.setAvarageRating(rs.getFloat("avgRating"));
+                p.setDescription(rs.getString("description"));
+                p.setDate(rs.getDate("Date"));
+
+                Category c = new Category();
+                c.setCatid(rs.getInt("catid"));
+                c.setCatname(rs.getString("catname"));
+                c.setCattype(rs.getString("cattype"));
+                p.setCategory(c);
+
+                Brand b = new Brand();
+                b.setBid(rs.getInt("bid"));
+                b.setBname(rs.getString("bname"));
+                p.setBrand(b);
+
+                // Fetch product images
+                ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
+                p.setProductimgs(productImages);
+
+                products.add(p);
+            }
+            return products;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+
+    }
+
     @Override
     public void insert(IEntity entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -122,48 +215,84 @@ public class ProductDBContext extends DBContext {
 
     @Override
     public Product get(int pid) {
-        Product product = null;
+        Product p = new Product();
         try {
-            String sql = "SELECT p.[pid]\n"
-                    + "      ,p.[pname]\n"
-                    + "      ,p.[price]\n"
-                    + "      ,p.[catid]\n"
-                    + "	     ,b.bname\n"
-                    + "	     ,c.catname\n"
-                    + "	     ,c.cattype\n"
-                    + "      ,p.[bid]\n"
-                    + "      ,p.[islisted]\n"
-                    + "      ,p.[description]\n"
-                    + "      ,p.[Date]\n"
-                    + "  FROM [Product] p\n"
-                    + "  join Brand b on b.bid = p.bid\n"
-                    + "  join Category c on c.catid = p.catid \n"
-                    + "  WHERE p.pid = ?";
+            String sql = "SELECT\n"
+                    + "       p.pid, \n"
+                    + "       p.pname, \n"
+                    + "       p.price, \n"
+                    + "       MIN(CASE \n"
+                    + "              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) \n"
+                    + "              WHEN dt.type = 'fixedAmount' THEN p.price - d.value \n"
+                    + "              ELSE p.price \n"
+                    + "           END) AS discountedPrice, \n"
+                    + "       CASE \n"
+                    + "           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') \n"
+                    + "           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') \n"
+                    + "           ELSE NULL \n"
+                    + "       END AS discountDescription, \n"
+                    + "       AVG(f.rating) AS avgRating, \n"
+                    + "       p.description, \n"
+                    + "       p.Date, \n"
+                    + "       p.catid, \n"
+                    + "       c.catname, \n"
+                    + "       c.cattype, \n"
+                    + "       p.bid, \n"
+                    + "       b.bname \n"
+                    + "FROM Product p \n"
+                    + "LEFT JOIN ProductItem pi ON p.pid = pi.pid \n"
+                    + "LEFT JOIN Discount d ON pi.piid = d.piid \n"
+                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid \n"
+                    + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
+                    + "JOIN Category c ON p.catid = c.catid \n"
+                    + "JOIN Brand b ON p.bid = b.bid \n"
+                    + "Where p.pid = ?\n"
+                    + "GROUP BY p.pid, \n"
+                    + "         p.pname, \n"
+                    + "         p.price, \n"
+                    + "         p.description, \n"
+                    + "         p.Date, \n"
+                    + "         p.catid, \n"
+                    + "         c.catname, \n"
+                    + "         c.cattype, \n"
+                    + "         p.bid, \n"
+                    + "         b.bname\n"
+                    + "ORDER BY [Date] DESC";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, pid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                product = new Product();
-                product.setPid(rs.getInt("pid"));
-                product.setPname(rs.getString("pname"));
-                product.setPrice(rs.getInt("price"));
-                product.setProductimgs(pdb.getByPid(product.getPid()));
-                product.setDescription(rs.getString("description"));
-                product.setDate(rs.getDate("Date"));
+                 
+                p.setPid(rs.getInt("pid"));
+                p.setPname(rs.getString("pname"));
+                p.setPrice(rs.getInt("price"));
+                p.setDiscountedPrice(rs.getInt("discountedPrice"));
+                p.setDiscountDescription(rs.getString("discountDescription"));
+                p.setAvarageRating(rs.getFloat("avgRating"));
+                p.setDescription(rs.getString("description"));
+                p.setDate(rs.getDate("Date"));
+
                 Category c = new Category();
                 c.setCatid(rs.getInt("catid"));
                 c.setCatname(rs.getString("catname"));
                 c.setCattype(rs.getString("cattype"));
-                product.setCategory(c);
+                p.setCategory(c);
+
                 Brand b = new Brand();
                 b.setBid(rs.getInt("bid"));
                 b.setBname(rs.getString("bname"));
-                product.setBrand(b);
+                p.setBrand(b);
+
+                // Fetch product images
+                ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
+                p.setProductimgs(productImages);
+                
+                
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return product;
+        return p;
     }
 
     public ArrayList<ArrayList<Product>> listPage(String sort, String filter, String sortByDate) {
@@ -242,7 +371,7 @@ public class ProductDBContext extends DBContext {
     public ArrayList<Product> orderByDate() {
         ArrayList<Product> products = new ArrayList<>();
         try {
-            String sql = "SELECT Top 6\n"
+            String sql = "SELECT\n"
                     + "       p.pid, \n"
                     + "       p.pname, \n"
                     + "       p.price, \n"
@@ -286,7 +415,7 @@ public class ProductDBContext extends DBContext {
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
-               Product p = new Product();
+                Product p = new Product();
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -322,7 +451,7 @@ public class ProductDBContext extends DBContext {
     public ArrayList<Product> getDiscountedProducts() {
         ArrayList<Product> products = new ArrayList<>();
         try {
-            String sql = "SELECT Top 6\n"
+            String sql = "SELECT\n"
                     + "       p.pid, \n"
                     + "       p.pname, \n"
                     + "       p.price, \n"
@@ -367,7 +496,7 @@ public class ProductDBContext extends DBContext {
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
-                 Product p = new Product();
+                Product p = new Product();
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -399,5 +528,5 @@ public class ProductDBContext extends DBContext {
         }
         return null;
     }
-
+    
 }

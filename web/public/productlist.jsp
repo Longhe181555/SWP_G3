@@ -31,12 +31,12 @@
             <div id="bannerCarousel" class="carousel slide mx-auto" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <a href="productitem">
+                        <a href="productlist">
                             <img src="${pageContext.request.contextPath}/img/other_picture/Banner1.png" class="d-block w-100" alt="Banner Image 1">
                         </a>
                     </div>
                     <div class="carousel-item">
-                        <a href="url2">
+                        <a href="productlist?order=dateDesc">
                             <img src="${pageContext.request.contextPath}/img/other_picture/banner2.png" class="d-block w-100" alt="Banner Image 2">
                         </a>
                     </div>
@@ -61,9 +61,9 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <form class="d-flex ms-auto" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success text-white" type="submit">Search</button>
+                    <form class="d-flex ms-auto" role="search" action="${pageContext.request.contextPath}/productlist" method="GET">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                     <ul class="navbar-nav ms-3 me-3">
                         <c:choose>
@@ -107,39 +107,51 @@
                     <div class="filter-options">
                         <h4>Filter Options</h4>
                         <form method="get" action="productlist">
-                            <!-- Category Filter -->
+
+                            <div class="form-group">
+                                <label for="search">Search</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search" name="search" placeholder="Search..." value="${param.search}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="submit">Go</button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                             <div class="form-group">
                                 <label for="category">Category</label>
                                 <select class="form-control" id="category" name="category">
                                     <option value="" ${empty param.category ? 'selected' : ''}>All</option>
-                                    <c:forEach var="i" begin="1" end="3">
-                                        <option value="${i}" ${param.category == i ? 'selected' : ''}>Category ${i}</option>
+                                    <c:forEach var="cat" items="${cats}">
+                                        <option value="${cat.catid}" ${param.category == cat.catid ? 'selected' : ''}>${cat.catname}</option>
                                     </c:forEach>
                                 </select>
                             </div>
 
-                            <!-- Brand Filter -->
+
                             <div class="form-group">
                                 <label for="brand">Brand</label>
                                 <select class="form-control" id="brand" name="brand">
                                     <option value="" ${empty param.brand ? 'selected' : ''}>All</option>
-                                    <c:forEach var="i" begin="1" end="3">
-                                        <option value="${i}" ${param.brand == i ? 'selected' : ''}>Brand ${i}</option>
+                                    <c:forEach var="brand" items="${brands}">
+                                        <option value="${brand.bid}" ${param.brand == brand.bid ? 'selected' : ''}>${brand.bname}</option>
                                     </c:forEach>
                                 </select>
                             </div>
 
-                            <!-- Price Range Filter -->
+
                             <div class="form-group">
                                 <label for="minPrice">Price From</label>
-                                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="${param.minPrice}">
+                                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="${param.minPrice}" min="0" step="1">
                             </div>
                             <div class="form-group">
                                 <label for="maxPrice">Price To</label>
-                                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}">
+                                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}" min="0" step="1">
                             </div>
 
-                            <!-- Rating Filter -->
+
                             <div class="form-group">
                                 <label for="rating">Rating</label>
                                 <div class="rating">
@@ -158,29 +170,31 @@
                                     <input type="hidden" class="form-control" id="rating" name="rating" value="${param.rating}">
                                 </div>
                             </div>
+                            <input type="hidden" id="page" name="page" value="${param.page}">
                             <input type="hidden" id="order" name="order" value="${param.order}">
                             <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="discount" name="discount" ${param.discount ? 'checked' : ''}>
+                                <input type="checkbox" class="form-check-input" id="discount" name="discount" ${param.discount == 'on' ? 'checked' : ''}>
                                 <label class="form-check-label" for="discount">Have Discount</label>
                             </div>
                             <button type="submit" class="btn btn-primary">Filter</button>
+                            <a class="btn btn-secondary" href="./productlist">Reset</a>
                         </form>
                     </div>
                 </div>
 
                 <!-- Product list column -->
                 <div class="col-8 bg-light">
-                    <!-- Top bar with sorting and pagination -->
                     <div class="row bg-light py-2 mb-3">
                         <div class="col-6">
-                            <!-- Dropdown for sorting options -->
                             <select id="sortingDropdown" name="order">
+                                <option value="" ${param.order == null || param.order.isEmpty() ? 'selected' : ''}>Order by</option>
+
                                 <c:choose>
                                     <c:when test="${param.order eq 'priceDesc'}">
                                         <option value="priceDesc" selected>Price: High to Low</option>
                                     </c:when>
                                     <c:otherwise>
-                                        <option value="pricesAsc">Price: High to Low</option>
+                                        <option value="priceDesc">Price: High to Low</option>
                                     </c:otherwise>
                                 </c:choose>
 
@@ -195,53 +209,97 @@
 
                                 <c:choose>
                                     <c:when test="${param.order eq 'dateDesc'}">
-                                        <option value="dateDesc" selected>Newly Added</option>
+                                        <option value="dateDesc" selected>Date: New to Old</option>
                                     </c:when>
                                     <c:otherwise>
-                                        <option value="dateDesc">Newly Added</option>
+                                        <option value="dateDesc">Date: New to Old</option>
                                     </c:otherwise>
                                 </c:choose>
+
+                                <c:choose>
+                                    <c:when test="${param.order eq 'ratingDesc'}">
+                                        <option value="ratingDesc" selected>Rating: High to Low</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="ratingDesc">Rating: High to Low</option>
+                                    </c:otherwise>
+                                </c:choose>       
                             </select>                       
                         </div>
                         <div class="col-6 text-end">
-                            <!-- Pagination controls -->
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-end">
-                                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
 
-                    <!-- Product list -->
-                    <div class="row row-cols-4 mt-3">
-                        <!-- Add your product cards here -->
-                         <c:forEach var="product" items="${products}">
-                            <div class="col">
-                        <div class="card h-100 d-flex flex-column position-relative">
-                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
-                            <div class="card-body d-flex flex-column justify-content-between">
-                                <h5 class="card-title product-title">${product.pname}</h5>
-                                <p class="card-text">
-                                    <c:if test="${not empty product.discountDescription}">
-                                        <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
-                                        <span class="discount-description">Up to ${product.discountDescription} values</span><br>
-                                        <span class="original-price" style="text-decoration: line-through;">${product.price}đ</span> -
-                                        <span class="discounted-price">${product.discountedPrice}đ</span>
-                                    </c:if>
-                                    <c:if test="${empty product.discountDescription}">
-                                        $${product.price}đ
-                                    </c:if>
-                                </p>
-                                <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}" class="btn btn-primary mt-auto">View Details</a>
+                            <div class="row">
+                                <div class="col">
+                                    <button id="toggleButton" class="btn btn-primary">
+                                        <span id="icon" class="bi bi-collection"></span> <!-- Default icon -->
+                                    </button>
+                                </div>
+
+                                <div id="paginationContainer" class="col" style="display: ${not empty param.page ? 'block' : 'none'};">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination justify-content-center">
+                                            <c:forEach var="page" begin="1" end="${totalPages}">
+                                                <li class="page-item <c:if test="${currentPage eq page}">active</c:if>">
+                                                    <a class="page-link" href="?page=${page}&search=${param.search}&category=${param.category}&brand=${param.brand}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&rating=${param.rating}&order=${param.order}">${page}</a>
+                                                </li>
+                                            </c:forEach>
+                                        </ul> 
+                                    </nav>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                        </c:forEach>
+
+                    <div class="row row-cols-4 mt-3">             
+                        <c:choose>
+                            <c:when test="${empty products}">
+                                <div class="col-12 text-center text-muted">
+                                    <p>Nothing here beside invisible clothes</p>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="product" items="${products}" begin="${start}" end="${end}">
+                                    <div class="col">
+                                        <div class="card h-100 d-flex flex-column position-relative">
+                                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
+                                            <div class="card-body d-flex flex-column justify-content-between">
+                                                <h5 class="card-title product-title">${product.pname}</h5>
+                                                <c:if test="${product.avarageRating > 0}">
+                                                    <p class="card-text rating-star">
+                                                        <c:forEach var="i" begin="1" end="5">
+                                                            <c:choose>
+                                                                <c:when test="${i <= product.avarageRating}">
+                                                                    <i class="bi bi-star-fill"></i>
+                                                                </c:when>
+                                                                <c:when test="${i > product.avarageRating && i - 1 < product.avarageRating}">
+                                                                    <i class="bi bi-star-half"></i>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <i class="bi bi-star"></i>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:forEach>
+                                                    </p>
+                                                </c:if>
+                                                <p class="card-text">
+                                                    <c:if test="${not empty product.discountDescription}">
+                                                        <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
+                                                        <span class="discount-description">Up to ${product.discountDescription} values</span><br>
+                                                        <span class="original-price" style="text-decoration: line-through;">${product.price}đ</span> -
+                                                        <span class="discounted-price">${product.discountedPrice}đ</span>
+                                                    </c:if>
+                                                    <c:if test="${empty product.discountDescription}">
+                                                        $${product.price}đ
+                                                    </c:if>
+                                                </p>
+                                                <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}" class="btn btn-primary mt-auto">View Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </div>
@@ -301,6 +359,32 @@
                 document.querySelector('.filter-options form').submit();
             });
 
+            const toggleButton = document.getElementById('toggleButton');
+
+            toggleButton.addEventListener('click', function () {
+                let currentPage = new URLSearchParams(window.location.search).get('page');
+
+                currentPage = currentPage === null ? 1 : null;
+                let newURL = window.location.pathname + '?';
+                if (currentPage !== null) {
+                    newURL += 'page=' + currentPage + '&';
+                }
+                newURL += '?page=${page}&search=${param.search}&category=${param.category}&brand=${param.brand}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&rating=${param.rating}&order=${param.order}';
+                window.location.href = newURL;
+            });
+
+
+            window.addEventListener('load', function () {
+                const scrollPosition = localStorage.getItem('scrollPosition');
+                if (scrollPosition !== null) {
+                    window.scrollTo(0, parseInt(scrollPosition, 10));
+                    localStorage.removeItem('scrollPosition'); // Clean up
+                }
+            });
+
+            window.addEventListener('scroll', function () {
+                localStorage.setItem('scrollPosition', window.scrollY);
+            });
 
         </script>
 

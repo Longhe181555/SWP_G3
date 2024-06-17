@@ -24,7 +24,7 @@ public class HomepageController extends HttpServlet {
    
  
   
-protected void processRequest(HttpServletRequest request, HttpServletResponse response, int activePage)
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
@@ -32,7 +32,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         BrandDBContext bdb = new BrandDBContext();
         ProductSortHelper ps = new ProductSortHelper();
         ArrayList<Product> newProduct =  pdb.orderByDate();
-        request.setAttribute("newProduct", newProduct);
+        request.setAttribute("newProduct", ps.getFirstSixElements(newProduct));
         ArrayList<Product> discountedProduct = pdb.getDiscountedProducts();
         ArrayList<Product> highRatingProducts = ps.getFirstSixElements(ps.sortByRatingDescending(pdb.list()));
         request.setAttribute("highRatingProducts", highRatingProducts);
@@ -47,17 +47,11 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
 protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     HttpSession session = request.getSession();
-    
     Account currentUser = (Account) session.getAttribute("account");
     if(currentUser!=null) {
     request.setAttribute("Account", currentUser);
     }
-    String pageParam = request.getParameter("page");
-    int activePage = 1; 
-    if (pageParam != null && !pageParam.isEmpty()) {
-        activePage = Integer.parseInt(pageParam);
-    }
-    processRequest(request, response, activePage);
+    processRequest(request, response);
 }
 
   

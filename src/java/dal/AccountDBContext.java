@@ -116,68 +116,10 @@ public class AccountDBContext extends DBContext {
 
     
 
-    @Override
-    public void insert(IEntity entity) {
-        Account account = (Account) entity;
-        try {
-            String sql = "INSERT INTO Account (fullname, username, password, email, phonenumber, gender, birthdate, address, img, role) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, account.getFullname());
-            stm.setString(2, account.getUsername());
-            stm.setString(3, account.getPassword());
-            stm.setString(4, account.getEmail());
-            stm.setString(5, account.getPhonenumber());
-            stm.setBoolean(6, account.getGender());
-            stm.setDate(7, account.getBirthdate());
-            stm.setString(8, account.getAddress());
-            stm.setString(9, account.getImg());
-            stm.setString(10, account.getRole());
+    
 
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    
 
-    @Override
-    public void update(IEntity entity) {
-        Account account = (Account) entity;
-        try {
-            String sql = "UPDATE Account SET fullname=?, username=?, password=?, email=?, phonenumber=?, gender=?, birthdate=?, address=?, img=?, role=? "
-                    + "WHERE aid=?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, account.getFullname());
-            stm.setString(2, account.getUsername());
-            stm.setString(3, account.getPassword());
-            stm.setString(4, account.getEmail());
-            stm.setString(5, account.getPhonenumber());
-            stm.setBoolean(6, account.getGender());
-            stm.setDate(7, account.getBirthdate());
-            stm.setString(8, account.getAddress());
-            stm.setString(9, account.getImg());
-            stm.setString(10, account.getRole());
-            stm.setInt(11, account.getAid());
-
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        Account account = (Account) entity;
-        try {
-            String sql = "DELETE FROM Account WHERE aid=?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setInt(1, account.getAid());
-
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     public ArrayList<Account> getAllAccountByRole(String role) {
         ArrayList<Account> accounts = new ArrayList<>();
@@ -358,4 +300,19 @@ public class AccountDBContext extends DBContext {
     }
     return salt;
 }
+
+    @Override
+    public void insert(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void update(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void delete(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

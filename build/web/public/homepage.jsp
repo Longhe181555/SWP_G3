@@ -92,13 +92,20 @@
         <nav class="navbar navbar-expand-lg bg-dark text-white fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand text-white fs-2" href="homepage">MEN'S WEAR</a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <c:if test="${Account.role == 'staff' || Account.role == 'admin'}">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="dashboard" style="color:white;font-size:20px">Dashboard</a>
+                        </li>
+                    </c:if>
+                </ul>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <form class="d-flex ms-auto" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success text-white" type="submit">Search</button>
+                    <form class="d-flex ms-auto" role="search" action="${pageContext.request.contextPath}/productlist" method="GET">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                     <ul class="navbar-nav ms-3 me-3">
                         <c:choose>
@@ -130,7 +137,6 @@
                         <li class="nav-item d-flex align-items-center">
                             <a class="nav-link text-white" href="#"><i class="bi bi-bag"></i></a>
                         </li>
-
                     </ul>
                 </div>
             </div>
@@ -142,13 +148,13 @@
             <div id="bannerCarousel" class="carousel slide mx-auto" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <a href="productitem">
-                            <img src="${pageContext.request.contextPath}/img/other_picture/Banner1.png" class="d-block w-100" alt="Banner Image 1">
+                        <a href="productlist">
+                            <img src="${pageContext.request.contextPath}/img/other_picture/Banner1.png" class="d-block w-100" alt="Banner Image 1" style="max-height: 350px">
                         </a>
                     </div>
                     <div class="carousel-item">
-                        <a href="url2">
-                            <img src="${pageContext.request.contextPath}/img/other_picture/banner2.png" class="d-block w-100" alt="Banner Image 2">
+                        <a href="productlist?order=dateDesc">
+                            <img src="${pageContext.request.contextPath}/img/other_picture/banner2.png" class="d-block w-100" alt="Banner Image 2" style="max-height: 350px">
                         </a>
                     </div>
                 </div>
@@ -172,7 +178,7 @@
                     <h2>NEWLY ADDED</h2>
                 </div>
                 <div class="col-6 text-end">
-                    <a href="allProducts" class="btn btn-primary">See More</a>
+                    <a href="productlist?order=dateDesc" class="btn btn-primary">See More</a>
                 </div>
             </div>
             <div class="row row-cols-6 mt-3"> <!-- Adjust the number of columns as needed -->
@@ -229,7 +235,7 @@
                     <h2>DISCOUNTED</h2>
                 </div>
                 <div class="col-6 text-end">
-                    <a href="allProducts" class="btn btn-primary">See More</a>
+                    <a href="productlist?discount=on" class="btn btn-primary">See More</a>
                 </div>
             </div>
             <div class="row mt-3 product-row">
@@ -279,7 +285,7 @@
                     <h2>Loved by all</h2>
                 </div>
                 <div class="col-6 text-end">
-                    <a href="allProducts" class="btn btn-primary">See More</a>
+                    <a href="productlist?order=ratingDesc" class="btn btn-primary">See More</a>
                 </div>
             </div>
             <div class="row row-cols-6 mt-3"> <!-- Adjust the number of columns as needed -->
@@ -338,7 +344,7 @@
                         <!-- Iterate over brands and display each brand image as a clickable link -->
                         <c:forEach var="brand" items="${brands}">
                             <div class="brand-img-container" style="display: inline-block; margin-right: 10px;">
-                                <a href="brandDetail?bid=${brand.bid}">
+                                <a href="productlist?brand=${brand.bid}">
                                     <img src="${pageContext.request.contextPath}/${brand.img}" class="img-fluid" alt="${brand.bname}" style="width: 100px; height: auto;">
                                 </a>
                             </div>

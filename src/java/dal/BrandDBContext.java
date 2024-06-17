@@ -33,46 +33,6 @@ public class BrandDBContext extends DBContext {
     }
 
     @Override
-    public void insert(IEntity entity) {
-        Brand brand = (Brand) entity;
-        try {
-            String sql = "INSERT INTO Brand (bname) VALUES (?)";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, brand.getBname());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void update(IEntity entity) {
-        Brand brand = (Brand) entity;
-        try {
-            String sql = "UPDATE Brand SET bname=? WHERE bid=?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, brand.getBname());
-            stm.setInt(2, brand.getBid());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        Brand brand = (Brand) entity;
-        try {
-            String sql = "DELETE FROM Brand WHERE bid=?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setInt(1, brand.getBid());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
     public IEntity get(int id) {
         try {
             String sql = "SELECT bid,bname FROM Brand WHERE bid=?";
@@ -89,6 +49,21 @@ public class BrandDBContext extends DBContext {
             Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @Override
+    public void insert(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void update(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void delete(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

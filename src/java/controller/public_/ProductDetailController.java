@@ -2,13 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller.public_;
 
 import dal.FeedbackDBContext;
 import dal.ProductDBContext;
+import dal.ProductItemDBContext;
+import entity.Account;
 import entity.Feedback;
 import entity.Product;
+import entity.ProductItem;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,45 +18,62 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import util.ProductSortHelper;
 
 /**
  *
  * @author ADMIN
  */
-@WebServlet(name="ProductDetailController", urlPatterns={"/ProductDetailController"})
+@WebServlet(name = "ProductDetailController", urlPatterns = {"/ProductDetailController"})
 public class ProductDetailController extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-           
-        }
-    } 
 
-   
+        }
+    }
+
     private ProductDBContext productDB = new ProductDBContext();
     private FeedbackDBContext feedbackDB = new FeedbackDBContext();
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser != null) {
+            request.setAttribute("Account", currentUser);
+        }
         String pidStr = request.getParameter("pid");
         if (pidStr != null) {
             try {
+                ProductSortHelper ph = new ProductSortHelper();
                 int pid = Integer.parseInt(pidStr);
                 Product product = productDB.get(pid);
                 request.setAttribute("product", product);
                 ArrayList<Feedback> fs = feedbackDB.getByPid(pid);
+                ProductItemDBContext pidb = new ProductItemDBContext();
+                ArrayList<ProductItem> pis = pidb.getByPid(pid);
+                request.setAttribute("pis", pis);
+                Map<String, List<ProductItem>> groupedBySize = ph.groupBySize(pis);
+                request.setAttribute("groupedBySize", groupedBySize);
                 float temp = feedbackDB.getAverageRatingByPid(pid);
                 request.setAttribute("avr", temp);
-                request.setAttribute("fs", fs);
+                request.setAttribute("fs", ph.getFirstAmountElements(fs, 3));
                 request.getRequestDispatcher("public/productdetail.jsp").forward(request, response);
             } catch (NumberFormatException e) {
                 // handle error
@@ -66,12 +85,14 @@ public class ProductDetailController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
+
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

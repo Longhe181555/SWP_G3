@@ -21,10 +21,20 @@ public class FeedbackDBContext extends DBContext<IEntity> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public void insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    
+public void insert(int aid, int pid, String comment, float rating) {
+    try {
+        String sql = "INSERT INTO Feedback (aid, pid, comment, rating, date) VALUES (?, ?, ?, ?, GETDATE())";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, aid);
+        stm.setInt(2, pid);
+        stm.setString(3, comment);
+        stm.setFloat(4, rating);
+        stm.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(FeedbackDBContext.class.getName()).log(Level.SEVERE, null, ex);
     }
+}
 
     @Override
     public void update(IEntity entity) {
@@ -99,4 +109,9 @@ public class FeedbackDBContext extends DBContext<IEntity> {
     }
     return 0;
 }
+
+    @Override
+    public void insert(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

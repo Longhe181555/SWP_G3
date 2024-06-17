@@ -8,10 +8,14 @@
         <servlet-name>ProductListController</servlet-name>
         <servlet-class>controller.public_.ProductListController</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>LogoutController</servlet-name>
-        <url-pattern>/logout</url-pattern>
-    </servlet-mapping>
+    <servlet>
+        <servlet-name>FeedbackListController</servlet-name>
+        <servlet-class>controller.public_.FeedbackListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GiveFeedbackController</servlet-name>
+        <servlet-class>controller.public_.GiveFeedbackController</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>LoginController</servlet-name>
         <servlet-class>controller.authentication.LoginController</servlet-class>
@@ -68,6 +72,19 @@
     <servlet-mapping>
         <servlet-name>ProductListController</servlet-name>
         <url-pattern>/productlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FeedbackListController</servlet-name>
+        <url-pattern>/feedback</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GiveFeedbackController</servlet-name>
+        <url-pattern>/givefeedback</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutController</servlet-name>
+        <url-pattern>/logout</url-pattern>
+        <url-pattern>/signout</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>public/homepage</welcome-file>
