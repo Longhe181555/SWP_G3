@@ -371,7 +371,7 @@ public class ProductDBContext extends DBContext {
     public ArrayList<Product> orderByDate() {
         ArrayList<Product> products = new ArrayList<>();
         try {
-            String sql = "SELECT Top 6\n"
+            String sql = "SELECT\n"
                     + "       p.pid, \n"
                     + "       p.pname, \n"
                     + "       p.price, \n"
@@ -451,7 +451,7 @@ public class ProductDBContext extends DBContext {
     public ArrayList<Product> getDiscountedProducts() {
         ArrayList<Product> products = new ArrayList<>();
         try {
-            String sql = "SELECT Top 6\n"
+            String sql = "SELECT\n"
                     + "       p.pid, \n"
                     + "       p.pname, \n"
                     + "       p.price, \n"
@@ -528,5 +528,5 @@ public class ProductDBContext extends DBContext {
         }
         return null;
     }
-
+    
 }

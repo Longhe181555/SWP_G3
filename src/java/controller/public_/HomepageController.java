@@ -32,7 +32,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         BrandDBContext bdb = new BrandDBContext();
         ProductSortHelper ps = new ProductSortHelper();
         ArrayList<Product> newProduct =  pdb.orderByDate();
-        request.setAttribute("newProduct", newProduct);
+        request.setAttribute("newProduct", ps.getFirstSixElements(newProduct));
         ArrayList<Product> discountedProduct = pdb.getDiscountedProducts();
         ArrayList<Product> highRatingProducts = ps.getFirstSixElements(ps.sortByRatingDescending(pdb.list()));
         request.setAttribute("highRatingProducts", highRatingProducts);

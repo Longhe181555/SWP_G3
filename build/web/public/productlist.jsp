@@ -144,11 +144,11 @@
 
                             <div class="form-group">
                                 <label for="minPrice">Price From</label>
-                                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="${param.minPrice}">
+                                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="${param.minPrice}" min="0" step="1">
                             </div>
                             <div class="form-group">
                                 <label for="maxPrice">Price To</label>
-                                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}">
+                                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}" min="0" step="1">
                             </div>
 
 
@@ -170,6 +170,7 @@
                                     <input type="hidden" class="form-control" id="rating" name="rating" value="${param.rating}">
                                 </div>
                             </div>
+                            <input type="hidden" id="page" name="page" value="${param.page}">
                             <input type="hidden" id="order" name="order" value="${param.order}">
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="discount" name="discount" ${param.discount == 'on' ? 'checked' : ''}>
@@ -233,17 +234,19 @@
                                         <span id="icon" class="bi bi-collection"></span> <!-- Default icon -->
                                     </button>
                                 </div>
-                                <div id="paginationContainer" class="col">
+
+                                <div id="paginationContainer" class="col" style="display: ${not empty param.page ? 'block' : 'none'};">
                                     <nav aria-label="Page navigation example">
-                                        <ul class="pagination justify-content-end">
-                                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                        </ul>
+                                        <ul class="pagination justify-content-center">
+                                            <c:forEach var="page" begin="1" end="${totalPages}">
+                                                <li class="page-item <c:if test="${currentPage eq page}">active</c:if>">
+                                                    <a class="page-link" href="?page=${page}&search=${param.search}&category=${param.category}&brand=${param.brand}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&rating=${param.rating}&order=${param.order}">${page}</a>
+                                                </li>
+                                            </c:forEach>
+                                        </ul> 
                                     </nav>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -256,7 +259,7 @@
                                 </div>
                             </c:when>
                             <c:otherwise>
-                                <c:forEach var="product" items="${products}">
+                                <c:forEach var="product" items="${products}" begin="${start}" end="${end}">
                                     <div class="col">
                                         <div class="card h-100 d-flex flex-column position-relative">
                                             <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
@@ -356,10 +359,25 @@
                 document.querySelector('.filter-options form').submit();
             });
 
+            const toggleButton = document.getElementById('toggleButton');
+
+            toggleButton.addEventListener('click', function () {
+                let currentPage = new URLSearchParams(window.location.search).get('page');
+
+                currentPage = currentPage === null ? 1 : null;
+                let newURL = window.location.pathname + '?';
+                if (currentPage !== null) {
+                    newURL += 'page=' + currentPage + '&';
+                }
+                newURL += '?page=${page}&search=${param.search}&category=${param.category}&brand=${param.brand}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&rating=${param.rating}&order=${param.order}';
+                window.location.href = newURL;
+            });
+
+
             window.addEventListener('load', function () {
                 const scrollPosition = localStorage.getItem('scrollPosition');
                 if (scrollPosition !== null) {
-                    window.scrollTo(0, scrollPosition);
+                    window.scrollTo(0, parseInt(scrollPosition, 10));
                     localStorage.removeItem('scrollPosition'); // Clean up
                 }
             });
@@ -367,28 +385,6 @@
             window.addEventListener('scroll', function () {
                 localStorage.setItem('scrollPosition', window.scrollY);
             });
-
-         
-
-            function toggleIcon() {
-                var icon = document.getElementById("icon");
-
-                // Check the current icon and toggle it
-                if (icon.classList.contains("bi-collection")) {
-                    icon.classList.remove("bi-collection");
-                    icon.classList.add("bi-layout-text-sidebar-reverse");
-                    paginationContainer.style.display = "none";
-                } else {
-                    icon.classList.remove("bi-layout-text-sidebar-reverse");
-                    icon.classList.add("bi-collection");
-                    paginationContainer.style.display = "block";
-                }
-            }
-
-            // Add click event listener to toggle button
-            document.getElementById("toggleButton").addEventListener("click", toggleIcon);
-            
-            
 
         </script>
 

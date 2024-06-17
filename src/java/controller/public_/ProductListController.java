@@ -82,7 +82,19 @@ public class ProductListController extends HttpServlet {
                         break;
                 }
             }
-
+            
+            if(request.getParameter("page")!=null&&!request.getParameter("page").isEmpty()) {
+            int page = Integer.parseInt(request.getParameter("page"));
+            int productsPerPage = 8;
+            int start = (page - 1) * productsPerPage;
+            int end = Math.min(start + productsPerPage, products.size());
+            request.setAttribute("start", start);
+            request.setAttribute("end", end-1);
+            request.setAttribute("totalPages", (int) Math.ceil((double) products.size() / 8));
+            } else {
+             request.setAttribute("start", 0);
+            request.setAttribute("end", products.size());
+            }
             request.setAttribute("cats", cats);
             request.setAttribute("brands", brands);
             request.setAttribute("products", products);
