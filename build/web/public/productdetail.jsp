@@ -36,19 +36,19 @@
                 margin-right: 5px;
             }
             .btn-custom {
-            background-color: white;
-            border: 2px solid green;
-            color: green;
-            display: block;
-            text-align: center;
-            padding: 10px;
-            text-decoration: none;
-            width: 100%;
-        }
-        .btn-custom:hover {
-            background-color: green;
-            color: white;
-        }
+                background-color: white;
+                border: 2px solid green;
+                color: green;
+                display: block;
+                text-align: center;
+                padding: 10px;
+                text-decoration: none;
+                width: 100%;
+            }
+            .btn-custom:hover {
+                background-color: green;
+                color: white;
+            }
         </style>
     </head>
     <body>
@@ -149,6 +149,10 @@
                             </c:forEach>
                         </p>
                     </c:if>
+                    <c:if test="${Account.role == 'staff'}">
+                        <button type="button" class="btn btn-primary" onclick="location.href = 'updateProduct'">Update Product</button>
+                        <button type="button" class="btn btn-secondary" onclick="location.href = 'updateProductStock'">Update Product Stock</button>
+                    </c:if>
                     <p class="font-weight-bold">${product.price}d</p>
                     <div class="size-dropdowns">
                         <select class="size-select" onchange="toggleColorOptions(this)">
@@ -171,12 +175,17 @@
                     </div>                 
                     <p>${product.description}</p>
                     <p><strong>Brand:</strong> ${product.brand.bname}</p>
+                    <c:if test="${Account.role == 'staff'|| Account.role == 'admin'}">
+                        <button type="button" class="btn btn-primary" onclick="location.href = 'updateProduct'">Update Product</button>
+                        <button type="button" class="btn btn-secondary" onclick="location.href = 'updateProductStock'">Update Product Stock</button>
+                    </c:if>
                 </div>
             </div>
         </c:if>
         <c:if test="${empty product}">
             <p>Product not found.</p>
         </c:if>
+
     </div>
 
     <div class="container">

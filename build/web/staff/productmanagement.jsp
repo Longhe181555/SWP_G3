@@ -169,9 +169,9 @@
                                 category: item.category.catname,
                                 date: item.date,
                                 isListed: isListedRadios,
-                                actions: '<form action="editProduct" method="get" style="display:inline-block;">' +
+                                actions: '<form action="updateProduct" method="get" style="display:inline-block;">' +
                                         '<input type="hidden" name="pid" value="' + item.pid + '" />' +
-                                        '<button type="submit" class="btn btn-primary btn-sm">Edit</button>' +
+                                        '<button type="submit" class="btn btn-primary btn-sm">Update</button>' +
                                         '</form>' +
                                         '<form action="deleteProduct" method="post" style="display:inline-block;">' +
                                         '<input type="hidden" name="pid" value="' + item.pid + '" />' +
