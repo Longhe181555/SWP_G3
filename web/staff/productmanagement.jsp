@@ -202,7 +202,7 @@ $(document).ready(function () {
                     {data: 'price'},
                     {data: 'brand'},
                     {data: 'category'},
-                    {data: 'date', title: 'Date', type: 'date-uk-pre'}, 
+                    {data: 'date', title: 'Date', type: 'date'}, 
                     {data: 'isListed', title: 'Is Listed', orderDataType: 'dom-checkbox'},
                     {data: 'actions', title: 'Actions'}
                 ],

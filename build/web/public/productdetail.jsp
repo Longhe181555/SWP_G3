@@ -176,7 +176,7 @@
                     <p>${product.description}</p>
                     <p><strong>Brand:</strong> ${product.brand.bname}</p>
                     <c:if test="${Account.role == 'staff'|| Account.role == 'admin'}">
-                        <button type="button" class="btn btn-primary" onclick="location.href = 'updateProduct'">Update Product</button>
+                        <button type="button" class="btn btn-primary" onclick="location.href = 'updateProduct?pid=${product.pid}'">Update Product</button>
                         <button type="button" class="btn btn-secondary" onclick="location.href = 'updateProductStock'">Update Product Stock</button>
                     </c:if>
                 </div>

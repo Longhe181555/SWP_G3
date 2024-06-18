@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.InputStream;
@@ -21,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
+
 @MultipartConfig
 public class CreateProductController extends HttpServlet {
 
@@ -39,6 +42,13 @@ public class CreateProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser != null) {
+            request.setAttribute("Account", currentUser);
+        }
+
         ArrayList<Brand> brands = brandDB.list();
         ArrayList<Category> cats = catDB.list();
         request.setAttribute("brands", brands);
@@ -50,42 +60,37 @@ public class CreateProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-        String pname = request.getParameter("pname");
-        int price = Integer.parseInt(request.getParameter("price"));
-        String description = request.getParameter("description");
-        int brand = Integer.parseInt(request.getParameter("brand"));
-        int category = Integer.parseInt(request.getParameter("category"));
-        Boolean isListed = Boolean.valueOf(request.getParameter("isListed"));
-        ArrayList<String> imgpath = new ArrayList<>();
-          
-        
-        System.out.println(pname + " || " + price + " || " + description + " || " + brand + " || " + category + " || " + isListed);
-        String projectRoot = getServletContext().getRealPath("");
-        String uploadPath = projectRoot.replace("\\build\\web", "")  + "web" + File.separator + "img" + File.separator + "product_picture";
-        File uploadDir = new File(uploadPath);
-        System.out.println(uploadPath);
-        Collection<Part> fileParts = request.getParts().stream().filter(part -> "files".equals(part.getName())).collect(Collectors.toList());
-        StringBuilder uploadedFiles = new StringBuilder();
-        for (Part filePart : fileParts) {
-            String fileName = extractFileName(filePart);
-            if (fileName != null && !fileName.isEmpty()) {
-                File file = new File(uploadPath + File.separator + fileName);
-                imgpath.add("img/product_picture" + File.separator + fileName);
-                try (InputStream fileContent = filePart.getInputStream()) {
-                    FileUtils.copyInputStreamToFile(fileContent, file);
-                    uploadedFiles.append(fileName).append(", ");
+            String pname = request.getParameter("pname");
+            int price = Integer.parseInt(request.getParameter("price"));
+            String description = request.getParameter("description");
+            int brand = Integer.parseInt(request.getParameter("brand"));
+            int category = Integer.parseInt(request.getParameter("category"));
+            Boolean isListed = Boolean.valueOf(request.getParameter("isListed"));
+            ArrayList<String> imgpath = new ArrayList<>();
+            String projectRoot = getServletContext().getRealPath("");
+            String uploadPath = projectRoot.replace("\\build\\web", "") + "web" + File.separator + "img" + File.separator + "product_picture";
+            Collection<Part> fileParts = request.getParts().stream().filter(part -> "files".equals(part.getName())).collect(Collectors.toList());
+            StringBuilder uploadedFiles = new StringBuilder();
+            for (Part filePart : fileParts) {
+                String fileName = extractFileName(filePart);
+                if (fileName != null && !fileName.isEmpty()) {
+                    File file = new File(uploadPath + File.separator + fileName);
+                    imgpath.add("img/product_picture" + File.separator + fileName);
+                    try (InputStream fileContent = filePart.getInputStream()) {
+                        FileUtils.copyInputStreamToFile(fileContent, file);
+                        uploadedFiles.append(fileName).append(", ");
+                    }
                 }
             }
-        }
-        productDB.insert(pname, price, description,category, brand,  isListed, imgpath);
-        if (uploadedFiles.length() > 0) {
-            uploadedFiles.setLength(uploadedFiles.length() - 2); // Remove trailing comma and space
-            response.getWriter().print("Files uploaded successfully: " + uploadedFiles.toString());
-        } else {
-            response.getWriter().print("No files uploaded or empty file list");
-        }
-        } catch(NumberFormatException e) {
-            response.sendRedirect("cproduct");
+            productDB.insert(pname, price, description, category, brand, isListed, imgpath);
+            if (uploadedFiles.length() > 0) {
+                uploadedFiles.setLength(uploadedFiles.length() - 2); // Remove trailing comma and space
+                response.sendRedirect("pmanagement");
+            } else {
+                response.getWriter().print("No files uploaded or empty file list");
+            }
+        } catch (NumberFormatException e) {
+            response.sendRedirect("pmanagement");
         }
     }
 
@@ -99,4 +104,8 @@ public class CreateProductController extends HttpServlet {
         }
         return null;
     }
+    
+    
+    
+
 }

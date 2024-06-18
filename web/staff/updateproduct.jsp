@@ -4,12 +4,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
         <title>Update Product</title>
         <style>
 
-             .placeholder{
+            .placeholder{
                 height: 64px;
                 width: 100%;
             }
@@ -90,7 +90,7 @@
                             <div id="productCarousel" class="carousel slide" data-ride="carousel">
                                 <div class="carousel-inner">
                                     <c:forEach var="img" items="${product.productimgs}" varStatus="loop">
-                                        <div class="carousel-item <c:if test='${loop.index == 0}'>active</c:if>">
+                                        <div class="carousel-item ${loop.index == 0 ? 'active' : ''}">
                                             <img src="${pageContext.request.contextPath}/${img.imgpath}" class="d-block w-100" alt="Product Image">
                                         </div>
                                     </c:forEach>
@@ -126,7 +126,7 @@
                                 <label for="brand">Brand:</label>
                                 <select class="form-control" id="brand" name="brand">
                                     <c:forEach var="brand" items="${brands}">
-                                        <option value="${brand.bid}" <c:if test="${brand.bid == product.brand.bid}">selected</c:if>>${brand.bname}</option>
+                                        <option value="${brand.bid}" ${brand.bid == product.brand.bid ? 'selected' : ''}>${brand.bname}</option>
                                     </c:forEach>
                                 </select>
                             </div>

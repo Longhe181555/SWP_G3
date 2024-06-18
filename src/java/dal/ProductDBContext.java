@@ -342,6 +342,10 @@ public class ProductDBContext extends DBContext {
         }
         return p;
     }
+    
+    
+    
+    
 
     public Product getProductDetail(int pid) {
         Product p = new Product();
@@ -349,18 +353,7 @@ public class ProductDBContext extends DBContext {
             String sql = "SELECT\n"
                     + "       p.pid, \n"
                     + "       p.pname, \n"
-                    + "       p.price, \n"
-                    + "       MIN(CASE \n"
-                    + "              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) \n"
-                    + "              WHEN dt.type = 'fixedAmount' THEN p.price - d.value \n"
-                    + "              ELSE p.price \n"
-                    + "           END) AS discountedPrice, \n"
-                    + "       CASE \n"
-                    + "           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') \n"
-                    + "           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') \n"
-                    + "           ELSE NULL \n"
-                    + "       END AS discountDescription, \n"
-                    + "       AVG(f.rating) AS avgRating, \n"
+                    + "       price, \n"
                     + "       p.description, \n"
                     + "       p.Date, \n"
                     + "       p.catid, \n"
@@ -369,53 +362,29 @@ public class ProductDBContext extends DBContext {
                     + "       p.bid, \n"
                     + "       b.bname \n"
                     + "FROM Product p \n"
-                    + "LEFT JOIN ProductItem pi ON p.pid = pi.pid \n"
-                    + "LEFT JOIN Discount d ON pi.piid = d.piid \n"
-                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid \n"
-                    + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where p.pid = ?\n"
-                    + "GROUP BY p.pid, \n"
-                    + "         p.pname, \n"
-                    + "         p.price, \n"
-                    + "         p.description, \n"
-                    + "         p.Date, \n"
-                    + "         p.catid, \n"
-                    + "         c.catname, \n"
-                    + "         c.cattype, \n"
-                    + "         p.bid, \n"
-                    + "         b.bname\n"
-                    + "ORDER BY [Date] DESC";
+                    + "Where p.pid = ?\n";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, pid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
-                p.setDiscountedPrice(rs.getInt("discountedPrice"));
-                p.setDiscountDescription(rs.getString("discountDescription"));
-                p.setAvarageRating(rs.getFloat("avgRating"));
                 p.setDescription(rs.getString("description"));
                 p.setDate(rs.getDate("Date"));
-
                 Category c = new Category();
                 c.setCatid(rs.getInt("catid"));
                 c.setCatname(rs.getString("catname"));
                 c.setCattype(rs.getString("cattype"));
                 p.setCategory(c);
-
                 Brand b = new Brand();
                 b.setBid(rs.getInt("bid"));
                 b.setBname(rs.getString("bname"));
                 p.setBrand(b);
-
-                // Fetch product images
                 ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
                 p.setProductimgs(productImages);
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -694,5 +663,20 @@ public class ProductDBContext extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean productNameExists(String productName) {
+        try {
+        String sql = "SELECT * from Product WHERE pname = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, productName);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                return true;
+            }
+             } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
