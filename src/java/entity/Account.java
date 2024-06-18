@@ -10,9 +10,15 @@ public class Account implements IEntity{
   private int aid;
   private String fullname;
   private String username;
-  String password;
-  String salt;
-
+  private String password;
+  private String salt;
+  private String email;
+  private String phonenumber;
+  private java.sql.Date birthdate;
+  private String address;
+  private String img;
+  private String role;
+  Boolean gender;
     public String getSalt() {
         return salt;
     }
@@ -20,13 +26,7 @@ public class Account implements IEntity{
     public void setSalt(String salt) {
         this.salt = salt;
     }
-  String email;
-  String phonenumber;
-  java.sql.Date birthdate;
-  String address;
-  String img;
-  String role;
-  Boolean gender;
+ 
 
     public Boolean getGender() {
         return gender;

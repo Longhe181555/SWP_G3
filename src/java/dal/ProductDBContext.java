@@ -51,8 +51,8 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where p.pid != 0\n"
-                    + "AND (GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)\n"
+                    + "Where\n"
+                    + "(GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)\n"
                     + "GROUP BY p.pid, \n"
                     + "         p.pname, \n"
                     + "         p.price, \n"
@@ -82,7 +82,7 @@ public class ProductDBContext extends DBContext {
                 c.setCatname(rs.getString("catname"));
                 c.setCattype(rs.getString("cattype"));
                 p.setCategory(c);
- 
+
                 Brand b = new Brand();
                 b.setBid(rs.getInt("bid"));
                 b.setBname(rs.getString("bname"));
@@ -167,7 +167,7 @@ public class ProductDBContext extends DBContext {
             }
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                 Product p = new Product();
+                Product p = new Product();
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -202,9 +202,54 @@ public class ProductDBContext extends DBContext {
 
     }
 
+    public void insert(String pname, int price, String description, int catid, int bid, boolean isListed, ArrayList<String> imgpath) {
+        try {
+            String sql = "INSERT INTO Product(pname,price,description,catid,bid,isListed,Date) values(?,?,?,?,?,?,GETDATE())";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, pname);
+            stm.setInt(2, price);
+            stm.setString(3, description);
+            stm.setInt(4, catid);
+            stm.setInt(5, bid);
+            stm.setBoolean(6, isListed);
+            stm.executeUpdate();
+            int pid = getPidByPname(pname);
+            for (String path : imgpath) {
+            insertImagePath(pid, path);
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void insertImagePath(int pid, String imagePath) {
+    try {
+        String sql = "INSERT INTO ProductImg(pid, imgpath) VALUES (?, ?)";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, pid);
+        stm.setString(2, imagePath);
+        stm.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+    public int getPidByPname(String pname) {
+    int pid = -1; // Default value if pname is not found or query fails
+    try {
+        String sql = "SELECT pid FROM Product WHERE pname = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setString(1, pname);
+        ResultSet rs = stm.executeQuery();
+        if (rs.next()) {
+            pid = rs.getInt("pid");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return pid;
+}
     @Override
     public void insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
     }
 
     @Override
@@ -266,7 +311,7 @@ public class ProductDBContext extends DBContext {
             ps.setInt(1, pid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                 
+
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -290,15 +335,14 @@ public class ProductDBContext extends DBContext {
                 // Fetch product images
                 ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
                 p.setProductimgs(productImages);
-                
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return p;
     }
-    
+
     public Product getProductDetail(int pid) {
         Product p = new Product();
         try {
@@ -347,7 +391,7 @@ public class ProductDBContext extends DBContext {
             ps.setInt(1, pid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                 
+
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -371,15 +415,13 @@ public class ProductDBContext extends DBContext {
                 // Fetch product images
                 ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
                 p.setProductimgs(productImages);
-                
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return p;
     }
-    
 
     public ArrayList<ArrayList<Product>> listPage(String sort, String filter, String sortByDate) {
         ArrayList<ArrayList<Product>> pages = new ArrayList<>();
@@ -614,6 +656,7 @@ public class ProductDBContext extends DBContext {
         }
         return null;
     }
+
     public boolean updateIsListed(int pid, boolean isListed) {
         boolean success = false;
         try {
@@ -631,8 +674,9 @@ public class ProductDBContext extends DBContext {
         }
         return success;
     }
-     public void updateProduct(Product product, List<Part> imageParts) {
-        
+
+    public void updateProduct(Product product, List<Part> imageParts) {
+
         try {
             String updateQuery = "UPDATE Product SET pname = ?, price = ?, description = ?, bid = ? WHERE pid = ?";
             PreparedStatement stm = connection.prepareStatement(updateQuery);
@@ -642,7 +686,7 @@ public class ProductDBContext extends DBContext {
             stm.setInt(4, product.getBrand().getBid());
             stm.setInt(5, product.getPid());
             stm.executeUpdate();
-            
+
             // Handle image upload if necessary
             if (!imageParts.isEmpty()) {
                 // Implement your logic to save the uploaded images
@@ -650,5 +694,5 @@ public class ProductDBContext extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-}
+    }
 }
