@@ -1,0 +1,102 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
+package controller.staff;
+
+import dal.*;
+import entity.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.io.FileUtils;
+@MultipartConfig
+public class CreateProductController extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+
+        }
+    }
+
+    private ProductDBContext productDB = new ProductDBContext();
+    private BrandDBContext brandDB = new BrandDBContext();
+    private CategoryDBContext catDB = new CategoryDBContext();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ArrayList<Brand> brands = brandDB.list();
+        ArrayList<Category> cats = catDB.list();
+        request.setAttribute("brands", brands);
+        request.setAttribute("cats", cats);
+        request.getRequestDispatcher("/staff/createproduct.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+        String pname = request.getParameter("pname");
+        int price = Integer.parseInt(request.getParameter("price"));
+        String description = request.getParameter("description");
+        int brand = Integer.parseInt(request.getParameter("brand"));
+        int category = Integer.parseInt(request.getParameter("category"));
+        Boolean isListed = Boolean.valueOf(request.getParameter("isListed"));
+        ArrayList<String> imgpath = new ArrayList<>();
+          
+        
+        System.out.println(pname + " || " + price + " || " + description + " || " + brand + " || " + category + " || " + isListed);
+        String projectRoot = getServletContext().getRealPath("");
+        String uploadPath = projectRoot.replace("\\build\\web", "")  + "web" + File.separator + "img" + File.separator + "product_picture";
+        File uploadDir = new File(uploadPath);
+        System.out.println(uploadPath);
+        Collection<Part> fileParts = request.getParts().stream().filter(part -> "files".equals(part.getName())).collect(Collectors.toList());
+        StringBuilder uploadedFiles = new StringBuilder();
+        for (Part filePart : fileParts) {
+            String fileName = extractFileName(filePart);
+            if (fileName != null && !fileName.isEmpty()) {
+                File file = new File(uploadPath + File.separator + fileName);
+                imgpath.add("img/product_picture" + File.separator + fileName);
+                try (InputStream fileContent = filePart.getInputStream()) {
+                    FileUtils.copyInputStreamToFile(fileContent, file);
+                    uploadedFiles.append(fileName).append(", ");
+                }
+            }
+        }
+        productDB.insert(pname, price, description,category, brand,  isListed, imgpath);
+        if (uploadedFiles.length() > 0) {
+            uploadedFiles.setLength(uploadedFiles.length() - 2); // Remove trailing comma and space
+            response.getWriter().print("Files uploaded successfully: " + uploadedFiles.toString());
+        } else {
+            response.getWriter().print("No files uploaded or empty file list");
+        }
+        } catch(NumberFormatException e) {
+            response.sendRedirect("cproduct");
+        }
+    }
+
+    private String extractFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+        for (String s : items) {
+            if (s.trim().startsWith("filename")) {
+                return s.substring(s.indexOf("=") + 2, s.length() - 1);
+            }
+        }
+        return null;
+    }
+}
