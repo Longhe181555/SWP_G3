@@ -111,7 +111,7 @@
                 <div class="form-group">
                     <label for="productName">Product Name:</label>
                     <input type="text" class="form-control" id="pname" name="pname" required>
-                    <span id="nameError" class="text-danger" style="display:none;">Product name already exists</span>
+                    <div id="nameError" style="color:red; display:none;">Product name already exists!</div>
                 </div>
                 <div class="form-group">
                     <label for="price">Price:</label>
@@ -159,12 +159,12 @@
                 var pname = this.value;
                 var nameError = document.getElementById('nameError');
                 if (pname.length > 0) {
-                    fetch('${pageContext.request.contextPath}/checkProductName', {
+                    fetch('${pageContext.request.contextPath}/CreateProductController', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
-                        body: 'pname=' + encodeURIComponent(pname)
+                        body: 'action=checkProductName&pname=' + encodeURIComponent(pname)
                     })
                             .then(response => response.json())
                             .then(data => {
@@ -190,7 +190,7 @@
 
                 function readAndPreview(file) {
                     // Make sure `file` is an image
-                    if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                    if (/\.(jpe?g|png|gif|avif)$/i.test(file.name)) {
                         var reader = new FileReader();
 
                         reader.addEventListener('load', function () {
@@ -211,6 +211,5 @@
             }
         </script>
     </body>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

@@ -6,7 +6,7 @@
 package entity;
 
 
-public class ProductItem implements IEntity {
+public class ProductItem{
   private int piid;
   private int stockcount;
   private int pid;

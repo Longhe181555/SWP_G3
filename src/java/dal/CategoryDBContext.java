@@ -6,7 +6,6 @@
 package dal;
 
 import entity.Category;
-import entity.IEntity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
 
 public class CategoryDBContext extends DBContext {
 
-    @Override
+ 
     public ArrayList list() {
         ArrayList<Category> cats = new ArrayList<>();
         try {
@@ -37,24 +36,6 @@ public class CategoryDBContext extends DBContext {
         return cats;
     }
 
-    @Override
-    public void insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void update(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public IEntity get(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   
   
 }

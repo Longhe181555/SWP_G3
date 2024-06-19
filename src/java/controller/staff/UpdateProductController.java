@@ -82,7 +82,7 @@ public class UpdateProductController extends HttpServlet {
         String description = request.getParameter("description");
         String bid = request.getParameter("brand");
         System.out.println(pid + pname + price + description+ bid);
-        Brand brand = (Brand) brandDB.get(Integer.parseInt(bid));
+        Brand brand = brandDB.get(Integer.parseInt(bid));
         List<Part> imageParts = request.getParts().stream()
                 .filter(part -> "images".equals(part.getName()) && part.getSize() > 0)
                 .collect(Collectors.toList());
