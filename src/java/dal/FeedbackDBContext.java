@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 public class FeedbackDBContext extends DBContext<IEntity> {
 
-    @Override
+
     public ArrayList<IEntity> list() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -36,20 +36,7 @@ public void insert(int aid, int pid, String comment, float rating) {
     }
 }
 
-    @Override
-    public void update(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public IEntity get(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+  
 
     public ArrayList<Feedback> getByPid(int aid) {
         try {
@@ -110,7 +97,6 @@ public void insert(int aid, int pid, String comment, float rating) {
     return 0;
 }
 
-    @Override
     public void insert(IEntity entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

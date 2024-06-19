@@ -27,9 +27,5 @@ public abstract class DBContext<T extends IEntity> {
         }
     }
     
-    public abstract ArrayList<T> list();
-    public abstract void insert(T entity);
-    public abstract void update(T entity);
-    public abstract void delete(T entity);
-    public abstract T get(int id);
+
 }

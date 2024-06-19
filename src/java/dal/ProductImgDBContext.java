@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class ProductImgDBContext extends DBContext{
 
-    @Override
+ 
     public ArrayList<ProductImg> list() {
         ArrayList<ProductImg> imgs = new ArrayList<>();
         try {
@@ -38,22 +38,7 @@ public class ProductImgDBContext extends DBContext{
         return imgs;
     }
 
-    @Override
-    public void insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void update(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
+    
     public IEntity get(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

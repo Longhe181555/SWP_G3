@@ -247,22 +247,7 @@ public class ProductDBContext extends DBContext {
     }
     return pid;
 }
-    @Override
-    public void insert(IEntity entity) {
-
-    }
-
-    @Override
-    public void update(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
+   
     public Product get(int pid) {
         Product p = new Product();
         try {

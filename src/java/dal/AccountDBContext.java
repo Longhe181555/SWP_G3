@@ -70,7 +70,7 @@ public class AccountDBContext extends DBContext {
         return null;
     }
 
-    @Override
+  
     public ArrayList<Account> list() {
         ArrayList<Account> accounts = new ArrayList<>();
         try {
@@ -165,7 +165,7 @@ public class AccountDBContext extends DBContext {
     }
     
     
-    @Override
+   
     public IEntity get(int id) {
         try {
             String sql = "SELECT [aid]\n"
@@ -301,18 +301,11 @@ public class AccountDBContext extends DBContext {
     return salt;
 }
 
-    @Override
-    public void insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
+   
+  
     public void update(IEntity entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public void delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   
 }
