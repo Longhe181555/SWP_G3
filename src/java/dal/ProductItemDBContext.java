@@ -4,7 +4,6 @@
  */
 package dal;
 
-import entity.IEntity;
 import entity.ProductImg;
 import entity.ProductItem;
 import java.sql.PreparedStatement;
@@ -18,26 +17,9 @@ public class ProductItemDBContext extends DBContext {
 
     ProductDBContext pdb = new ProductDBContext();
 
-    @Override
-    public ArrayList list() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void update(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+    
+    
+    
     public ArrayList<ProductItem> getByPid(int pid) {
         ArrayList<ProductItem> pis = new ArrayList<>();
         try {
@@ -69,9 +51,6 @@ public class ProductItemDBContext extends DBContext {
         return pis;
     }
 
-    @Override
-    public IEntity get(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 
 }

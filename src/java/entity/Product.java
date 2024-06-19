@@ -9,7 +9,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 
-public class Product implements IEntity {
+public class Product {
   private int pid;
   private String pname;
   private int price;

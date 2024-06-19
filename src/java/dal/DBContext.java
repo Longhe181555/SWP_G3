@@ -3,14 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dal;
-import entity.IEntity;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public abstract class DBContext<T extends IEntity> {
+public abstract class DBContext {
     protected Connection connection;
     public DBContext()
     {
@@ -27,9 +26,5 @@ public abstract class DBContext<T extends IEntity> {
         }
     }
     
-    public abstract ArrayList<T> list();
-    public abstract void insert(T entity);
-    public abstract void update(T entity);
-    public abstract void delete(T entity);
-    public abstract T get(int id);
+   
 }
