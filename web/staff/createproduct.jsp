@@ -111,7 +111,7 @@
                 <div class="form-group">
                     <label for="productName">Product Name:</label>
                     <input type="text" class="form-control" id="pname" name="pname" required>
-                    <span id="nameError" class="text-danger" style="display:none;">Product name already exists</span>
+                    <div id="nameError" style="color:red; display:none;">Product name already exists!</div>
                 </div>
                 <div class="form-group">
                     <label for="price">Price:</label>
@@ -156,29 +156,29 @@
 
         <script>
             document.getElementById('pname').addEventListener('input', function () {
-                var pname = this.value;
-                var nameError = document.getElementById('nameError');
-                if (pname.length > 0) {
-                    fetch('${pageContext.request.contextPath}/checkProductName', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: 'pname=' + encodeURIComponent(pname)
-                    })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.exists) {
-                                    nameError.style.display = 'block';
-                                } else {
-                                    nameError.style.display = 'none';
-                                }
-                            })
-                            .catch(error => console.error('Error:', error));
-                } else {
-                    nameError.style.display = 'none';
-                }
-            });
+    var pname = this.value;
+    var nameError = document.getElementById('nameError');
+    if (pname.length > 0) {
+        fetch('${pageContext.request.contextPath}/CreateProductController', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'action=checkProductName&pname=' + encodeURIComponent(pname)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                nameError.style.display = 'block';
+            } else {
+                nameError.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    } else {
+        nameError.style.display = 'none';
+    }
+});
 
 
 
@@ -190,7 +190,7 @@
 
                 function readAndPreview(file) {
                     // Make sure `file` is an image
-                    if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                    if (/\.(jpe?g|png|gif|avif)$/i.test(file.name)) {
                         var reader = new FileReader();
 
                         reader.addEventListener('load', function () {
