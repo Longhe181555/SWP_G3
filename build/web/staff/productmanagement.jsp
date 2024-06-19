@@ -34,7 +34,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <c:if test="${Account.role == 'staff' || Account.role == 'admin'}">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:white;font-size:20px">
+                            <a class="nav-link dropdown-toggle" href="dashboard" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:white;font-size:20px">
                                 Dashboard
                             </a>
                             <ul class="dropdown-menu" >
@@ -125,118 +125,102 @@
 
 
         <script>
-            $(document).ready(function () {
-                $('#product-table').on('change', 'input[type=radio]', function () {
-                    var pid = $(this).attr('name').replace('isListed', '');
-                    var value = $(this).val();
+$(document).ready(function () {
+    $('#product-table').on('change', 'input[type=radio]', function () {
+        var pid = $(this).attr('name').replace('isListed', '');
+        var value = $(this).val();
 
-                    $.ajax({
-                        url: 'changeListedController',
-                        method: 'POST',
-                        data: {
-                            pid: pid,
-                            value: value
-                        },
-                        success: function (response) {
-                            console.log('Successfully updated listed status.');
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('AJAX Error:', error);
-                        }
-                    });
-                });
+        $.ajax({
+            url: 'changeListedController',
+            method: 'POST',
+            data: {
+                pid: pid,
+                value: value
+            },
+            success: function (response) {
+                console.log('Successfully updated listed status.');
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX Error:', error);
+            }
+        });
+    });
 
-                $.fn.dataTable.ext.order['dom-checkbox'] = function (settings, col) {
-                    return this.api().column(col, {order: 'index'}).nodes().map(function (td, i) {
-                        return $('input', td).prop('checked') ? '1' : '0';
-                    });
+    $.fn.dataTable.ext.order['dom-checkbox'] = function (settings, col) {
+        return this.api().column(col, { order: 'index' }).nodes().map(function (td, i) {
+            return $('input', td).prop('checked') ? '1' : '0';
+        });
+    };
+
+    // Custom sorting function for date column
+    $.fn.dataTable.ext.order['date-uk-pre'] = function (a) {
+        var ukDatea = a.replace(/ /g, '');
+        return Date.parse(ukDatea);
+    };
+
+    $.ajax({
+        url: 'getProducts',
+        method: 'GET',
+        success: function (data) {
+            var dataSet = data.map(function (item) {
+                var isListedRadios = '<input type="radio" name="isListed' + item.pid + '" value="true" ' +
+                        (item.isListed ? 'checked' : '') +
+                        '/> Yes ' +
+                        '<input type="radio" name="isListed' + item.pid + '" value="false" ' +
+                        (!item.isListed ? 'checked' : '') +
+                        '/> No ';
+
+                // Format date to YYYY-MM-DD for proper sorting
+                var formattedDate = new Date(item.date).toISOString().slice(0, 10);
+
+                return {
+                    pid: item.pid,
+                    img: '<img src="' + item.productimgs[0].imgpath + '" class="card-img-top img-fluid" alt="' + item.pname + '" style="width:50px;height:50px">',
+                    pname: item.pname,
+                    price: item.price,
+                    brand: item.brand.bname,
+                    category: item.category.catname,
+                    date: formattedDate,
+                    isListed: isListedRadios,
+                    actions: '<form action="updateProduct" method="get" style="display:inline-block;">' +
+                            '<input type="hidden" name="pid" value="' + item.pid + '" />' +
+                            '<button type="submit" class="btn btn-primary btn-sm">Update</button>' +
+                            '</form>' +
+                            '<form action="deleteProduct" method="post" style="display:inline-block;">' +
+                            '<input type="hidden" name="pid" value="' + item.pid + '" />' +
+                            '<button type="submit" class="btn btn-danger btn-sm">Delete<i class="bi bi-trash"></i></button>' +
+                            '</form>'
                 };
-
-                // Custom sorting function for date column
-                $.fn.dataTable.ext.order['date-uk-pre'] = function (a) {
-                    var ukDatea = a.replace(/ /g, '');
-                    return Date.parse(ukDatea);
-                };
-
-                $.ajax({
-                    url: 'getProducts',
-                    method: 'GET',
-                    success: function (data) {
-                        var dataSet = data.map(function (item) {
-                            var isListedRadios = '<input type="radio" name="isListed' + item.pid + '" value="true" ' +
-                                    (item.isListed ? 'checked' : '') +
-                                    '/> Yes ' +
-                                    '<input type="radio" name="isListed' + item.pid + '" value="false" ' +
-                                    (!item.isListed ? 'checked' : '') +
-                                    '/> No ';
-
-                            // Format date to YYYY-MM-DD for proper sorting
-                            var formattedDate = new Date(item.date).toISOString().slice(0, 10);
-
-                            return {
-                                pid: item.pid,
-                                img: '<img src="' + item.productimgs[0].imgpath + '" class="card-img-top img-fluid" alt="' + item.pname + '" style="width:50px;height:50px">',
-                                pname: item.pname,
-                                price: item.price,
-                                brand: item.brand.bname,
-                                category: item.category.catname,
-                                date: formattedDate,
-                                isListed: isListedRadios,
-                                actions: '<form action="updateProduct" method="get" style="display:inline-block;">' +
-                                        '<input type="hidden" name="pid" value="' + item.pid + '" />' +
-                                        '<button type="button" class="btn btn-primary btn-sm update-button">Update</button>' +
-                                        '</form>' +
-                                        '<form action="deleteProduct" method="post" style="display:inline-block;" class="delete-form">' +
-                                        '<input type="hidden" name="pid" value="' + item.pid + '" />' +
-                                        '<button type="button" class="btn btn-danger btn-sm delete-button">Delete<i class="bi bi-trash"></i></button>' +
-                                        '</form>'
-                            };
-                        });
-
-                        $('#product-table').DataTable({
-                            data: dataSet,
-                            columns: [
-                                {data: 'pid'},
-                                {data: 'img'},
-                                {data: 'pname'},
-                                {data: 'price'},
-                                {data: 'brand'},
-                                {data: 'category'},
-                                {data: 'date', title: 'Date', type: 'date-uk-pre'},
-                                {data: 'isListed', title: 'Is Listed', orderDataType: 'dom-checkbox'},
-                                {data: 'actions', title: 'Actions'}
-                            ],
-                            order: [[6, 'desc']], // Example: Sort by Date column descending by default
-                            paging: true,
-                            searching: true,
-                            info: true
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX Error:', error);
-                    }
-                });
-
-                // Confirmation dialog for delete button
-                $('#product-table').on('click', '.delete-button', function () {
-                    var form = $(this).closest('.delete-form');
-                    var confirmed = confirm('Deleting this product will delete all items from pending cart and order. Confirmed orders will appear as "Deleted Item". Are you sure?');
-                    if (confirmed) {
-                        form.submit();
-                    }
-                });
-
-                // Confirmation dialog for update button
-                $('#product-table').on('click', '.update-button', function () {
-                    var form = $(this).closest('form');
-                    var confirmed = confirm('Changing any field will remove the item from pending cart/order, and notify the customers, do you want to update it?');
-                    if (confirmed) {
-                        form.submit();
-                    }
-                });
             });
 
+            $('#product-table').DataTable({
+                data: dataSet,
+                columns: [
+                    {data: 'pid'},
+                    {data: 'img'},
+                    {data: 'pname'},
+                    {data: 'price'},
+                    {data: 'brand'},
+                    {data: 'category'},
+                    {data: 'date', title: 'Date', type: 'date-uk-pre'}, 
+                    {data: 'isListed', title: 'Is Listed', orderDataType: 'dom-checkbox'},
+                    {data: 'actions', title: 'Actions'}
+                ],
+                order: [[6, 'desc']], // Example: Sort by Date column descending by default
+                paging: true,
+                searching: true,
+                info: true
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', error);
+        }
+    });
+});
+
         </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     </body>
 </html>

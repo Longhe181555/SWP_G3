@@ -6,7 +6,7 @@
 package entity;
 
 
-public class Category{
+public class Category implements IEntity{
   private int catid;
   private String catname;
   private String cattype;

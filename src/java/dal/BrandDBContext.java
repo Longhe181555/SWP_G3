@@ -1,6 +1,7 @@
 package dal;
 
 import entity.Brand;
+import entity.IEntity;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
 
 public class BrandDBContext extends DBContext {
 
- 
+    @Override
     public ArrayList<Brand> list() {
         ArrayList<Brand> brands = new ArrayList<>();
         try {
@@ -31,7 +32,8 @@ public class BrandDBContext extends DBContext {
         return brands;
     }
 
-    public Brand get(int id) {
+    @Override
+    public IEntity get(int id) {
         try {
             String sql = "SELECT bid,bname FROM Brand WHERE bid=?";
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -49,6 +51,19 @@ public class BrandDBContext extends DBContext {
         return null;
     }
 
-   
+    @Override
+    public void insert(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void update(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void delete(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
 }

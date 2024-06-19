@@ -25,8 +25,15 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 
 @MultipartConfig
-@WebServlet("/CreateProductController")
 public class CreateProductController extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+
+        }
+    }
 
     private ProductDBContext productDB = new ProductDBContext();
     private BrandDBContext brandDB = new BrandDBContext();
@@ -35,6 +42,7 @@ public class CreateProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession();
         Account currentUser = (Account) session.getAttribute("account");
         if (currentUser != null) {
@@ -51,17 +59,6 @@ public class CreateProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-
-        if ("checkProductName".equals(action)) {
-            checkProductName(request, response);
-        } else {
-            createProduct(request, response);
-        }
-    }
-
-    private void createProduct(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
         try {
             String pname = request.getParameter("pname");
             int price = Integer.parseInt(request.getParameter("price"));
@@ -70,7 +67,6 @@ public class CreateProductController extends HttpServlet {
             int category = Integer.parseInt(request.getParameter("category"));
             Boolean isListed = Boolean.valueOf(request.getParameter("isListed"));
             ArrayList<String> imgpath = new ArrayList<>();
-
             String projectRoot = getServletContext().getRealPath("");
             String uploadPath = projectRoot.replace("\\build\\web", "") + "web" + File.separator + "img" + File.separator + "product_picture";
             Collection<Part> fileParts = request.getParts().stream().filter(part -> "files".equals(part.getName())).collect(Collectors.toList());
@@ -79,7 +75,7 @@ public class CreateProductController extends HttpServlet {
                 String fileName = extractFileName(filePart);
                 if (fileName != null && !fileName.isEmpty()) {
                     File file = new File(uploadPath + File.separator + fileName);
-                    imgpath.add("img"+File.separator+"product_picture" + File.separator + fileName);
+                    imgpath.add("img/product_picture" + File.separator + fileName);
                     try (InputStream fileContent = filePart.getInputStream()) {
                         FileUtils.copyInputStreamToFile(fileContent, file);
                         uploadedFiles.append(fileName).append(", ");
@@ -98,13 +94,6 @@ public class CreateProductController extends HttpServlet {
         }
     }
 
-    private void checkProductName(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String productName = request.getParameter("pname");
-        boolean exists = productDB.productNameExists(productName); // Implement this method in your DAO
-        response.setContentType("application/json");
-        response.getWriter().write("{\"exists\": " + exists + "}");
-    }
-
     private String extractFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] items = contentDisp.split(";");
@@ -115,4 +104,8 @@ public class CreateProductController extends HttpServlet {
         }
         return null;
     }
+    
+    
+    
+
 }

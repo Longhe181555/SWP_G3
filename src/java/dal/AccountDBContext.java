@@ -5,6 +5,7 @@
 package dal;
 
 import entity.Account;
+import entity.IEntity;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,7 +70,7 @@ public class AccountDBContext extends DBContext {
         return null;
     }
 
-  
+    @Override
     public ArrayList<Account> list() {
         ArrayList<Account> accounts = new ArrayList<>();
         try {
@@ -164,8 +165,8 @@ public class AccountDBContext extends DBContext {
     }
     
     
- 
-    public Account get(int id) {
+    @Override
+    public IEntity get(int id) {
         try {
             String sql = "SELECT [aid]\n"
                     + "      ,[fullname]\n"
@@ -300,29 +301,18 @@ public class AccountDBContext extends DBContext {
     return salt;
 }
 
-    
-    public void update(Account account) {
-        try {
-            String sql = "UPDATE Account SET fullname=?, username=?, password=?, email=?, phonenumber=?, gender=?, birthdate=?, address=?, img=?, role=? "
-                    + "WHERE aid=?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, account.getFullname());
-            stm.setString(2, account.getUsername());
-            stm.setString(3, account.getPassword());
-            stm.setString(4, account.getEmail());
-            stm.setString(5, account.getPhonenumber());
-            stm.setBoolean(6, account.getGender());
-            stm.setDate(7, account.getBirthdate());
-            stm.setString(8, account.getAddress());
-            stm.setString(9, account.getImg());
-            stm.setString(10, account.getRole());
-            stm.setInt(11, account.getAid());
-
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    @Override
+    public void insert(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    
+    @Override
+    public void update(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void delete(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

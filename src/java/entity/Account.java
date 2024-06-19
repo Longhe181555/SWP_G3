@@ -6,7 +6,7 @@
 package entity;
 import java.sql.*;
 
-public class Account{
+public class Account implements IEntity{
   private int aid;
   private String fullname;
   private String username;

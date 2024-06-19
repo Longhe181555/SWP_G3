@@ -4,7 +4,7 @@ package entity;
 import java.sql.Date;
 
 
-public class Feedback{
+public class Feedback implements IEntity{
   private int fid;
   private Account account;
   private String comment;
