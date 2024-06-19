@@ -16,11 +16,12 @@ public class BrandDBContext extends DBContext {
     public ArrayList<Brand> list() {
         ArrayList<Brand> brands = new ArrayList<>();
         try {
-            String sql = "SELECT bid,bname FROM Brand";
+            String sql = "SELECT bid,bname,img FROM Brand WHERE bid != 0";
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
                 Brand brand = new Brand();
+                brand.setImg(rs.getString("img"));
                 brand.setBid(rs.getInt("bid"));
                 brand.setBname(rs.getString("bname"));
                 brands.add(brand);
@@ -29,46 +30,6 @@ public class BrandDBContext extends DBContext {
             Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return brands;
-    }
-
-    @Override
-    public void insert(IEntity entity) {
-        Brand brand = (Brand) entity;
-        try {
-            String sql = "INSERT INTO Brand (bname) VALUES (?)";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, brand.getBname());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void update(IEntity entity) {
-        Brand brand = (Brand) entity;
-        try {
-            String sql = "UPDATE Brand SET bname=? WHERE bid=?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, brand.getBname());
-            stm.setInt(2, brand.getBid());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @Override
-    public void delete(IEntity entity) {
-        Brand brand = (Brand) entity;
-        try {
-            String sql = "DELETE FROM Brand WHERE bid=?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setInt(1, brand.getBid());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @Override
@@ -88,6 +49,21 @@ public class BrandDBContext extends DBContext {
             Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @Override
+    public void insert(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void update(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void delete(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

@@ -8,7 +8,7 @@ import java.sql.*;
 
 public class Account implements IEntity{
   private int aid;
-  private String loginname;
+  private String fullname;
   private String username;
   String password;
   String salt;
@@ -44,12 +44,12 @@ public class Account implements IEntity{
         this.aid = aid;
     }
 
-    public String getLoginname() {
-        return loginname;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setLoginname(String loginname) {
-        this.loginname = loginname;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public String getUsername() {

@@ -69,7 +69,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         if (account.getPassword().equals(hashedPassword)) {
             HttpSession session = request.getSession();
             session.setAttribute("account", account);
-            
             // Setting cookies
             Cookie c_user = new Cookie("username", username);
             c_user.setMaxAge(5000);

@@ -42,6 +42,6 @@ public class LogoutController extends HttpServlet {
         }
 
         // Redirect to the login page or any other landing page
-        response.sendRedirect("./homepage");
+        response.sendRedirect("homepage");
     }
 }
