@@ -46,11 +46,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
 @Override
 protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-    HttpSession session = request.getSession();
-    Account currentUser = (Account) session.getAttribute("account");
-    if(currentUser!=null) {
-    request.setAttribute("Account", currentUser);
-    }
+  
     processRequest(request, response);
 }
 

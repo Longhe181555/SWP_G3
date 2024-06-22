@@ -106,7 +106,7 @@
             <form action="${pageContext.request.contextPath}/cproduct" method="POST" enctype="multipart/form-data">
                 <div>
                     <label for="productImage">Product Image:</label>
-                    <input type="file" id="productImage" name="files" accept="image/*" multiple onchange="previewImages()" required>
+                    <input type="file" id="productImage" name="files" accept=".jpg,.jpeg,.png,.gif,.avif" multiple onchange="previewImages()" required>
                 </div>
                 <div class="form-group">
                     <label for="productName">Product Name:</label>
@@ -155,61 +155,56 @@
         </div>
 
         <script>
-            document.getElementById('pname').addEventListener('input', function () {
-    var pname = this.value;
-    var nameError = document.getElementById('nameError');
-    if (pname.length > 0) {
-        fetch('${pageContext.request.contextPath}/CreateProductController', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'action=checkProductName&pname=' + encodeURIComponent(pname)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.exists) {
-                nameError.style.display = 'block';
+    document.getElementById('pname').addEventListener('input', function () {
+        var pname = this.value;
+        var nameError = document.getElementById('nameError');
+        if (pname.length > 0) {
+            fetch('${pageContext.request.contextPath}/CreateProductController', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'action=checkProductName&pname=' + encodeURIComponent(pname)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    nameError.style.display = 'block';
+                } else {
+                    nameError.style.display = 'none';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        } else {
+            nameError.style.display = 'none';
+        }
+    });
+
+    function previewImages() {
+        var preview = document.querySelector('#image-preview');
+        var files = document.querySelector('input[type=file]').files;
+        var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/avif'];
+        
+        preview.innerHTML = ''; // Clear previous previews
+        
+        Array.from(files).forEach(function (file) {
+            if (allowedTypes.includes(file.type)) {
+                var reader = new FileReader();
+                reader.addEventListener('load', function () {
+                    var image = new Image();
+                    image.title = file.name;
+                    image.src = this.result;
+                    image.classList.add('thumbnail');
+                    preview.appendChild(image);
+                });
+                reader.readAsDataURL(file);
             } else {
-                nameError.style.display = 'none';
+                alert('Invalid file type: ' + file.name + '. Only JPG, JPEG, PNG, GIF, and AVIF files are allowed.');
             }
-        })
-        .catch(error => console.error('Error:', error));
-    } else {
-        nameError.style.display = 'none';
+        });
     }
-});
+</script>
 
-
-
-            function previewImages() {
-                var preview = document.querySelector('#image-preview');
-                var files = document.querySelector('input[type=file]').files;
-
-                preview.innerHTML = ''; // Clear previous previews
-
-                function readAndPreview(file) {
-                    // Make sure `file` is an image
-                    if (/\.(jpe?g|png|gif|avif)$/i.test(file.name)) {
-                        var reader = new FileReader();
-
-                        reader.addEventListener('load', function () {
-                            var image = new Image();
-                            image.title = file.name;
-                            image.src = this.result;
-                            image.classList.add('thumbnail');
-                            preview.appendChild(image);
-                        });
-
-                        reader.readAsDataURL(file);
-                    }
-                }
-
-                if (files) {
-                    [].forEach.call(files, readAndPreview);
-                }
-            }
-        </script>
     </body>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">

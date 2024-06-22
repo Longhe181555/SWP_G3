@@ -33,7 +33,7 @@ public class BrandDBContext extends DBContext {
     }
 
     @Override
-    public IEntity get(int id) {
+    public Brand get(int id) {
         try {
             String sql = "SELECT bid,bname FROM Brand WHERE bid=?";
             PreparedStatement stm = connection.prepareStatement(sql);
