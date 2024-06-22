@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FeedbackDBContext extends DBContext<IEntity> {
+public class FeedbackDBContext extends DBContext {
 
     @Override
     public ArrayList<IEntity> list() {

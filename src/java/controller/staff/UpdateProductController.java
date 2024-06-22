@@ -58,7 +58,7 @@ public class UpdateProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String pid = request.getParameter("pid");
-        Product product = productDB.get(Integer.parseInt(pid));
+        Product product = productDB.getProductDetail(Integer.parseInt(pid));
         ArrayList<Brand> brands = brandDB.list();
         request.setAttribute("brands", brands);
         request.setAttribute("product", product);
@@ -83,12 +83,10 @@ public class UpdateProductController extends HttpServlet {
         String bid = request.getParameter("brand");
         System.out.println(pid + pname + price + description+ bid);
         Brand brand = (Brand) brandDB.get(Integer.parseInt(bid));
-//         Fetch uploaded images
         List<Part> imageParts = request.getParts().stream()
                 .filter(part -> "images".equals(part.getName()) && part.getSize() > 0)
                 .collect(Collectors.toList());
 
-        // Update product in the database
         ProductDBContext pdb = new ProductDBContext();
         Product product = new Product();
         product.setPid(Integer.parseInt(pid));
