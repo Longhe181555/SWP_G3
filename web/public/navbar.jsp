@@ -32,6 +32,7 @@
                             </a>
                             <ul class="dropdown-menu" >
                                 <li><a class="dropdown-item" href="pmanagement" >Product Management</a></li>
+                                <li><a class="dropdown-item" href="smanagement" >Stock Management</a></li>
                                 <!--                                <li><a class="dropdown-item" href="#" >Another action</a></li>
                                                                 <li><hr class="dropdown-divider"></li>
                                                                 <li><a class="dropdown-item" href="#">Something else here</a></li>-->
