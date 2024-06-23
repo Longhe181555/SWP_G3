@@ -41,5 +41,5 @@ public class ChangeListedController extends BaseRequiredAuthenticationController
     public String getServletInfo() {
         return "Short description";
     }
-
+   
 }
