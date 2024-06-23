@@ -52,5 +52,12 @@ public class Size implements IEntity{
     public void setGender(Boolean gender) {
         this.gender = gender;
     }
+
+    @Override
+    public String toString() {
+        return "Size{" + "sid=" + sid + ", sname=" + sname + ", height=" + height + ", weight=" + weight + ", gender=" + gender + '}';
+    }
+    
+    
   
 }

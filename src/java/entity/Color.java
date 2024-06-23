@@ -25,5 +25,12 @@ public class Color implements IEntity{
     public void setCname(String cname) {
         this.cname = cname;
     }
+
+    @Override
+    public String toString() {
+        return "Color{" + "cid=" + cid + ", cname=" + cname + '}';
+    }
+    
+    
   
 }

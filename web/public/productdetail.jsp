@@ -10,9 +10,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
         <title>JSP Page</title>
         <style>
-            
+
             * {
                 margin: 0;
                 padding: 0;
@@ -75,10 +76,38 @@
                 cursor: pointer;
                 transition: color 0.3s ease, text-shadow 0.3s ease;
             }
+            .rating-stars {
+                color: gold;
+            }
+            .d-flex {
+                display: flex;
+            }
+
+            .align-items-center {
+                align-items: center;
+            }
+
+            .me-2 {
+                margin-right: 0.5rem;
+            }
+
+            .me-3 {
+                margin-right: 1rem;
+            }
+
+            .flex-wrap {
+                flex-wrap: wrap;
+            }
+
+            .form-check {
+                display: flex;
+                align-items: center;
+            }
+
         </style>
     </head>
     <body>
-        
+
         <div class="header">
             <div class="header-container">
                 <div class="header-options">
@@ -107,7 +136,7 @@
             <div class="nav-option ${param.nav == 'option4' ? 'active' : ''}" data-nav-option="option4">OPTION 4</div>
             <div class="nav-option ${param.nav == 'option5' ? 'active' : ''}" data-nav-option="option5">OPTION 5</div>-->
         </div>
-        
+
         <div class="container product_detail mt-5">
             <h1>Product Details</h1>
             <c:if test="${not empty product}">
@@ -136,25 +165,137 @@
                         <p class="font-weight-bold">${product.price}d</p>
                         <p>${product.description}</p>
                         <p><strong>Brand:</strong> ${product.brand.bname}</p>
+                        <div class="rating-stars">
+                            <c:forEach var="i" begin="1" end="5">
+                                <c:choose>
+                                    <c:when test="${i <= avr}">
+                                        <i class="fas fa-star"></i>
+                                    </c:when>
+                                    <c:when test="${i > avr && i - 1 < avr}">
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="far fa-star"></i>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                            <span>(${avr})</span>
+                        </div>
+                        <p class="mt-3"><strong>Price:</strong> ${product.price} $</p>
+
+                        <form action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="${product.pid}" />
+
+                            <div class="form-group d-flex align-items-center mb-3">
+                                <label for="sizeOptions" class="me-2"><strong>Size:</strong></label>
+                                <div id="sizeOptions" class="d-flex flex-wrap">
+                                    <c:forEach items="${sizes}" var="size">
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="size" id="size${size.sid}" value="${size.sid}" required>
+                                            <label class="form-check-label" for="size${size.sid}">
+                                                ${size.sname}
+                                            </label>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+
+                            <div class="form-group d-flex align-items-center mb-3">
+                                <label for="colorOptions" class="me-2"><strong>Color:</strong></label>
+                                <div id="colorOptions" class="d-flex flex-wrap">
+                                    <c:forEach items="${colors}" var="color">
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="color" id="color${color.cid}" value="${color.cid}" required>
+                                            <label class="form-check-label" for="color${color.cid}">
+                                                ${color.cname}
+                                            </label>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+
+                            <div class="form-group d-flex align-items-center mb-3">
+                                <label for="quantity" class="me-2"><strong>Quantity:</strong></label>
+                                <input type="number" name="quantity" id="quantity" class="form-control" min="1" value="1" style="width: 70px;">
+                            </div>
+                            <% if (request.getAttribute("message") != null) { %>
+                            <p class="btn-danger"><%= request.getAttribute("message") %></p>
+                            <% } %>
+                            <input type="hidden" name="action" value="addToCart" id="action">
+                            <button type="submit" class="btn btn-dark">Add to Cart</button>
+                            <button type="button" class="btn btn-success" id="buyNowButton">Buy Now</button>
+                        </form>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const buyNowButton = document.getElementById('buyNowButton');
+                                const actionInput = document.getElementById('action');
+                                const form = buyNowButton.closest('form');
+
+                                buyNowButton.addEventListener('click', function () {
+                                    actionInput.value = 'buyNow';
+                                    form.submit();
+                                });
+                            });
+                        </script>
+
+
+
                     </div>
+
                 </div>
             </c:if>
             <c:if test="${empty product}">
                 <p>Product not found.</p>
             </c:if>
         </div>
-        
-        
-        
-        
-        
-         <script>
+
+        <div class="container">
+            <h3 class="mt-5">Feedback</h3>
+            <c:forEach var="feedback" items="${fs}">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="${pageContext.request.contextPath}/${feedback.account.img}" alt="Profile Image" style="border-radius: 50%; width: 40px; height: 40px;" class="mr-3">
+                                <div>
+                                    <h5 class="card-title d-inline">${feedback.account.fullname}</h5>
+                                    <span class="card-text ml-3 rating-stars">
+                                        <c:forEach var="i" begin="1" end="5">
+                                            <c:choose>
+                                                <c:when test="${i <= feedback.rating}">
+                                                    <i class="fas fa-star"></i>
+                                                </c:when>
+                                                <c:when test="${i > feedback.rating && i - 1 < feedback.rating}">
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="far fa-star"></i>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:forEach>
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="card-text"><small class="text-muted">Date: ${feedback.date}</small></span>
+                            </div>
+                        </div>
+                        <p class="card-text mt-2">${feedback.comment}</p>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+
+
+
+        <script>
             function goToHomepage() {
                 window.location.href = '<%= request.getContextPath() %>/homepage';
             }
         </script>
-        
-        
+
+
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>

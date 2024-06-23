@@ -27,7 +27,7 @@ public class AccountDBContext extends DBContext {
     public Account checkAccountExist(String username) {
         try {
             String sql = "SELECT [aid]\n"
-                    + "      ,[loginname]\n"
+                    + "      ,[fullname]\n"
                     + "      ,[username]\n"
                     + "      ,[password]\n"
                     + "      ,[email]\n"
@@ -47,7 +47,7 @@ public class AccountDBContext extends DBContext {
             if (rs.next()) {
                 Account account = new Account();
                 account.setAid(rs.getInt("aid"));
-                account.setLoginname(rs.getString("loginname"));
+                account.setFullname(rs.getString("fullname"));
                 account.setUsername(rs.getString("username"));
                 account.setPassword(rs.getString("password"));
                 account.setEmail(rs.getString("email"));
@@ -75,7 +75,7 @@ public class AccountDBContext extends DBContext {
         ArrayList<Account> accounts = new ArrayList<>();
         try {
             String sql = "SELECT [aid]\n"
-                    + "      ,[loginname]\n"
+                    + "      ,[fullname]\n"
                     + "      ,[username]\n"
                     + "      ,[password]\n"
                     + "      ,[email]\n"
@@ -91,7 +91,7 @@ public class AccountDBContext extends DBContext {
             while (rs.next()) {
                 Account account = new Account();
                 account.setAid(rs.getInt("aid"));
-                account.setLoginname(rs.getString("loginname"));
+                account.setFullname(rs.getString("fullname"));
                 account.setUsername(rs.getString("username"));
                 account.setPassword(rs.getString("password"));
                 account.setEmail(rs.getString("email"));
@@ -120,10 +120,10 @@ public class AccountDBContext extends DBContext {
     public void insert(IEntity entity) {
         Account account = (Account) entity;
         try {
-            String sql = "INSERT INTO Account (loginname, username, password, email, phonenumber, gender, birthdate, address, img, role) "
+            String sql = "INSERT INTO Account (fullname, username, password, email, phonenumber, gender, birthdate, address, img, role) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, account.getLoginname());
+            stm.setString(1, account.getFullname());
             stm.setString(2, account.getUsername());
             stm.setString(3, account.getPassword());
             stm.setString(4, account.getEmail());
@@ -144,10 +144,10 @@ public class AccountDBContext extends DBContext {
     public void update(IEntity entity) {
         Account account = (Account) entity;
         try {
-            String sql = "UPDATE Account SET loginname=?, username=?, password=?, email=?, phonenumber=?, gender=?, birthdate=?, address=?, img=?, role=? "
+            String sql = "UPDATE Account SET fullname=?, username=?, password=?, email=?, phonenumber=?, gender=?, birthdate=?, address=?, img=?, role=? "
                     + "WHERE aid=?";
             PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, account.getLoginname());
+            stm.setString(1, account.getFullname());
             stm.setString(2, account.getUsername());
             stm.setString(3, account.getPassword());
             stm.setString(4, account.getEmail());
@@ -178,12 +178,56 @@ public class AccountDBContext extends DBContext {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public ArrayList<Account> getAllAccountByRole(String role) {
+        ArrayList<Account> accounts = new ArrayList<>();
+        try {
+            String sql = "SELECT [aid]\n"
+                    + "      ,[fullname]\n"
+                    + "      ,[username]\n"
+                    + "      ,[email]\n"
+                    + "      ,[phonenumber]\n"
+                    + "      ,[gender]\n"
+                    + "      ,[birthdate]\n"
+                    + "      ,[address]\n"
+                    + "      ,[img]\n"
+                    + "      ,[role]\n"
+                    + "  FROM Account\n"
+                    + " WHERE [role] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, role);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Account account = new Account();
+                account.setAid(rs.getInt("aid"));
+                account.setFullname(rs.getString("fullname"));
+                account.setUsername(rs.getString("username"));
+                account.setEmail(rs.getString("email"));
+                account.setPhonenumber(rs.getString("phonenumber"));
+                account.setGender(rs.getBoolean("gender"));
+                account.setBirthdate(rs.getDate("birthdate"));
+                account.setAddress(rs.getString("address"));
+                String img = rs.getString("img");
+                if (img == null || img.trim().isEmpty()) {
+                    img = "img/profile_picture/placeholder.png";
+                }
+                account.setImg(img);
+                account.setRole(rs.getString("role"));
 
+                accounts.add(account);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return accounts;
+    }
+    
+    
     @Override
     public IEntity get(int id) {
         try {
             String sql = "SELECT [aid]\n"
-                    + "      ,[loginname]\n"
+                    + "      ,[fullname]\n"
                     + "      ,[username]\n"
                     + "      ,[password]\n"
                     + "      ,[email]\n"
@@ -202,7 +246,7 @@ public class AccountDBContext extends DBContext {
             if (rs.next()) {
                 Account account = new Account();
                 account.setAid(rs.getInt("aid"));
-                account.setLoginname(rs.getString("loginname"));
+                account.setFullname(rs.getString("fullname"));
                 account.setUsername(rs.getString("username"));
                 account.setPassword(rs.getString("password"));
                 account.setEmail(rs.getString("email"));
@@ -227,7 +271,7 @@ public class AccountDBContext extends DBContext {
 
     public void addNewAccount(String username, String email, String password, String salt) {
         // Adjust the SQL query to include the salt column
-        String sql = "INSERT INTO [dbo].[Account] ([loginname], [username], [password], [email], [phonenumber], [gender], [birthdate], [address], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [address], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
