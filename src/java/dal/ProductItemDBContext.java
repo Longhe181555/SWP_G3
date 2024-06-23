@@ -5,6 +5,7 @@
 package dal;
 
 import entity.IEntity;
+import entity.Product;
 import entity.ProductImg;
 import entity.ProductItem;
 import java.sql.PreparedStatement;
@@ -13,6 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+
 
 public class ProductItemDBContext extends DBContext {
 
@@ -40,7 +43,8 @@ public class ProductItemDBContext extends DBContext {
                 pi.setColor(rs.getString("cname"));
                 pi.setSize(rs.getString("sname"));
                 pi.setStockcount(rs.getInt("stockcount"));
-                pi.setPid(rs.getInt("pid"));
+                Product p = pdb.getProductDetail(rs.getInt(pid));
+                pi.setProduct(p);
                 
                 pis.add(pi);
             }

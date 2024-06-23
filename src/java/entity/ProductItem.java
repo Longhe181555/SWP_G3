@@ -9,7 +9,7 @@ package entity;
 public class ProductItem implements IEntity {
   private int piid;
   private int stockcount;
-  private int pid;
+  private Product product;
   private String size;
   private String color;
 
@@ -29,12 +29,12 @@ public class ProductItem implements IEntity {
         this.stockcount = stockcount;
     }
 
-    public int getPid() {
-        return pid;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setPid(int pid) {
-        this.pid = pid;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getSize() {

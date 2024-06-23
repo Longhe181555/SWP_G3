@@ -97,7 +97,5 @@ public void insert(int aid, int pid, String comment, float rating) {
     return 0;
 }
 
-    public void insert(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 }
