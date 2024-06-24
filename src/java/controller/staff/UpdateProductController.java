@@ -81,26 +81,27 @@ public class UpdateProductController extends HttpServlet {
         String price = request.getParameter("price");
         String description = request.getParameter("description");
         String bid = request.getParameter("brand");
-        System.out.println(pid + pname + price + description+ bid);
-        Brand brand = (Brand) brandDB.get(Integer.parseInt(bid));
+        System.out.println(pid + pname + price + description);
+        
 //         Fetch uploaded images
-        List<Part> imageParts = request.getParts().stream()
-                .filter(part -> "images".equals(part.getName()) && part.getSize() > 0)
-                .collect(Collectors.toList());
+//        List<Part> imageParts = request.getParts().stream()
+//                .filter(part -> "images".equals(part.getName()) && part.getSize() > 0)
+//                .collect(Collectors.toList());
 
         // Update product in the database
+        Brand brand = brandDB.get(Integer.parseInt(bid));
         ProductDBContext pdb = new ProductDBContext();
-        Product product = new Product();
-        product.setPid(Integer.parseInt(pid));
+        Product product = pdb.get(Integer.parseInt(pid));
         product.setPname(pname);
         product.setPrice(Integer.parseInt(price));
         product.setDescription(description);
         product.setBrand(brand);
-
-        pdb.updateProduct(product, imageParts);
+        
+        pdb.updateProduct(product);
 
 //         Redirect to the product detail page after updating
         response.sendRedirect("productdetail?pid=" + pid);
+    
     }
 
     /**

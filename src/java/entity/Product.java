@@ -22,6 +22,8 @@ public class Product implements IEntity {
   private int discountedPrice;
   private String discountDescription;
   private float avarageRating;
+  private String productStatus;
+  
 
     public float getAvarageRating() {
         return avarageRating;
@@ -118,4 +120,15 @@ public class Product implements IEntity {
     public void setProductimgs(ArrayList<ProductImg> productimgs) {
         this.productimgs = productimgs;
     }
+
+    public String getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(String productStatus) {
+        this.productStatus = productStatus;
+    }
+
+  
+    
 }

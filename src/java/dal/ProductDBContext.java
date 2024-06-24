@@ -82,7 +82,7 @@ public class ProductDBContext extends DBContext {
                 c.setCatname(rs.getString("catname"));
                 c.setCattype(rs.getString("cattype"));
                 p.setCategory(c);
- 
+
                 Brand b = new Brand();
                 b.setBid(rs.getInt("bid"));
                 b.setBname(rs.getString("bname"));
@@ -167,7 +167,7 @@ public class ProductDBContext extends DBContext {
             }
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                 Product p = new Product();
+                Product p = new Product();
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -212,9 +212,19 @@ public class ProductDBContext extends DBContext {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public void delete(IEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void delete(int pid) {
+        try {
+            String sql = "UPDATE [dbo].[Product]\n"
+                    + "   SET [product_status] = ?\n"
+                    + " WHERE pid=?";
+            PreparedStatement st = connection.prepareCall(sql);
+            st.setBoolean(1 , false);
+            st.setInt(2,pid); 
+            st.execute();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
     }
 
     @Override
@@ -222,51 +232,53 @@ public class ProductDBContext extends DBContext {
         Product p = new Product();
         try {
             String sql = "SELECT\n"
-                    + "       p.pid, \n"
-                    + "       p.pname, \n"
-                    + "       p.price, \n"
-                    + "       MIN(CASE \n"
-                    + "              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) \n"
-                    + "              WHEN dt.type = 'fixedAmount' THEN p.price - d.value \n"
-                    + "              ELSE p.price \n"
-                    + "           END) AS discountedPrice, \n"
-                    + "       CASE \n"
-                    + "           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') \n"
-                    + "           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') \n"
-                    + "           ELSE NULL \n"
-                    + "       END AS discountDescription, \n"
-                    + "       AVG(f.rating) AS avgRating, \n"
-                    + "       p.description, \n"
-                    + "       p.Date, \n"
-                    + "       p.catid, \n"
-                    + "       c.catname, \n"
-                    + "       c.cattype, \n"
-                    + "       p.bid, \n"
-                    + "       b.bname \n"
-                    + "FROM Product p \n"
-                    + "LEFT JOIN ProductItem pi ON p.pid = pi.pid \n"
-                    + "LEFT JOIN Discount d ON pi.piid = d.piid \n"
-                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid \n"
-                    + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
-                    + "JOIN Category c ON p.catid = c.catid \n"
-                    + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where p.pid = ?\n"
-                    + "GROUP BY p.pid, \n"
-                    + "         p.pname, \n"
-                    + "         p.price, \n"
-                    + "         p.description, \n"
-                    + "         p.Date, \n"
-                    + "         p.catid, \n"
-                    + "         c.catname, \n"
-                    + "         c.cattype, \n"
-                    + "         p.bid, \n"
-                    + "         b.bname\n"
-                    + "ORDER BY [Date] DESC";
+        + "       p.pid, \n"
+        + "       p.pname, \n"
+        + "       p.price, \n"
+        + "       MIN(CASE \n"
+        + "              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) \n"
+        + "              WHEN dt.type = 'fixedAmount' THEN p.price - d.value \n"
+        + "              ELSE p.price \n"
+        + "           END) AS discountedPrice, \n"
+        + "       CASE \n"
+        + "           WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') \n"
+        + "           WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') \n"
+        + "           ELSE NULL \n"
+        + "       END AS discountDescription, \n"
+        + "       AVG(f.rating) AS avgRating, \n"
+        + "       p.description, \n"
+        + "       p.Date, \n"
+        + "       p.catid, \n"
+        + "       c.catname, \n"
+        + "       c.cattype, \n"
+        + "       p.bid, \n"
+        + "       b.bname, \n"
+        + "       p.product_status \n" 
+        + "FROM Product p \n"
+        + "LEFT JOIN ProductItem pi ON p.pid = pi.pid \n"
+        + "LEFT JOIN Discount d ON pi.piid = d.piid \n"
+        + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid \n"
+        + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
+        + "JOIN Category c ON p.catid = c.catid \n"
+        + "JOIN Brand b ON p.bid = b.bid \n"
+        + "WHERE p.pid = ?\n"
+        + "GROUP BY p.pid, \n"
+        + "         p.pname, \n"
+        + "         p.price, \n"
+        + "         p.description, \n"
+        + "         p.Date, \n"
+        + "         p.catid, \n"
+        + "         c.catname, \n"
+        + "         c.cattype, \n"
+        + "         p.bid, \n"
+        + "         b.bname, \n"
+        + "         p.product_status\n" 
+        + "ORDER BY p.Date DESC";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, pid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                 
+
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -275,7 +287,7 @@ public class ProductDBContext extends DBContext {
                 p.setAvarageRating(rs.getFloat("avgRating"));
                 p.setDescription(rs.getString("description"));
                 p.setDate(rs.getDate("Date"));
-
+                p.setProductStatus(rs.getString("product_status")); 
                 Category c = new Category();
                 c.setCatid(rs.getInt("catid"));
                 c.setCatname(rs.getString("catname"));
@@ -290,15 +302,14 @@ public class ProductDBContext extends DBContext {
                 // Fetch product images
                 ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
                 p.setProductimgs(productImages);
-                
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return p;
     }
-    
+
     public Product getProductDetail(int pid) {
         Product p = new Product();
         try {
@@ -347,7 +358,7 @@ public class ProductDBContext extends DBContext {
             ps.setInt(1, pid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                 
+
                 p.setPid(rs.getInt("pid"));
                 p.setPname(rs.getString("pname"));
                 p.setPrice(rs.getInt("price"));
@@ -371,15 +382,13 @@ public class ProductDBContext extends DBContext {
                 // Fetch product images
                 ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
                 p.setProductimgs(productImages);
-                
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return p;
     }
-    
 
     public ArrayList<ArrayList<Product>> listPage(String sort, String filter, String sortByDate) {
         ArrayList<ArrayList<Product>> pages = new ArrayList<>();
@@ -614,6 +623,7 @@ public class ProductDBContext extends DBContext {
         }
         return null;
     }
+
     public boolean updateIsListed(int pid, boolean isListed) {
         boolean success = false;
         try {
@@ -631,8 +641,9 @@ public class ProductDBContext extends DBContext {
         }
         return success;
     }
-     public void updateProduct(Product product, List<Part> imageParts) {
-        
+
+    public void updateProduct(Product product) {
+
         try {
             String updateQuery = "UPDATE Product SET pname = ?, price = ?, description = ?, bid = ? WHERE pid = ?";
             PreparedStatement stm = connection.prepareStatement(updateQuery);
@@ -642,33 +653,30 @@ public class ProductDBContext extends DBContext {
             stm.setInt(4, product.getBrand().getBid());
             stm.setInt(5, product.getPid());
             stm.executeUpdate();
-            
-            // Handle image upload if necessary
-            if (!imageParts.isEmpty()) {
-                // Implement your logic to save the uploaded images
-            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-}
-     public void updateProduct(Product product, List<Part> imageParts) {
+    }
+
+    @Override
+    public void delete(IEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    public int getProductStatus(int pid) {
+    int status = -1;
+    try {
+        String sql = "SELECT product_status FROM Product WHERE pid = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, pid);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            status = rs.getInt("product_status");
+        }
+    } catch (SQLException ex) {
         
-        try {
-            String updateQuery = "UPDATE Product SET pname = ?, price = ?, description = ?, bid = ? WHERE pid = ?";
-            PreparedStatement stm = connection.prepareStatement(updateQuery);
-            stm.setString(1, product.getPname());
-            stm.setDouble(2, product.getPrice());
-            stm.setString(3, product.getDescription());
-            stm.setInt(4, product.getBrand().getBid());
-            stm.setInt(5, product.getPid());
-            stm.executeUpdate();
-            
-            // Handle image upload if necessary
-            if (!imageParts.isEmpty()) {
-                // Implement your logic to save the uploaded images
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    }
+    return status;
 }
+
 }

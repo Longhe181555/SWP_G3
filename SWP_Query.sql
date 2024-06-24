@@ -71,7 +71,8 @@ CREATE TABLE Product(
    catid int FOREIGN KEY (catid) REFERENCES Category(catid),
    bid int FOREIGN KEY (bid) REFERENCES Brand(bid),
    islisted BIT,
-   Date Date
+   Date Date,
+   product_status bit
 )
 
 CREATE TABLE ProductImg(
@@ -210,7 +211,7 @@ insert into Color(cname) values('placeholder')
 insert into Brand(bname) values('placeholder')
 insert into Size(sname,height,weight,gender) values('ph','ph','ph',1)
 insert into Category(catname,cattype) values('ph','ph')
-insert into Product(pname,price,islisted,catid,bid,Date) values('ph',0,0,0,0,GETDATE())
+insert into Product(pname,price,islisted,catid,bid,Date,product_status) values('ph',0,0,0,0,GETDATE(), 1)
 insert into ProductImg(pid,imgpath) values(0,'img/product_picture/placeholder.png'),
 (0,'img/product_picture/placeholder.png'),
 (0,'img/product_picture/placeholder.png')
@@ -253,43 +254,43 @@ INSERT INTO  Size(sname,height,weight,gender) VALUES
 --('L','1m53-1m58','46-53kg',0),
 --('XL','1m55-1m66','57-66kg',0)
 
-INSERT INTO Product(pname,price,catid,bid,islisted,description,Date) VALUES
+INSERT INTO Product(pname,price,catid,bid,islisted,description,Date, product_status) VALUES
 --('', 0,0,0,1)
 
 --Shirt insert uniqlo
-('AIRism Cotton Half Sleeve Oversized T-Shirt', 391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-6),
-('AIRism Cotton Striped Crew Neck Oversized T-Shirt',391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-9),
-('Crew Neck Short Sleeve T-Shirt',293000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-8),
-('Supima Cotton Crew Neck Short Sleeve T-Shirt',191000,1,1,1,'- Smooth, premium 100% SUPIMA® cotton. Basic design styles on its own or in layered looks. Designed with meticulous attention to detail, down to the collar width and stitching.',GETDATE()-7),
+('AIRism Cotton Half Sleeve Oversized T-Shirt', 391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-6,1),
+('AIRism Cotton Striped Crew Neck Oversized T-Shirt',391000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-9,1),
+('Crew Neck Short Sleeve T-Shirt',293000,1,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-8,1),
+('Supima Cotton Crew Neck Short Sleeve T-Shirt',191000,1,1,1,'- Smooth, premium 100% SUPIMA® cotton. Basic design styles on its own or in layered looks. Designed with meticulous attention to detail, down to the collar width and stitching.',GETDATE()-7,1),
 --Shirt insert somi omen
-('Somi Cotton Linen Cat-style 1',250000,4,2,1,'Cute cat-stack textures',GETDATE()-6),
-('Somi Cotton Linen Cat-style 2',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-6),
-('Somi Cotton Linen Cat-style 3',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-10),
-('Somi Cotton Linen Cat-style 4',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-10),
-('Somi Cotton Linen Cat-style 5',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-8),
+('Somi Cotton Linen Cat-style 1',250000,4,2,1,'Cute cat-stack textures',GETDATE()-6, 1),
+('Somi Cotton Linen Cat-style 2',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-6, 1),
+('Somi Cotton Linen Cat-style 3',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-10, 1),
+('Somi Cotton Linen Cat-style 4',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-10, 1),
+('Somi Cotton Linen Cat-style 5',290000,4,2,1,'Cat themed shirt, casual wear',GETDATE()-8, 1),
 
 --Short Pant insert uniqlo
-('Stretch Slim Fit Shorts',588000,2,1,1,'Stretch twill cotton fabric with a soft texture and an elegant look. Slim fit with minimal stitching. Comfortable elasticated waist',GETDATE()-6),
-('Chino Shorts',588000,2,1,1,'Newly updated with light fabric for an airy feel. Long, roomy cut creates a relaxed look. We’ve adjusted the fit and length for easier pairing with oversized tops. These chino shorts are a casual wardrobe essential.',GETDATE()-6),
-('Parachute Cargo Shorts',391000,2,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-7),
-('Geared Shorts',291000,2,1,1,'Nylon ripstop material with a water-repellent finish. The finish is not permanent. Convenient side pocket with slide fastener. Utility design includes an easy buckle belt and pockets with high storage capacity. Perfect for everyday wear or the great outdoors.',GETDATE()-9),
-('Linen Blend Shorts',199000,2,1,1,'Premium twill weave material combines the benefits of linen and cotton. The distinctive texture of linen, blended with cotton for a soft touch. Gathered elastic waist for comfort.',GETDATE()-10),
+('Stretch Slim Fit Shorts',588000,2,1,1,'Stretch twill cotton fabric with a soft texture and an elegant look. Slim fit with minimal stitching. Comfortable elasticated waist',GETDATE()-6, 1),
+('Chino Shorts',588000,2,1,1,'Newly updated with light fabric for an airy feel. Long, roomy cut creates a relaxed look. We’ve adjusted the fit and length for easier pairing with oversized tops. These chino shorts are a casual wardrobe essential.',GETDATE()-6, 1),
+('Parachute Cargo Shorts',391000,2,1,1,'The Uniqlo U collection is the realization of a dedicated and skilled team of international designers based at our Paris Research and Development Center led by Artistic Director Christophe Lemaire.',GETDATE()-7, 1),
+('Geared Shorts',291000,2,1,1,'Nylon ripstop material with a water-repellent finish. The finish is not permanent. Convenient side pocket with slide fastener. Utility design includes an easy buckle belt and pockets with high storage capacity. Perfect for everyday wear or the great outdoors.',GETDATE()-9, 1),
+('Linen Blend Shorts',199000,2,1,1,'Premium twill weave material combines the benefits of linen and cotton. The distinctive texture of linen, blended with cotton for a soft touch. Gathered elastic waist for comfort.',GETDATE()-10, 1),
 
 --Jean Pant insert uniqlo
-('Relaxed Ankle Jeans',980000,3,1,1,'Exceptionally soft fabric ensures a comfortable fit. Made with soft twist and double-ply threads for added durability. Soft yet shape-retaining fabric prevents bagginess at the knees. Wide fit with roomy cut at the thighs.',GETDATE()-6),
-('Ultra Stretch Color Jeans',784000,3,1,1,'Ultra stretch satin fabric. Comfortable skinny fit. - Finer yarns create an elegant, glossy brushed texture. Comfortable yet sleek elastic waist design. Drawstring waist means they can be worn without a belt.',GETDATE()-7),
-('Slim Fit Jeans',489000,3,1,1,'Stretch denim combines an authentic denim look with a soft feel. Versatile sleek slim fit. Washed using a water-saving process developed at our Jeans Innovation Center and treated with an innovative laser process to create an authentic worn-in look.',GETDATE()-12),
+('Relaxed Ankle Jeans',980000,3,1,1,'Exceptionally soft fabric ensures a comfortable fit. Made with soft twist and double-ply threads for added durability. Soft yet shape-retaining fabric prevents bagginess at the knees. Wide fit with roomy cut at the thighs.',GETDATE()-6, 1),
+('Ultra Stretch Color Jeans',784000,3,1,1,'Ultra stretch satin fabric. Comfortable skinny fit. - Finer yarns create an elegant, glossy brushed texture. Comfortable yet sleek elastic waist design. Drawstring waist means they can be worn without a belt.',GETDATE()-7, 1),
+('Slim Fit Jeans',489000,3,1,1,'Stretch denim combines an authentic denim look with a soft feel. Versatile sleek slim fit. Washed using a water-saving process developed at our Jeans Innovation Center and treated with an innovative laser process to create an authentic worn-in look.',GETDATE()-12, 1),
 
 -- nike stuff
-('Zion Men T-Shirt',919000,1,3,1,'Made from midweight cotton that feels soft and has a slight drape, this classic tee is a comfortable way to show off your admiration for Zion.',GETDATE()-6),
-('Nike Sportswear Men Max90 T-Shirt',1279000,1,3,1,'Throwback hoops style meets soft-cotton comfort in this roomy tee. Dropped shoulders and a loose fit through the body give our Max90 tee a relaxed and casual look, while soft, midweight cotton fabric has you feeling like an all-star.',GETDATE()-6),
-('Men Dri-FIT 13cm (approx.) Unlined Versatile Shorts',1019000,2,3,1,'Designed for running, training and yoga, the versatile Form shorts are built to handle those days when you need to shake up your exercise routine.',GETDATE()-10),
+('Zion Men T-Shirt',919000,1,3,1,'Made from midweight cotton that feels soft and has a slight drape, this classic tee is a comfortable way to show off your admiration for Zion.',GETDATE()-6, 1),
+('Nike Sportswear Men Max90 T-Shirt',1279000,1,3,1,'Throwback hoops style meets soft-cotton comfort in this roomy tee. Dropped shoulders and a loose fit through the body give our Max90 tee a relaxed and casual look, while soft, midweight cotton fabric has you feeling like an all-star.',GETDATE()-6, 1),
+('Men Dri-FIT 13cm (approx.) Unlined Versatile Shorts',1019000,2,3,1,'Designed for running, training and yoga, the versatile Form shorts are built to handle those days when you need to shake up your exercise routine.',GETDATE()-10, 1),
 
 --adidas stuff   --('',0,0,4,0,'',GETDATE()-3)
-('SPORTSWEAR UNDENIABLE TEE',950000,1,4,1,'Dotted with sneakers, this adidas t-shirt is versatile yet playful. Made from cotton single jersey, it feels comfortable against your torso, and the classic crewneck cut is always a winner. A great option for weekends, this tee will get plenty of wear just like your favourite adidas kicks.',GETDATE()-1),
-('ESSENTIALS SINGLE JERSEY LINEAR EMBROIDERED LOGO TEE',550000,1,4,1,'Made from soft cotton jersey, it feels great against your skin. Our cotton products support more sustainable cotton farming',GETDATE()),
-('MANCHESTER UNITED TIRO 24 POLO SHIRT',300000,5,4,1,'This adidas polo shirt is made from soft cotton-blend fabric that keeps you feeling comfortable during your downtime. An embroidered club badge on the chest displays your football fandom so you can proudly show your support wherever life leads.',GETDATE()),
-('PREMIUM POLO SHIRT',499000,5,4,1,'Woven with lightweight jacquard, it keeps you cool and comfortable while subtly signalling your connection to adidas heritage. Signature details like the embroidered Trefoil on the chest and iconic 3-Stripes down the sleeve twist a sporty look into an everyday essential. ',GETDATE())
+('SPORTSWEAR UNDENIABLE TEE',950000,1,4,1,'Dotted with sneakers, this adidas t-shirt is versatile yet playful. Made from cotton single jersey, it feels comfortable against your torso, and the classic crewneck cut is always a winner. A great option for weekends, this tee will get plenty of wear just like your favourite adidas kicks.',GETDATE()-1, 1),
+('ESSENTIALS SINGLE JERSEY LINEAR EMBROIDERED LOGO TEE',550000,1,4,1,'Made from soft cotton jersey, it feels great against your skin. Our cotton products support more sustainable cotton farming',GETDATE(),1),
+('MANCHESTER UNITED TIRO 24 POLO SHIRT',300000,5,4,1,'This adidas polo shirt is made from soft cotton-blend fabric that keeps you feeling comfortable during your downtime. An embroidered club badge on the chest displays your football fandom so you can proudly show your support wherever life leads.',GETDATE(), 1),
+('PREMIUM POLO SHIRT',499000,5,4,1,'Woven with lightweight jacquard, it keeps you cool and comfortable while subtly signalling your connection to adidas heritage. Signature details like the embroidered Trefoil on the chest and iconic 3-Stripes down the sleeve twist a sporty look into an everyday essential. ',GETDATE(), 1)
 INSERT INTO ProductImg(pid,imgpath) VALUES
 --(,'img/product_picture/'),
 (1,'img/product_picture/alrism-cotton-half-sleeve-0.avif'),

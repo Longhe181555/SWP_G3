@@ -75,7 +75,7 @@
                                             <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item" href="logout">Logout</a></li>
                                         </ul>
-                                    </div>
+                                    </div>delte
                                 </li>
                             </c:otherwise>
                         </c:choose>
@@ -173,15 +173,15 @@
                                         '<input type="hidden" name="pid" value="' + item.pid + '" />' +
                                         '<button type="submit" class="btn btn-primary btn-sm">Update</button>' +
                                         '</form>' +
-                                        '<form action="deleteProduct" method="post" style="display:inline-block;">' +
+                                        '<form action="delete" method="post" style="display:inline-block;">' +
                                         '<input type="hidden" name="pid" value="' + item.pid + '" />' +
                                         '<button type="submit" class="btn btn-danger btn-sm">Delete<i class="bi bi-trash"></i></button>' +
                                         '</form>'
                             };
                         });
-
+                        const filteredDataSet = dataSet.filter(product => product.product_status !== 0);
                         $('#product-table').DataTable({
-                            data: dataSet,
+                            data: filteredDataSet,
                             columns: [
                                 {data: 'pid'},
                                 {data: 'img'},
