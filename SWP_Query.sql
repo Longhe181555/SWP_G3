@@ -122,9 +122,9 @@ CREATE TABLE Payment(
 CREATE TABLE [Order](
    orid INT IDENTITY(0,1) PRIMARY KEY,
    aid int FOREIGN KEY (aid) REFERENCES Account(aid),
-   date int,
+   date date,
    description varchar(MAX),
-   status bit,
+   status varchar(50),
    pmid int FOREIGN KEY (pmid) REFERENCES Payment(pmid)
 )
 
@@ -514,6 +514,31 @@ VALUES
 (0,46,15, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0,45,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0,47,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
+SET IDENTITY_INSERT Payment ON;
+
+INSERT INTO Payment (bname, bnumber, aid)
+VALUES ('Bank D', '1234567890', 1);
+
+INSERT INTO Payment (bname, bnumber, aid)
+VALUES ('Bank E', '2345678901', 2);
+
+INSERT INTO Payment (bname, bnumber, aid)
+VALUES ('Bank F', '3456789012', 3);
+
+SET IDENTITY_INSERT Payment OFF;
+
+INSERT INTO [Order] (aid, date, description, status, pmid)
+VALUES (1, '2024-06-24', 'Order Description 1', 'Pending', 7);
+
+INSERT INTO [Order] (aid, date, description, status, pmid)
+VALUES (2, '2024-06-23', 'Order Description 2', 'Completed', 8);
+
+INSERT INTO [Order] (aid, date, description, status, pmid)
+VALUES (3, '2024-06-22', 'Order Description 3', 'Shipped', 7);
+
+INSERT INTO [Order] (aid, date, description, status, pmid)
+VALUES (4, '2024-06-21', 'Order Description 4', 'Cancelled', 9);
+
 
 
 
@@ -560,3 +585,4 @@ VALUES
                     ORDER BY [Date] DESC
 		
 
+		

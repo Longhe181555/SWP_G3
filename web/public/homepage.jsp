@@ -133,6 +133,7 @@
                                         <ul class="dropdown-menu" aria-labelledby="accountDropdown">
                                             <li><a class="dropdown-item" href="account">Account Detail</a></li>
                                             <li><a class="dropdown-item" href="#">Order History</a></li>
+                                            <li><a class="dropdown-item" href="vieworder">View Order</a></li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item" href="logout">Logout</a></li>
                                         </ul>

@@ -56,6 +56,10 @@
         <servlet-name>DeleteProductController</servlet-name>
         <servlet-class>controller.staff.DeleteProductController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewOrderController</servlet-name>
+        <servlet-class>controller.public_.ViewOrderController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -117,6 +121,10 @@
     <servlet-mapping>
         <servlet-name>DeleteProductController</servlet-name>
         <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewOrderController</servlet-name>
+        <url-pattern>/vieworder</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>public/homepage</welcome-file>
