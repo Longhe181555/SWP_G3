@@ -232,6 +232,53 @@ public class AccountDBContext extends DBContext {
         }
     }
     
+    public int addNewStaff(Account account) {
+        // Adjust the SQL query to include the salt column
+        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [address], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, account.getFullname());
+            stm.setString(2, account.getUsername());
+            stm.setString(3, account.getPassword());
+            stm.setString(4, account.getEmail());
+            stm.setString(5, account.getPhonenumber());
+            stm.setBoolean(6, Boolean.valueOf(null));
+            stm.setDate(7, null);
+            stm.setString(8, account.getAddress());
+            stm.setString(9, "img/profile_picture/placeholder.png");
+            stm.setString(10, "staff");
+            // Set the salt parameter
+            stm.setString(11, account.getSalt());
+            return stm.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Fail");
+        }
+        return 0;
+    }
+    
+    public int editStaff(Account account) {
+        // Adjust the SQL query to include the salt column
+        String sql = "UPDATE [dbo].[Account]\n" +
+                "   SET  "
+                + " [email] = ? , "
+                + " [address] = ? , "
+                + " [phonenumber] = ? "
+                + " WHERE [aid] = ? ";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, account.getEmail());
+            stm.setString(2, account.getAddress());
+            stm.setString(3, account.getPhonenumber());
+            stm.setInt(4, account.getAid());
+            return stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    
+    
     public void changePassword(String aid, String newPass, String salt) {
     try {
         // Hash the new password with the provided salt
