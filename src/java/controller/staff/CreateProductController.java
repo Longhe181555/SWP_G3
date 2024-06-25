@@ -79,7 +79,7 @@ public class CreateProductController extends HttpServlet {
                 String fileName = extractFileName(filePart);
                 if (fileName != null && !fileName.isEmpty()) {
                     File file = new File(uploadPath + File.separator + fileName);
-                    imgpath.add("img"+File.separator+"product_picture" + File.separator + fileName);
+                    imgpath.add("img/product_picture" + File.separator + fileName);
                     try (InputStream fileContent = filePart.getInputStream()) {
                         FileUtils.copyInputStreamToFile(fileContent, file);
                         uploadedFiles.append(fileName).append(", ");
