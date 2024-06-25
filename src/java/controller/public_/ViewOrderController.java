@@ -58,7 +58,7 @@ public class ViewOrderController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
-        List<Order> orders = orderDB.getPendingOrders();
+        List<Order> orders = orderDB.getOrders();
 //        System.out.println("Orders retrieved: " + orders.size());
 //          for (Order order : orders) {
 //            System.out.println("Order ID: " + order.getOrid());

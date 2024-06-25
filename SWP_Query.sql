@@ -516,14 +516,14 @@ VALUES
 (0,47,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
 SET IDENTITY_INSERT Payment ON;
 
-INSERT INTO Payment (bname, bnumber, aid)
-VALUES ('Bank D', '1234567890', 1);
+INSERT INTO Payment (pmid, bname, bnumber, aid)
+VALUES (7, 'Bank D', '1234567890', 1);
 
-INSERT INTO Payment (bname, bnumber, aid)
-VALUES ('Bank E', '2345678901', 2);
+INSERT INTO Payment (pmid, bname, bnumber, aid)
+VALUES (8, 'Bank E', '2345678901', 2);
 
-INSERT INTO Payment (bname, bnumber, aid)
-VALUES ('Bank F', '3456789012', 3);
+INSERT INTO Payment (pmid, bname, bnumber, aid)
+VALUES (9, 'Bank F', '3456789012', 3);
 
 SET IDENTITY_INSERT Payment OFF;
 
@@ -538,6 +538,35 @@ VALUES (3, '2024-06-22', 'Order Description 3', 'Shipped', 7);
 
 INSERT INTO [Order] (aid, date, description, status, pmid)
 VALUES (4, '2024-06-21', 'Order Description 4', 'Cancelled', 9);
+
+SELECT orid FROM [Order];
+
+SET IDENTITY_INSERT [OrderItem] ON;
+
+INSERT INTO [SWP_G3].[dbo].[OrderItem] (oiid, amount, piid, orid)
+VALUES 
+    (1, 100, 10, 0),  -- Assuming orid 1 exists
+    (2, 200, 20, 1),  -- Assuming orid 2 exists
+    (3, 150, 30, 2),  -- Assuming orid 3 exists
+    (4, 300, 40, 3),  -- Assuming orid 4 exists
+    (5, 100, 10, 0),  -- Assuming orid 1 exists
+    (6, 200, 20, 1),  -- Assuming orid 2 exists
+    (7, 150, 30, 2),  -- Assuming orid 3 exists
+    (8, 300, 40, 3),  -- Assuming orid 4 exists
+    (9, 100, 10, 0),  -- Assuming orid 1 exists
+    (10, 200, 20, 1), -- Assuming orid 2 exists
+    (11, 150, 30, 2), -- Assuming orid 3 exists
+    (12, 300, 40, 3); -- Assuming orid 4 exists
+
+SET IDENTITY_INSERT [OrderItem] OFF;
+ALTER TABLE [Order]
+ADD approval_status VARCHAR(50) DEFAULT 'Pending';
+
+DROP VIEW dbo.vw_OrderDetail;
+
+
+
+
 
 
 

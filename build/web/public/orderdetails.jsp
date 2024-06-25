@@ -51,18 +51,29 @@
         </style>
     </head>
     <body>
-        <div class="container">
-            <h1>Order Details</h1>
-            <div class="order-details">
-                <p><strong>Order ID:</strong> ${order.orid}</p>
-                <p><strong>AID:</strong> ${order.aid}</p>
-                <p><strong>Date:</strong> ${order.date}</p>
-                <p><strong>Description:</strong> ${order.description}</p>
-                <p><strong>Status:</strong> ${order.status}</p>
-                <p><strong>PMID:</strong> ${order.pmid}</p>
-            </div>
-            <a href="/home" class="btn-back-home">Back Home</a>
-        </div>
+        <h1>Order Details</h1>
+        <table border="1">
+            <tr>
+                <th>Order ID</th>
+                <th>Account ID</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Total Amount</th>
+                <th>Items</th>
+            </tr>
+                <tr>
+                    <td>${orderdetail.getOrid()}</td>
+                    <td>${orderdetail.getAid()}</td>
+                    <td>${orderdetail.getDate()}</td>
+                    <td>${orderdetail.getDescription()}</td>
+                    <td>${orderdetail.getStatus()}</td>
+                    <td>${orderdetail.getTotalAmount()}</td>
+                    <td>${orderdetail.getItems()}</td>
+                    <td><a href="approve" class="details-link">Approve</a></td>
+                    <td><a href="" class="details-link">Reject</a></td>
+                </tr>
+        </table>
     </body>
 </html>
 

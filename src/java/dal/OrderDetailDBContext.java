@@ -6,8 +6,9 @@ package dal;
 
 import entity.IEntity;
 import entity.Order;
-import java.sql.ResultSet;
+import entity.OrderDetail;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,58 +16,70 @@ import java.util.List;
  *
  * @author duong
  */
-public class OrderDBContext extends DBContext {
-
+public class OrderDetailDBContext extends DBContext {
+    
     @Override
     public ArrayList list() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public void insert(IEntity entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public void update(IEntity entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public void delete(IEntity entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+    
     @Override
     public IEntity get(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-     public List<Order> getOrders() {
-        List<Order> orders = new ArrayList<>();
+    
+    public OrderDetail getOrderDetail(int orid) {
+       
         try {
-            String sql = "SELECT orid, aid, date, description, status, pmid FROM [Order]";
+            String sql = "SELECT * FROM vw_OrderDetail where orid=?";
             PreparedStatement stm = connection.prepareCall(sql);
+            stm.setInt(1, orid);
             ResultSet rs = stm.executeQuery();
+            
             while (rs.next()) {
-                Order order = new Order();
-                order.setOrid(rs.getInt("orid"));
-                order.setAid(rs.getInt("aid"));
-                order.setDate(rs.getDate("date"));
-                order.setDescription(rs.getString("description"));
-                order.setStatus(rs.getString("status"));
-                order.setPmid(rs.getInt("pmid"));
-                orders.add(order);
-//                System.out.println("Order ID: " + order.getOrid());
-//                System.out.println("AID: " + order.getAid());
-//                System.out.println("Date: " + order.getDate());
-//                System.out.println("Description: " + order.getDescription());
-//                System.out.println("Status: " + order.getStatus());
-//                System.out.println("PMID: " + order.getPmid());
+                OrderDetail orderDetail = new OrderDetail();
+                orderDetail.setOrid(rs.getInt("orid"));
+                orderDetail.setAid(rs.getInt("aid"));
+                orderDetail.setDate(rs.getString("date"));
+                orderDetail.setDescription(rs.getString("description"));
+                orderDetail.setStatus(rs.getString("status"));
+                orderDetail.setApprovalStatus("approval_status");
+                orderDetail.setTotalAmount(rs.getDouble("total_amount"));
+                orderDetail.setItems(rs.getString("items"));
+                return orderDetail;
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Number of pending orders fetched: " + orders.size());
-        return orders;
-     }
+        return null;
+    }
+    
+    public void updateOrderStatus(int orid, String approvalStatus) {
+        
+        try {
+            String sql = "UPDATE dbo.[Order] SET approval_status = ? WHERE orid = ?";
+            PreparedStatement stm = connection.prepareCall(sql);
+            stm.setString(1, approvalStatus);
+            stm.setInt(2, orid);
+            stm.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

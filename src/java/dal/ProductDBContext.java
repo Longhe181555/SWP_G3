@@ -663,20 +663,19 @@ public class ProductDBContext extends DBContext {
     public void delete(IEntity entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    public int getProductStatus(int pid) {
-    int status = -1;
+    public boolean getProductStatus(int pid) {
     try {
         String sql = "SELECT product_status FROM Product WHERE pid = ?";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setInt(1, pid);
         ResultSet rs = ps.executeQuery();
         if (rs.next()) {
-            status = rs.getInt("product_status");
+            return rs.getBoolean("product_status");
         }
     } catch (SQLException ex) {
         
     }
-    return status;
+    return false;
 }
 
 }
