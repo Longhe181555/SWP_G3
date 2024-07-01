@@ -220,6 +220,7 @@ INSERT INTO Account(fullname, username, password, role, salt) VALUES
 ('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==');
 
 INSERT INTO Payment(aid,bname,bnumber) values(5,'TPBank','123456789')
+INSERT INTO Address(aid,address) values (5,'Ha Noi'),(5, 'Hai Duong'),(5,'Hai Phong'),(5,'Kien An')
 
 insert into Color(cname) values('purple')
 insert into Brand(bname) values('Zara')
