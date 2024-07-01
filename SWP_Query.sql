@@ -537,7 +537,13 @@ VALUES
 (0,46,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
 
 
-INSERT INTO Cart (amount,piid,totalprice,aid) values(1,1,391000,5),(1,13,191000,5)
+INSERT INTO Cart (amount,piid,totalprice,aid) values(1,1,391000,5),(1,13,191000,5),
+(1,1,391000,0),(1,13,191000,0),
+(1,1,391000,1),(1,13,191000,1),
+(1,1,391000,2),(1,13,191000,2),
+(1,1,391000,3),(1,13,191000,3),
+(1,1,391000,4),(1,13,191000,4)
+
 
 -- Order will insert of different month, week interval for testing purpose, from the same user, for now user aid 5 will be the tester
 
@@ -562,3 +568,24 @@ INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2
 --Order last week approved
 INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
+
+
+
+SELECT pi.piid,
+       pi.stockcount,
+       pi.pid,
+       s.sname,
+       c.cname,
+       dt.type,
+	   d.did,
+       d.[value],
+	   d.[from],
+	   d.[to]
+FROM ProductItem pi
+JOIN Color c ON pi.cid = c.cid
+JOIN Size s ON s.sid = pi.sid
+LEFT JOIN Discount d ON pi.piid = d.piid
+LeFT JOIN DiscountType dt on d.dtid = dt.dtid
+WHERE pi.pid = 6 AND sname = 'S' AND cname = 'yellow'
+AND (d.[from] IS NULL OR d.[from] <= GETDATE())
+AND (d.[to] IS NULL OR d.[to] >= GETDATE());

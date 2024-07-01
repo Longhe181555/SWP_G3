@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import util.ProductSortHelper;
@@ -28,36 +29,11 @@ import util.ProductSortHelper;
  *
  * @author ADMIN
  */
-@WebServlet(name = "ProductDetailController", urlPatterns = {"/ProductDetailController"})
 public class ProductDetailController extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-
-        }
-    }
-
-    private ProductDBContext productDB = new ProductDBContext();
+  private ProductDBContext productDB = new ProductDBContext();
     private FeedbackDBContext feedbackDB = new FeedbackDBContext();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser != null) {
-            request.setAttribute("Account", currentUser);
-        }
         String pidStr = request.getParameter("pid");
         if (pidStr != null) {
             try {
@@ -65,12 +41,18 @@ public class ProductDetailController extends HttpServlet {
                 int pid = Integer.parseInt(pidStr);
                 Product product = productDB.get(pid);
                 request.setAttribute("product", product);
-                ArrayList<Feedback> fs = feedbackDB.getByPid(pid);
+
                 ProductItemDBContext pidb = new ProductItemDBContext();
-                ArrayList<ProductItem> pis = pidb.getByPid(pid);
-                request.setAttribute("pis", pis);
-                Map<String, List<ProductItem>> groupedBySize = ph.groupBySize(pis);
-                request.setAttribute("groupedBySize", groupedBySize);
+                ArrayList<ProductItem> productItems = pidb.getByPid(pid);
+                Map<String, List<ProductItem>> groupedByColor = new HashMap<>();
+                for (ProductItem item : productItems) {
+                    groupedByColor.computeIfAbsent(item.getColor(), k -> new ArrayList<>()).add(item);
+                }
+
+                request.setAttribute("productItems", productItems);
+                request.setAttribute("groupedByColor", groupedByColor);
+
+                ArrayList<Feedback> fs = feedbackDB.getByPid(pid);
                 float temp = feedbackDB.getAverageRatingByPid(pid);
                 request.setAttribute("avr", temp);
                 request.setAttribute("fs", ph.getFirstAmountElements(fs, 3));
@@ -81,23 +63,28 @@ public class ProductDetailController extends HttpServlet {
         } else {
             response.sendRedirect("homepage");
         }
+    } 
+  @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String size = request.getParameter("size");
+        String color = request.getParameter("color");
+        int pid = Integer.parseInt(request.getParameter("pid"));
+
+       
+        ProductItemDBContext pidb = new ProductItemDBContext();
+        ProductItem item = pidb.getByPidSizeColor(pid, size, color); 
+        
+        // Send the discounted price back as JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print("{\"discountedPrice\": " + item.getDiscountedPrice() + ", \"piid\": " + item.getPiid() + ", \"value\": " + item.getDiscount().getValue() + "}");
+        out.flush();
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

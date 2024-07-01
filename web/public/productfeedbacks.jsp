@@ -74,7 +74,7 @@
                             <div class="carousel-inner">
                                 <c:forEach var="img" items="${product.productimgs}" varStatus="loop">
                                     <div class="carousel-item <c:if test='${loop.index == 0}'>active</c:if>">
-                                        <img src="${pageContext.request.contextPath}/${img.imgpath}" class="d-block w-100" alt="Product Image">
+                                        <img src="${pageContext.request.contextPath}/${img.imgpath}" class="d-block w-100 h-100" alt="Product Image">
                                     </div>
                                 </c:forEach>
                             </div>
