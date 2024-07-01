@@ -4,8 +4,10 @@
  */
 package dal;
 
+import entity.Color;
 import entity.Product;
 import entity.ProductItem;
+import entity.Size;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +40,7 @@ public class ProductItemDBContext extends DBContext {
                 pi.setColor(rs.getString("cname"));
                 pi.setSize(rs.getString("sname"));
                 pi.setStockcount(rs.getInt("stockcount"));
-                Product p = pdb.getProductDetail(rs.getInt(pid));
+                Product p = pdb.getProductDetail(pid);
                 pi.setProduct(p);
 
                 pis.add(pi);
@@ -96,5 +98,132 @@ public class ProductItemDBContext extends DBContext {
         }
         return pis;
     }
+    
+   public boolean updateStock(int piid, int newStockCount) {
+        try {
+            String sql = "UPDATE ProductItem SET stockcount = ? WHERE piid = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, newStockCount);
+            stm.setInt(2, piid);
+            int rowsUpdated = stm.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductItemDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+   
+    public boolean updateStock(int sid,int cid, int pid, int newStockCount) {
+        try {
+            String sql = "UPDATE ProductItem SET stockcount = ? WHERE sid = ? AND cid = ? AND pid = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, newStockCount);
+            stm.setInt(2, sid);
+            stm.setInt(3, cid);
+            stm.setInt(4, pid);
+            int rowsUpdated = stm.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductItemDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
+    public int getCurrentStock(int sid,int cid, int pid) {
+       int stockcount = 0;
+        try {
+            String sql = "SELECT stockcount from ProductItem WHERE sid = ? AND cid = ? AND pid = ? ";
+                  
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, sid);
+            stm.setInt(2, cid);
+            stm.setInt(3, pid);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+               stockcount = rs.getInt("stockcount");
+               return stockcount;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return stockcount;
+    }
 
+   
+   
+   public ArrayList<Color> colorList() {
+        ArrayList<Color> colors = new ArrayList<>();
+        try {
+            String sql ="Select cid,cname from Color";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+              Color c = new Color();
+              c.setCid(rs.getInt("cid"));
+              c.setCname(rs.getString("cname"));
+              colors.add(c);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return colors;
+    }
+    public ArrayList<Size> sizeList() {
+        ArrayList<Size> sizes = new ArrayList<>();
+        try {
+            String sql ="Select sid,sname from Size where gender = 1";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+              Size s = new Size();
+              s.setSid(rs.getInt("sid"));
+              s.setSname(rs.getString("sname"));
+              sizes.add(s);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return sizes;
+    }
+    public void addProductItem(int sid, int cid, int stockcount,int pid) {
+        try {
+          
+            String checkSql = "SELECT piid FROM ProductItem WHERE sid = ? AND cid = ? AND pid = ?";
+            PreparedStatement checkStm = connection.prepareStatement(checkSql);
+            checkStm.setInt(1, sid);
+            checkStm.setInt(2, cid);
+            checkStm.setInt(3, pid);
+            ResultSet rs = checkStm.executeQuery();
+            
+            if (rs.next()) {
+              
+            } else {
+           
+                String insertSql = "INSERT INTO ProductItem (sid, cid, stockcount,pid) VALUES (?, ?, ?,?)";
+                PreparedStatement insertStm = connection.prepareStatement(insertSql);
+                insertStm.setInt(1, sid);
+                insertStm.setInt(2, cid);
+                insertStm.setInt(3, stockcount);
+                insertStm.setInt(4, pid);
+                insertStm.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductItemDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+   
+   public boolean checkProductItemExists(int size, int color,int pid) {
+    try {
+        String sql = "SELECT * FROM ProductItem WHERE sid = ? AND cid = ? AND pid = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, size);
+        stm.setInt(2, color);
+        stm.setInt(3, pid);
+        ResultSet rs = stm.executeQuery();
+        return (rs.next());
+    } catch (SQLException ex) {
+        Logger.getLogger(ProductItemDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return false;
+}
 }

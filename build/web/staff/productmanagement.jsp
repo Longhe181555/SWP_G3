@@ -13,12 +13,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
-        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         <style>
-            .placeholder{
-                height: 64px;
-                width: 100%;
-            }
+         
         </style>
     </head>
     <body>
@@ -134,7 +130,7 @@
                                 {data: 'isListed', title: 'Is Listed', orderDataType: 'dom-checkbox'},
                                 {data: 'actions', title: 'Actions'}
                             ],
-                            order: [[6, 'desc']], // Example: Sort by Date column descending by default
+                            order: [[6, 'desc']], 
                             paging: true,
                             searching: true,
                             info: true
@@ -154,7 +150,7 @@
                     }
                 });
 
-                // Confirmation dialog for update button
+            
                 $('#product-table').on('click', '.update-button', function () {
                     var form = $(this).closest('form');
                     var confirmed = confirm('Changing any field will remove the item from pending cart/order, and notify the customers, do you want to update it?');

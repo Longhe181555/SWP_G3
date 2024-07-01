@@ -221,9 +221,9 @@ INSERT INTO Account(fullname, username, password, role, salt) VALUES
 
 INSERT INTO Payment(aid,bname,bnumber) values(5,'TPBank','123456789')
 
-insert into Color(cname) values('placeholder')
-insert into Brand(bname) values('placeholder')
-insert into Size(sname,height,weight,gender) values('ph','ph','ph',1)
+insert into Color(cname) values('purple')
+insert into Brand(bname) values('Zara')
+insert into Size(sname,height,weight,gender) values('ph','ph','ph',0)
 insert into Category(catname,cattype) values('ph','ph')
 insert into Product(pname,price,islisted,catid,bid,Date) values('ph',0,0,0,0,GETDATE())
 insert into ProductImg(pid,imgpath) values(0,'img/product_picture/placeholder.png'),
@@ -561,7 +561,3 @@ INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2
 --Order last week approved
 INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
-
-
-
-

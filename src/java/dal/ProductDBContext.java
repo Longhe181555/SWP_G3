@@ -348,6 +348,7 @@ public class ProductDBContext extends DBContext {
                     + "       c.catname, \n"
                     + "       c.cattype, \n"
                     + "       p.bid, \n"
+                    + "       p.isListed, \n"
                     + "       b.bname \n"
                     + "FROM Product p \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
@@ -362,6 +363,7 @@ public class ProductDBContext extends DBContext {
                 p.setPrice(rs.getInt("price"));
                 p.setDescription(rs.getString("description"));
                 p.setDate(rs.getDate("Date"));
+                p.setIsListed(rs.getBoolean("isListed"));
                 Category c = new Category();
                 c.setCatid(rs.getInt("catid"));
                 c.setCatname(rs.getString("catname"));
