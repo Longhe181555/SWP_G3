@@ -97,8 +97,6 @@
                                 </select>
                                 <label class="labels">Date of Birth</label>
                                 <input type="date" class="form-control" value="${account.birthdate}" required name="dob">
-                                <label class="labels">Address</label>
-                                <input type="text" class="form-control" placeholder="Address" value="${account.address}" required name="address">
                             </div>
                         </div>
                         <div class="mt-5 text-center">

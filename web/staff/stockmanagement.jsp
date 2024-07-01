@@ -20,7 +20,7 @@
     <body>
         <%@ include file="../public/navbar.jsp" %>
 
-        
+  
         <input type="hidden" value='${stockList}' id="stockList" />
         <div class="container" style="margin-top:40px">
             <div>

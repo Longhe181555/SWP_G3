@@ -15,7 +15,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import util.EncryptionHelper;
 
 /**
  *
@@ -26,7 +29,40 @@ public class ViewListStaffAccount extends BaseRequiredAuthenticationController {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, Account account) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String username = req.getParameter("username");
+        String fullname = req.getParameter("fullname");
+        String phoneNumber = req.getParameter("phoneNumber");
+        String address = req.getParameter("address");
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+
+        AccountDBContext db = new AccountDBContext();
+        Account check = db.checkAccountExist(username);
+
+        if (check != null) {
+            String error = "Username is existed";
+            resp.getWriter().print(error);
+        } else {
+            String salt = EncryptionHelper.generateSalt();
+            String hashedPassword = "";
+            try {
+                hashedPassword = EncryptionHelper.hashPassword(password, salt);
+            } catch (NoSuchAlgorithmException ex) {
+            } catch (InvalidKeySpecException ex) {
+            }
+            Account newAccount = new Account();
+            newAccount.setFullname(fullname);
+            newAccount.setUsername(username);
+            newAccount.setPassword(hashedPassword);
+            newAccount.setEmail(email);
+            newAccount.setPhonenumber(phoneNumber);
+            int result = db.addNewStaff(newAccount);
+            if(result != 0){
+                resp.getWriter().print("Successfully");
+            }else{
+                resp.getWriter().print("Add fail");
+            }
+        }
     }
 
     @Override
@@ -37,7 +73,5 @@ public class ViewListStaffAccount extends BaseRequiredAuthenticationController {
         req.setAttribute("staffs", gson.toJson(staffs));
         req.getRequestDispatcher("ViewAllStaffAccount.jsp").forward(req, resp);
     }
-
-    
 
 }

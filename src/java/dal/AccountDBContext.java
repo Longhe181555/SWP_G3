@@ -32,7 +32,6 @@ public class AccountDBContext extends DBContext {
                     + "      ,[phonenumber]\n"
                     + "      ,[gender]\n"
                     + "      ,[birthdate]\n"
-                    + "      ,[address]\n"
                     + "      ,[img]\n"
                     + "     ,[salt]\n"
                     + "      ,[role]\n"
@@ -52,7 +51,6 @@ public class AccountDBContext extends DBContext {
                 account.setPhonenumber(rs.getString("phonenumber"));
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
-                account.setAddress(rs.getString("address"));
                 account.setSalt(rs.getString("salt"));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
@@ -80,7 +78,6 @@ public class AccountDBContext extends DBContext {
                     + "      ,[phonenumber]\n"
                     + "      ,[gender]\n"
                     + "      ,[birthdate]\n"
-                    + "      ,[address]\n"
                     + "      ,[img]\n"
                     + "      ,[role]\n"
                     + "  FROM Account\n";
@@ -96,7 +93,6 @@ public class AccountDBContext extends DBContext {
                 account.setPhonenumber(rs.getString("phonenumber"));
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
-                account.setAddress(rs.getString("address"));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";
@@ -113,7 +109,9 @@ public class AccountDBContext extends DBContext {
     }
 
     
-
+    public void setLastLogin(int aid) {
+        
+    }
     
 
     
@@ -129,7 +127,6 @@ public class AccountDBContext extends DBContext {
                     + "      ,[phonenumber]\n"
                     + "      ,[gender]\n"
                     + "      ,[birthdate]\n"
-                    + "      ,[address]\n"
                     + "      ,[img]\n"
                     + "      ,[role]\n"
                     + "  FROM Account\n"
@@ -146,7 +143,6 @@ public class AccountDBContext extends DBContext {
                 account.setPhonenumber(rs.getString("phonenumber"));
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
-                account.setAddress(rs.getString("address"));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";
@@ -174,7 +170,6 @@ public class AccountDBContext extends DBContext {
                     + "      ,[phonenumber]\n"
                     + "      ,[gender]\n"
                     + "      ,[birthdate]\n"
-                    + "      ,[address]\n"
                     + "      ,[img]\n"
                     + "      ,[salt]\n"
                     + "      ,[role]\n"
@@ -193,7 +188,6 @@ public class AccountDBContext extends DBContext {
                 account.setPhonenumber(rs.getString("phonenumber"));
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
-                account.setAddress(rs.getString("address"));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";
@@ -211,7 +205,7 @@ public class AccountDBContext extends DBContext {
 
     public void addNewAccount(String username, String email, String password, String salt) {
         // Adjust the SQL query to include the salt column
-        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [address], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
@@ -221,7 +215,6 @@ public class AccountDBContext extends DBContext {
             stm.setString(5, null);
             stm.setBoolean(6, Boolean.valueOf(null));
             stm.setDate(7, null);
-            stm.setString(8, null);
             stm.setString(9, "img/profile_picture/placeholder.png");
             stm.setString(10, "customer");
             // Set the salt parameter
@@ -232,10 +225,52 @@ public class AccountDBContext extends DBContext {
         }
     }
     
+    public int addNewStaff(Account account) {
+        // Adjust the SQL query to include the salt column
+        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, account.getFullname());
+            stm.setString(2, account.getUsername());
+            stm.setString(3, account.getPassword());
+            stm.setString(4, account.getEmail());
+            stm.setString(5, account.getPhonenumber());
+            stm.setBoolean(6, Boolean.valueOf(null));
+            stm.setDate(7, null);
+            stm.setString(9, "img/profile_picture/placeholder.png");
+            stm.setString(10, "staff");
+            // Set the salt parameter
+            stm.setString(11, account.getSalt());
+            return stm.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Fail");
+        }
+        return 0;
+    }
+    
+    public int editStaff(Account account) {
+        // Adjust the SQL query to include the salt column
+        String sql = "UPDATE [dbo].[Account]\n" +
+                "   SET  "
+                + " [email] = ? , "
+                + " [phonenumber] = ? "
+                + " WHERE [aid] = ? ";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, account.getEmail());
+            stm.setString(3, account.getPhonenumber());
+            stm.setInt(4, account.getAid());
+            return stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    
+    
     public void changePassword(String aid, String newPass, String salt) {
     try {
-        // Hash the new password with the provided salt
-        // Prepare the SQL statement
         String sql = "UPDATE Account SET password = ?, salt = ? WHERE aid = ?";
 
         // Execute the SQL statement
@@ -303,7 +338,7 @@ public class AccountDBContext extends DBContext {
   
     public void update(Account account) {
         try {
-            String sql = "UPDATE Account SET fullname=?, username=?, password=?, email=?, phonenumber=?, gender=?, birthdate=?, address=?, img=?, role=? "
+            String sql = "UPDATE Account SET fullname=?, username=?, password=?, email=?, phonenumber=?, gender=?, birthdate=?, img=?, role=? "
                     + "WHERE aid=?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, account.getFullname());
@@ -313,7 +348,6 @@ public class AccountDBContext extends DBContext {
             stm.setString(5, account.getPhonenumber());
             stm.setBoolean(6, account.getGender());
             stm.setDate(7, account.getBirthdate());
-            stm.setString(8, account.getAddress());
             stm.setString(9, account.getImg());
             stm.setString(10, account.getRole());
             stm.setInt(11, account.getAid());
