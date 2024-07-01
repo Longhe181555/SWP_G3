@@ -70,8 +70,9 @@ CREATE TABLE Product(
    [description] varchar(max),
    catid int FOREIGN KEY (catid) REFERENCES Category(catid),
    bid int FOREIGN KEY (bid) REFERENCES Brand(bid),
-   islisted BIT,
-   Date Date
+   islisted int,
+   Date Date,
+   productStatus bit
 )
 
 CREATE TABLE ProductImg(
@@ -102,12 +103,21 @@ email varchar(50),
 phonenumber varchar(50),
 gender BIT,
 birthdate DATE,
-address varchar(MAX),
+address varchar(MAx),
 img varchar(100),
-role varchar(100)
+role varchar(100),
+status varchar(100),
+lastLogin Date
 )
 -- bit boolean T - Male, F- Female
 -- img giu path den file anh
+
+CREATE TABLE [Address](
+adid INT IDENTITY(0,1) PRIMARY KEY,
+address varchar(100),
+aid int FOREIGN KEY (aid) References Account(aid)
+)
+
 
 CREATE TABLE Payment(
  pmid  INT IDENTITY(0,1) PRIMARY KEY,
@@ -115,45 +125,6 @@ CREATE TABLE Payment(
  bnumber nvarchar(100),
  aid int FOREIGN KEY (aid) REFERENCES Account(aid)
 )
-
-
-
-CREATE TABLE [Order](
-   orid INT IDENTITY(0,1) PRIMARY KEY,
-   aid int FOREIGN KEY (aid) REFERENCES Account(aid),
-   date int,
-   description varchar(MAX),
-   status bit,
-   pmid int FOREIGN KEY (pmid) REFERENCES Payment(pmid)
-)
-
--- Giu thong tin tong cua order, OrderItem giu do trong order day
--- Co the them "address" trong day, default se la address trong account va nguoi dung co the doi
--- description la cho note cho shipper hoac cho seller.
--- status de biet reject hay accept
--- bill giu total price, gia tien cua ca order
--- date chi giu ngay order dc dat 
-
-CREATE TABLE OrderItem(
-  oiid INT IDENTITY(0,1) PRIMARY KEY,
-  amount int not null,
-  piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
-  orid int FOREIGN KEY (orid) REFERENCES [Order](orid)
-)
--- giong cart
-
-
-CREATE TABLE Feedback(
- fid INT IDENTITY(0,1) PRIMARY KEY,
- aid int FOREIGN KEY (aid) REFERENCES Account(aid),
- comment varchar(MAX),
- rating float,
- pid int FOREIGN KEY (pid) REFERENCES Product(pid),
- date DATE
-)
-
--- feed back co the de aid ko co reference key de them kha nang de anonymous comment
-
 
 CREATE TABLE DiscountType(
  dtid INT IDENTITY(0,1) PRIMARY KEY,
@@ -171,14 +142,59 @@ CREATE TABLE Discount (
     FOREIGN KEY (piid) REFERENCES ProductItem(piid)
 );
 
+
+CREATE TABLE [Order](
+   orid INT IDENTITY(0,1) PRIMARY KEY,
+   aid int FOREIGN KEY (aid) REFERENCES Account(aid),
+   date int,
+   description varchar(MAX),
+   status int,
+   totalprice int,
+   address varchar(Max),
+   pmid int FOREIGN KEY (pmid) REFERENCES Payment(pmid)
+)
+
+-- Giu thong tin tong cua order, OrderItem giu do trong order day
+-- Co the them "address" trong day, default se la address trong account va nguoi dung co the doi
+-- description la cho note cho shipper hoac cho seller.
+-- status de biet reject hay accept
+-- bill giu total price, gia tien cua ca order
+-- date chi giu ngay order dc dat 
+
+CREATE TABLE OrderItem(
+  oiid INT IDENTITY(0,1) PRIMARY KEY,
+  amount int not null,
+  soldPrice int not null,  --per Item,  after Discount
+  piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
+  orid int FOREIGN KEY (orid) REFERENCES [Order](orid),
+  product_status varchar(50),
+  did int FOREIGN KEY (did) REFERENCES [Discount](did)
+)
+-- giong cart
+
+
+CREATE TABLE Feedback(
+ fid INT IDENTITY(0,1) PRIMARY KEY,
+ aid int FOREIGN KEY (aid) REFERENCES Account(aid),
+ comment varchar(MAX),
+ rating float,
+ pid int FOREIGN KEY (pid) REFERENCES Product(pid),
+ date DATE
+)
+
+-- feed back co the de aid ko co reference key de them kha nang de anonymous comment
+
+
+
+
 CREATE TABLE Cart(
    cartid INT IDENTITY(0,1) PRIMARY KEY,
    amount int not null,
    totalprice int,
    aid int FOREIGN KEY (aid) REFERENCES Account(aid),
    piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
-   stockstatus bit,
-   did int FOREIGN KEY(did) REFERENCES Discount(did)
+   did int FOREIGN KEY(did) REFERENCES Discount(did),
+   product_status varchar(50)
 )
 
 -- vi cart se luu lai cho nguoi co account the nen can aid
@@ -444,6 +460,13 @@ INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES
 
 
 
+--('white'),('black'),('gray'),('blue'),('pink'),('yellow'),('green'),('red')
+
+--1. 'S'
+--2. 'M'
+--3. 'L'
+--4. 'XL'
+
 
 INSERT INTO ProductItem (pid, cid, sid,stockcount) VALUES
 (1, 1, 1,30),
@@ -492,8 +515,7 @@ INSERT INTO ProductItem (pid, cid, sid,stockcount) VALUES
 (8,2,4,50),
 (19,2,1,100),
 (19,2,2,100),
-(19,2,3,100),
-(3,1,1,40)
+(19,2,3,100)
 --Select * from ProductItem
 --Select * from Product
 --Select * from Color
@@ -516,46 +538,5 @@ VALUES
 
 
 
-                    SELECT
-                           p.pid, 
-                         p.pname, 
-                         p.price, 
-                          MIN(CASE 
-                              WHEN dt.type = 'percentage' THEN p.price - (p.price * d.value / 100) 
-                                  WHEN dt.type = 'fixedAmount' THEN p.price - d.value 
-                                  ELSE p.price 
-                               END) AS discountedPrice, 
-                           CASE 
-                               WHEN MIN(dt.type) = 'percentage' THEN CONCAT(MIN(d.value), '%') 
-                               WHEN MIN(dt.type) = 'fixedAmount' THEN CONCAT('-', MIN(d.value), 'đ') 
-                               ELSE NULL 
-                           END AS discountDescription, 
-                           AVG(f.rating) AS avgRating, 
-                           p.description, 
-                           p.Date,
-                           p.catid, 
-                           c.catname, 
-                           c.cattype, 
-                           p.bid, 
-                           b.bname 
-                    FROM Product p 
-                    LEFT JOIN ProductItem pi ON p.pid = pi.pid 
-                    LEFT JOIN Discount d ON pi.piid = d.piid 
-                    LEFT JOIN DiscountType dt ON d.dtid = dt.dtid 
-                    LEFT JOIN Feedback f ON p.pid = f.pid 
-                    JOIN Category c ON p.catid = c.catid 
-                    JOIN Brand b ON p.bid = b.bid 
-                    Where p.pid = 1
-                    GROUP BY p.pid, 
-                             p.pname, 
-                             p.price, 
-                             p.description, 
-                             p.Date, 
-                             p.catid, 
-                             c.catname, 
-                             c.cattype, 
-                             p.bid, 
-                             b.bname
-                    ORDER BY [Date] DESC
-		
+
 

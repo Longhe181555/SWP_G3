@@ -47,7 +47,7 @@ public class UpdateAccountServlet extends HttpServlet {
         currentUser.setPhonenumber(phone);
         currentUser.setGender(genderBoolean);
         currentUser.setBirthdate(birthdate);
-        currentUser.setAddress(address);
+   
 
         accountDBContext.update(currentUser);
         session.setAttribute("message", "Saved!");

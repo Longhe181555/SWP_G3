@@ -17,6 +17,8 @@ public class Order {
     private int totalAmount;
     private int status;
     private String note;
+    private int totalPrice;
+    private String address;
 
     public int getOrderId() {
         return orderId;
@@ -64,6 +66,22 @@ public class Order {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
     
     

@@ -55,7 +55,6 @@ public class ViewListStaffAccount extends BaseRequiredAuthenticationController {
             newAccount.setUsername(username);
             newAccount.setPassword(hashedPassword);
             newAccount.setEmail(email);
-            newAccount.setAddress(address);
             newAccount.setPhonenumber(phoneNumber);
             int result = db.addNewStaff(newAccount);
             if(result != 0){

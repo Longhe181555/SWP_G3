@@ -19,6 +19,9 @@ public class ProductDBContext extends DBContext {
 
     ProductImgDBContext pdb = new ProductImgDBContext();
 
+    
+    
+    
     public ArrayList<Product> list() {
         ArrayList<Product> products = new ArrayList<>();
         try {
@@ -51,7 +54,7 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where\n"
+                    + "Where \n"
                     + "(GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)\n"
                     + "GROUP BY p.pid, \n"
                     + "         p.pname, \n"

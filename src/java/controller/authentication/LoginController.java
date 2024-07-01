@@ -39,14 +39,6 @@ public class LoginController extends HttpServlet {
         request.getRequestDispatcher("common/login.jsp").forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
    @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String username = request.getParameter("username");
@@ -54,7 +46,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
     
     AccountDBContext db = new AccountDBContext();
     Account account = db.checkAccountExist(username);
-
+    
     if (account != null) {
         String storedSalt = account.getSalt();
         String hashedPassword = "";
@@ -63,17 +55,15 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        System.out.println("");
         
         
         if (account.getPassword().equals(hashedPassword)) {
             HttpSession session = request.getSession();
             session.setAttribute("account", account);
-            // Setting cookies
             Cookie c_user = new Cookie("username", username);
             c_user.setMaxAge(5000);
             response.addCookie(c_user);
-            
             response.sendRedirect("homepage");
             return;
         } else {

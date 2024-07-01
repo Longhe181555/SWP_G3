@@ -54,7 +54,6 @@ public class EditStaffController extends HttpServlet {
         Account account = (Account) accountDBContext.get(id);
         request.setAttribute("email", account.getEmail());
         request.setAttribute("phoneNumber", account.getPhonenumber());
-        request.setAttribute("address", account.getAddress());
         request.setAttribute("id", id);
         request.getRequestDispatcher("EditStaff.jsp").forward(request, response);
     }
@@ -77,7 +76,7 @@ public class EditStaffController extends HttpServlet {
         int id = Integer.parseInt(idRaw);
         Account editAccount = new Account();
         editAccount.setEmail(email);
-        editAccount.setAddress(address);
+   
         editAccount.setPhonenumber(phoneNumber);
         editAccount.setAid(id);
         AccountDBContext accountDBContext = new AccountDBContext();

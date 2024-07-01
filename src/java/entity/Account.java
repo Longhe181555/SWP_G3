@@ -15,10 +15,29 @@ public class Account implements IEntity{
   private String email;
   private String phonenumber;
   private java.sql.Date birthdate;
-  private String address;
+
   private String img;
   private String role;
   Boolean gender;
+  private String status;
+  private java.sql.Date lastLogin;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public java.sql.Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(java.sql.Date lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+  
     public String getSalt() {
         return salt;
     }
@@ -95,13 +114,7 @@ public class Account implements IEntity{
     }
 
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
+  
 
     public String getImg() {
         return img;
