@@ -71,8 +71,7 @@ CREATE TABLE Product(
    catid int FOREIGN KEY (catid) REFERENCES Category(catid),
    bid int FOREIGN KEY (bid) REFERENCES Brand(bid),
    islisted int,
-   Date Date,
-   productStatus bit
+   Date Date
 )
 
 CREATE TABLE ProductImg(
@@ -146,7 +145,7 @@ CREATE TABLE Discount (
 CREATE TABLE [Order](
    orid INT IDENTITY(0,1) PRIMARY KEY,
    aid int FOREIGN KEY (aid) REFERENCES Account(aid),
-   date int,
+   date Date,
    description varchar(MAX),
    status int,
    totalprice int,
@@ -220,7 +219,7 @@ INSERT INTO Account(fullname, username, password, role, salt) VALUES
 ('buiquynhm', 'buiquynhm', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
 ('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==');
 
-
+INSERT INTO Payment(aid,bname,bnumber) values(5,'TPBank','123456789')
 
 insert into Color(cname) values('placeholder')
 insert into Brand(bname) values('placeholder')
@@ -534,8 +533,34 @@ VALUES
 (0,41,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0,46,15, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0,45,30, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
-(0,47,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
+(0,46,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
 
+
+INSERT INTO Cart (amount,piid,totalprice,aid) values(1,1,391000,5),(1,13,191000,5)
+
+-- Order will insert of different month, week interval for testing purpose, from the same user, for now user aid 5 will be the tester
+
+
+--Order today pending
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate(),'',0,0,1000000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
+--Order last month
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-30,'',0,1,3000000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
+--Order last 2 month
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-60,'',0,1,3000000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
+--Order last 3 month
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-90,'',0,1,1500000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
+
+--Order yesterday approved
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-1,'',0,1,1146000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
+
+--Order last week approved
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
 
 
