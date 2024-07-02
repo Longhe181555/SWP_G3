@@ -20,50 +20,55 @@
         <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     </head>
     <body>
-        <input type="hidden" value='${customers}' id="customers" />
-        <table id="customer-table" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Phone Number</th>
-                    <th>Gender</th>
-                    <th>Date Of Birth</th>
-                    <th>Address</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        <script>
-            $(document).ready(function () {
-                // Sample JSON data
-                var jsonData = document.getElementById("customers").value;
-                // Parse JSON data
-                var dataSet = JSON.parse(jsonData);
-                dataSet = dataSet.map(function (item) {
-                    return {
-                        username: item.username || '',
-                        email: item.email || '',
-                        phonenumber: item.phonenumber || '',
-                        gender: item.gender || '',
-                        birthdate: item.birthdate || '',
-                        address: item.address || ''
-                    };
-                });
-                // Initialize DataTable
-                $('#customer-table').DataTable({
-                    data: dataSet,
-                    columns: [
-                        {data: 'username'},
-                        {data: 'email'},
-                        {data: 'phonenumber'},
-                        {data: 'gender'},
-                        {data: 'birthdate'},
-                        {data: 'address'}
-                    ]
-                });
-            });
-        </script>
+        <div class="my-container">
+            <%@include file="../admin_navbar.jsp" %>
+            <div class="content">
+                <input type="hidden" value='${customers}' id="customers" />
+                <table id="customer-table" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Gender</th>
+                            <th>Date Of Birth</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <script>
+                    $(document).ready(function () {
+                        // Sample JSON data
+                        var jsonData = document.getElementById("customers").value;
+                        // Parse JSON data
+                        var dataSet = JSON.parse(jsonData);
+                        dataSet = dataSet.map(function (item) {
+                            return {
+                                username: item.username || '',
+                                email: item.email || '',
+                                phonenumber: item.phonenumber || '',
+                                gender: item.gender || '',
+                                birthdate: item.birthdate || '',
+                                address: item.address || ''
+                            };
+                        });
+                        // Initialize DataTable
+                        $('#customer-table').DataTable({
+                            data: dataSet,
+                            columns: [
+                                {data: 'username'},
+                                {data: 'email'},
+                                {data: 'phonenumber'},
+                                {data: 'gender'},
+                                {data: 'birthdate'},
+                                {data: 'address'}
+                            ]
+                        });
+                    });
+                </script>
+            </div>
+        </div>
     </body>
 </html>

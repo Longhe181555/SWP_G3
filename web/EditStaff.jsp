@@ -12,23 +12,27 @@
         <title>Edit Staff</title>
     </head>
     <body>
-        <%@include file="../public/navbar.jsp" %>
-        <form method="POST" action="admin-edit-staff">
-            <h2 style="color: red;">${error}</h2>
-            <input type="hidden" name="id" value="${id}" />
-            <div class="form-group">
-                <label for="editEmail">Email:</label>
-                <input type="email" class="form-control" id="editEmail" name="email" required value="${email}">
+        <div class="my-container">
+            <%@include file="../admin_navbar.jsp" %>
+            <div class="content">
+                <form method="POST" action="admin-edit-staff">
+                    <h2 style="color: red;">${error}</h2>
+                    <input type="hidden" name="id" value="${id}" />
+                    <div class="form-group">
+                        <label for="editEmail">Email:</label>
+                        <input type="email" class="form-control" id="editEmail" name="email" required value="${email}">
+                    </div>
+                    <div class="form-group">
+                        <label for="editAddress">Address:</label>
+                        <input type="text" class="form-control" id="editAddress" name="address" required value="${address}">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhoneNumber">Phone Number:</label>
+                        <input type="text" class="form-control" id="editPhoneNumber" name="phonenumber" required value="${phoneNumber}">
+                    </div>
+                    <button class="btn btn-primary" type="submit">Save changes</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="editAddress">Address:</label>
-                <input type="text" class="form-control" id="editAddress" name="address" required value="${address}">
-            </div>
-            <div class="form-group">
-                <label for="editPhoneNumber">Phone Number:</label>
-                <input type="text" class="form-control" id="editPhoneNumber" name="phonenumber" required value="${phoneNumber}">
-            </div>
-            <button class="btn btn-primary" type="submit">Save changes</button>
-        </form>
+        </div>
     </body>
 </html>
