@@ -60,10 +60,10 @@ public class ProductItem implements IEntity {
     public void setDiscount(Discount discount) {
         this.discount = discount;
     }
-    public double getDiscountedPrice() {
+    public int getDiscountedPrice() {
     if (discount != null && "percentage".equalsIgnoreCase(discount.getDtype())) {
         double discountValue = discount.getValue() / 100.0;
-        return product.getPrice() * (1 - discountValue);
+        return (int) (product.getPrice() * (1 - discountValue));
     } else {
         return product.getPrice(); 
     }

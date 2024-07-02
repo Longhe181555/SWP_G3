@@ -38,9 +38,7 @@ public class ProductItemDBContext extends DBContext {
                     + "JOIN Size s ON s.sid = pi.sid\n"
                     + "LEFT JOIN Discount d ON pi.piid = d.piid\n"
                     + "LEFT JOIN DiscountType dt on d.dtid = dt.dtid\n"
-                    + "WHERE pi.pid = ?\n"
-                    + "AND (d.[from] IS NULL OR d.[from] <= GETDATE())\n"
-                    + "AND (d.[to] IS NULL OR d.[to] >= GETDATE());";
+                    + "WHERE pi.pid = ?\n";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, pid);
             ResultSet rs = stm.executeQuery();
@@ -52,17 +50,16 @@ public class ProductItemDBContext extends DBContext {
                 pi.setStockcount(rs.getInt("stockcount"));
                 Product p = pdb.getProductDetail(pid);
                 pi.setProduct(p);
-                
-                
-             if (rs.getString("type")!=null) {
-                Discount discount = new Discount();
-                discount.setDid(rs.getInt("did"));
-                discount.setDtype(rs.getString("type"));
-                discount.setValue(rs.getInt("value"));
-                discount.setFrom(rs.getDate("from"));
-                discount.setTo(rs.getDate("to"));
-                pi.setDiscount(discount);
-            }
+
+                if (rs.getString("type") != null) {
+                    Discount discount = new Discount();
+                    discount.setDid(rs.getInt("did"));
+                    discount.setDtype(rs.getString("type"));
+                    discount.setValue(rs.getInt("value"));
+                    discount.setFrom(rs.getDate("from"));
+                    discount.setTo(rs.getDate("to"));
+                    pi.setDiscount(discount);
+                }
                 pis.add(pi);
             }
         } catch (SQLException ex) {
@@ -80,18 +77,28 @@ public class ProductItemDBContext extends DBContext {
                     + "       s.sname,\n"
                     + "       c.cname,\n"
                     + "       dt.type,\n"
-                    + "       d.value,\n"
-                    + "       d.did,\n"
-                    + "	   d.[from],\n"
-                    + "	   d.[to]\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.value\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS value,\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.did\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS did,\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.[from]\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS [from],\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.[to]\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS [to]\n"
                     + "FROM ProductItem pi\n"
                     + "JOIN Color c ON pi.cid = c.cid\n"
                     + "JOIN Size s ON s.sid = pi.sid\n"
                     + "LEFT JOIN Discount d ON pi.piid = d.piid\n"
-                    + "LEFT JOIN DiscountType dt on d.dtid = dt.dtid\n"
-                    + "WHERE pi.pid = ? AND sname = ? AND cname = ?\n"
-                    + "AND (d.[from] IS NULL OR d.[from] <= GETDATE())\n"
-                    + "AND (d.[to] IS NULL OR d.[to] >= GETDATE());";
+                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid\n"
+                    + "WHERE pi.pid = ? AND s.sname = ? AND c.cname = ?;";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, pid);
             stm.setString(2, size);
@@ -104,17 +111,16 @@ public class ProductItemDBContext extends DBContext {
                 pi.setStockcount(rs.getInt("stockcount"));
                 Product p = pdb.getProductDetail(pid);
                 pi.setProduct(p);
-                
-                
-             if (rs.getString("type")!=null) {
-                Discount discount = new Discount();
-                discount.setDid(rs.getInt("did"));
-                discount.setDtype(rs.getString("type"));
-                discount.setValue(rs.getInt("value"));
-                discount.setFrom(rs.getDate("from"));
-                discount.setTo(rs.getDate("to"));
-                pi.setDiscount(discount);
-            }
+
+                if (rs.getString("type") != null) {
+                    Discount discount = new Discount();
+                    discount.setDid(rs.getInt("did"));
+                    discount.setDtype(rs.getString("type"));
+                    discount.setValue(rs.getInt("value"));
+                    discount.setFrom(rs.getDate("from"));
+                    discount.setTo(rs.getDate("to"));
+                    pi.setDiscount(discount);
+                }
                 return pi;
             }
         } catch (SQLException ex) {
@@ -122,10 +128,65 @@ public class ProductItemDBContext extends DBContext {
         }
         return null;
     }
-    
-    
-    
-    
+
+    public ProductItem getByPiid(int piid) {
+        try {
+            ProductItem pi = new ProductItem();
+            String sql = "SELECT pi.piid,\n"
+                    + "       pi.stockcount,\n"
+                    + "       pi.pid,\n"
+                    + "       s.sname,\n"
+                    + "       c.cname,\n"
+                    + "       dt.type,\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.value\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS value,\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.did\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS did,\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.[from]\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS [from],\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.[to]\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS [to]\n"
+                    + "FROM ProductItem pi\n"
+                    + "JOIN Color c ON pi.cid = c.cid\n"
+                    + "JOIN Size s ON s.sid = pi.sid\n"
+                    + "LEFT JOIN Discount d ON pi.piid = d.piid\n"
+                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid\n"
+                    + "WHERE pi.piid = ?;";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, piid);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                pi.setPiid(rs.getInt("piid"));
+                pi.setColor(rs.getString("cname"));
+                pi.setSize(rs.getString("sname"));
+                pi.setStockcount(rs.getInt("stockcount"));
+                Product p = pdb.getProductDetail(rs.getInt("pid"));
+                pi.setProduct(p);
+                if (rs.getString("type") != null) {
+                    Discount discount = new Discount();
+                    discount.setDid(rs.getInt("did"));
+                    discount.setDtype(rs.getString("type"));
+                    discount.setValue(rs.getInt("value"));
+                    discount.setFrom(rs.getDate("from"));
+                    discount.setTo(rs.getDate("to"));
+                    pi.setDiscount(discount);
+                }
+                return pi;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public ArrayList<ProductItem> getStockList() {
         ArrayList<ProductItem> pis = new ArrayList<>();
         try {

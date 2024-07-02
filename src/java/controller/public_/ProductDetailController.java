@@ -48,7 +48,7 @@ public class ProductDetailController extends HttpServlet {
                 for (ProductItem item : productItems) {
                     groupedByColor.computeIfAbsent(item.getColor(), k -> new ArrayList<>()).add(item);
                 }
-
+               
                 request.setAttribute("productItems", productItems);
                 request.setAttribute("groupedByColor", groupedByColor);
 
@@ -68,17 +68,18 @@ public class ProductDetailController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String size = request.getParameter("size");
         String color = request.getParameter("color");
-        int pid = Integer.parseInt(request.getParameter("pid"));
-
-       
+        int pid = Integer.parseInt(request.getParameter("pid"));     
         ProductItemDBContext pidb = new ProductItemDBContext();
         ProductItem item = pidb.getByPidSizeColor(pid, size, color); 
-        
-        // Send the discounted price back as JSON
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        out.print("{\"discountedPrice\": " + item.getDiscountedPrice() + ", \"piid\": " + item.getPiid() + ", \"value\": " + item.getDiscount().getValue() + "}");
+        if(item.getDiscount()!= null){
+           out.print("{\"discountedPrice\": " + item.getDiscountedPrice() + ", \"piid\": " + item.getPiid() + ", \"value\": " + item.getDiscount().getValue() + "}");
+        } else {
+            out.print("{\"discountedPrice\": " + item.getDiscountedPrice() + ", \"piid\": " + item.getPiid() + ", \"value\": " + null + "}");
+        }
+        
         out.flush();
     }
 

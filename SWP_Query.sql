@@ -189,7 +189,7 @@ CREATE TABLE Feedback(
 CREATE TABLE Cart(
    cartid INT IDENTITY(0,1) PRIMARY KEY,
    amount int not null,
-   totalprice int,
+   soldPrice int,
    aid int FOREIGN KEY (aid) REFERENCES Account(aid),
    piid int FOREIGN KEY (piid) REFERENCES ProductItem(piid),
    did int FOREIGN KEY(did) REFERENCES Discount(did),
@@ -467,6 +467,7 @@ INSERT INTO Feedback (aid, comment, rating, pid, date) VALUES
 --3. 'L'
 --4. 'XL'
 
+--Select * from Productitem pi join Color c on pi.cid = c.cid join Size s on pi.sid = s.sid
 
 INSERT INTO ProductItem (pid, cid, sid,stockcount) VALUES
 (1, 1, 1,30),
@@ -522,7 +523,7 @@ INSERT INTO ProductItem (pid, cid, sid,stockcount) VALUES
 INSERT INTO Discount (dtid, piid, value, [from], [to])
 VALUES 
 (0, 0, 20,DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
-(0, 1, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
+(0, 1, 20, DATEADD(day, -7, GETDATE()), DATEADD(day, -3, GETDATE())),
 (0, 2, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0, 3, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
 (0, 4, 20, DATEADD(day, -3, GETDATE()), DATEADD(day, 4, GETDATE())),
@@ -537,39 +538,38 @@ VALUES
 (0,46,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
 
 
-INSERT INTO Cart (amount,piid,totalprice,aid) values(1,1,391000,5),(1,13,191000,5),
-(1,1,391000,0),(1,13,191000,0),
-(1,1,391000,1),(1,13,191000,1),
+INSERT INTO Cart (amount,piid,soldPrice,aid) values(1,1,391000,5),(1,13,191000,5),
 (1,1,391000,2),(1,13,191000,2),
 (1,1,391000,3),(1,13,191000,3),
 (1,1,391000,4),(1,13,191000,4)
 
+INSERT INTO Cart (amount,piid,soldPrice,aid,did) values (3,1,312800,0,2),(2,13,191000,0,null),(1,2,312800,0,3)
 
 -- Order will insert of different month, week interval for testing purpose, from the same user, for now user aid 5 will be the tester
 
 
 --Order today pending
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate(),'',0,0,1000000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate(),'',0,0,1000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
 --Order last month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-30,'',0,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-30,'',0,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
 --Order last 2 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-60,'',0,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-60,'',0,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
 --Order last 3 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-90,'',0,1,1500000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-90,'',0,1,1500000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
 
 --Order yesterday approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-1,'',0,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-1,'',0,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
 --Order last week approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-7,'',0,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
-
+/*
 
 SELECT pi.piid,
        pi.stockcount,
@@ -589,3 +589,41 @@ LeFT JOIN DiscountType dt on d.dtid = dt.dtid
 WHERE pi.pid = 6 AND sname = 'S' AND cname = 'yellow'
 AND (d.[from] IS NULL OR d.[from] <= GETDATE())
 AND (d.[to] IS NULL OR d.[to] >= GETDATE());
+
+
+
+SELECT pi.piid,
+       pi.stockcount,
+       pi.pid,
+       s.sname,
+       c.cname,
+       dt.type,
+       d.value,
+       d.did,
+       d.[from],
+       d.[to]
+FROM ProductItem pi
+JOIN Color c ON pi.cid = c.cid
+JOIN Size s ON s.sid = pi.sid
+LEFT JOIN Discount d ON pi.piid = d.piid
+LEFT JOIN DiscountType dt on d.dtid = dt.dtid
+WHERE pi.pid = 1
+AND (d.[from] IS NULL OR d.[from] <= GETDATE())
+AND (d.[to] IS NULL OR d.[to] >= GETDATE());
+
+
+
+
+Select c.aid,p.pid,p.pname,p.price,pi.piid,pi.stockcount,c.cartid,c.amount,color.cname,s.sname,c.soldPrice,d.did,d.[from],d.[to],d.[value],dt.type
+  from Cart c
+  JOIN ProductItem pi on  c.piid = pi.piid
+  JOIN Size s on s.sid = pi.sid
+  JOIN Color color on color.cid = pi.cid
+  LEFT JOIN Product p on pi.pid = p.pid
+  LEFT JOIN Discount d on c.did = d.did
+  LEFT JOIN DiscountType dt on dt.dtid = d.dtid
+  WHERE c.aid = 0 
+
+
+
+  */
