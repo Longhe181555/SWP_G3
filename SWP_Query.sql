@@ -148,7 +148,7 @@ CREATE TABLE [Order](
    date Date,
    description varchar(MAX),
    status int,
-   totalprice int,
+   totalPrice int,
    address varchar(Max),
    pmid int FOREIGN KEY (pmid) REFERENCES Payment(pmid)
 )
@@ -220,7 +220,9 @@ INSERT INTO Account(fullname, username, password, role, salt) VALUES
 ('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==');
 
 INSERT INTO Payment(aid,bname,bnumber) values(5,'TPBank','123456789')
-INSERT INTO Address(aid,address) values (5,'Ha Noi'),(5, 'Hai Duong'),(5,'Hai Phong'),(5,'Kien An')
+INSERT INTO Address(aid,address) values (0,'Ha Noi'),(0, 'Hai Duong'),(0,'Hai Phong'),(0,'Kien An'),
+(1,'Ha Noi'),(1, 'Hai Duong'),(1,'Hai Phong'),(1,'Kien An'),
+(2,'Ha Noi'),(2, 'Hai Duong'),(2,'Hai Phong'),(2,'Kien An')
 
 insert into Color(cname) values('purple')
 insert into Brand(bname) values('Zara')
@@ -549,80 +551,66 @@ INSERT INTO Cart (amount,piid,soldPrice,aid,did) values (3,1,312800,0,2),(2,13,1
 
 
 --Order today pending
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate(),'',0,0,1000000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate(),'',0,0,1000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
 --Order last month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-30,'',0,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-30,'',0,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
 --Order last 2 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-60,'',0,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-60,'',0,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
 --Order last 3 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-90,'',0,1,1500000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-90,'',0,1,1500000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
 
 --Order yesterday approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-1,'',0,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-1,'',0,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
 --Order last week approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalprice) values(0,'Ha Noi',getDate()-7,'',0,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-7,'',0,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
+
+--Order today pending
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate(),'',0,0,1000000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
+--Order last month
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-30,'',0,1,3000000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
+--Order last 2 month
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-60,'',0,1,3000000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
+--Order last 3 month
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-90,'',0,1,1500000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
+
+--Order yesterday approved
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-1,'',0,1,1146000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
+
+--Order last week approved
+INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 /*
 
-SELECT pi.piid,
-       pi.stockcount,
-       pi.pid,
-       s.sname,
-       c.cname,
-       dt.type,
-	   d.did,
-       d.[value],
-	   d.[from],
-	   d.[to]
-FROM ProductItem pi
-JOIN Color c ON pi.cid = c.cid
-JOIN Size s ON s.sid = pi.sid
-LEFT JOIN Discount d ON pi.piid = d.piid
-LeFT JOIN DiscountType dt on d.dtid = dt.dtid
-WHERE pi.pid = 6 AND sname = 'S' AND cname = 'yellow'
-AND (d.[from] IS NULL OR d.[from] <= GETDATE())
-AND (d.[to] IS NULL OR d.[to] >= GETDATE());
-
-
-
-SELECT pi.piid,
-       pi.stockcount,
-       pi.pid,
-       s.sname,
-       c.cname,
-       dt.type,
-       d.value,
-       d.did,
-       d.[from],
-       d.[to]
-FROM ProductItem pi
-JOIN Color c ON pi.cid = c.cid
-JOIN Size s ON s.sid = pi.sid
-LEFT JOIN Discount d ON pi.piid = d.piid
-LEFT JOIN DiscountType dt on d.dtid = dt.dtid
-WHERE pi.pid = 1
-AND (d.[from] IS NULL OR d.[from] <= GETDATE())
-AND (d.[to] IS NULL OR d.[to] >= GETDATE());
-
-
-
-
-Select c.aid,p.pid,p.pname,p.price,pi.piid,pi.stockcount,c.cartid,c.amount,color.cname,s.sname,c.soldPrice,d.did,d.[from],d.[to],d.[value],dt.type
-  from Cart c
-  JOIN ProductItem pi on  c.piid = pi.piid
-  JOIN Size s on s.sid = pi.sid
-  JOIN Color color on color.cid = pi.cid
-  LEFT JOIN Product p on pi.pid = p.pid
-  LEFT JOIN Discount d on c.did = d.did
-  LEFT JOIN DiscountType dt on dt.dtid = d.dtid
-  WHERE c.aid = 0 
+SELECT 
+    o.orid,
+    o.totalPrice,
+    COUNT(DISTINCT oi.piid) AS productCount,
+    o.date,
+    o.status,
+    o.address,
+	o.description
+FROM 
+    [Order] o
+JOIN 
+    OrderItem oi ON o.orid = oi.orid
+	WHERE o.aid = 0
+GROUP BY 
+    o.orid, o.totalPrice, o.date, o.status, o.address, o.description
+ORDER BY 
+    o.orid ASC;
 
 
 

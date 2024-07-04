@@ -60,4 +60,44 @@ public class OrderDBContext extends DBContext {
         return result;
     }
 
+    public ArrayList<Order> getByAid(int aid) {
+        ArrayList<Order> orders = new ArrayList<>();
+        try {
+            String sql = "SELECT \n"
+                    + "    o.orid,\n"
+                    + "    o.totalPrice,\n"
+                    + "    COUNT(DISTINCT oi.piid) AS productCount,\n"
+                    + "    o.date,\n"
+                    + "    o.status,\n"
+                    + "    o.description,\n"
+                    + "    o.address\n"
+                    + "FROM \n"
+                    + "    [Order] o\n"
+                    + "JOIN \n"
+                    + "    OrderItem oi ON o.orid = oi.orid\n"
+                    + "	WHERE o.aid = ?\n"
+                    + "GROUP BY \n"
+                    + "    o.orid, o.totalPrice, o.date, o.status, o.address, o.description\n"
+                    + "ORDER BY \n"
+                    + "    o.orid ASC;";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, aid);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Order o = new Order();
+                o.setOrderId(rs.getInt("orid"));
+                o.setAddress(rs.getString("address"));
+                o.setDate(rs.getDate("date"));
+                o.setNote(rs.getString("description"));
+                o.setStatus(rs.getInt("status"));
+                o.setTotalAmount(rs.getInt("productCount"));
+                o.setTotalPrice(rs.getInt("totalPrice"));
+                orders.add(o);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return orders;
+    }
+
 }

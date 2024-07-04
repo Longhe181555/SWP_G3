@@ -29,16 +29,28 @@ public class ProductItemDBContext extends DBContext {
                     + "       s.sname,\n"
                     + "       c.cname,\n"
                     + "       dt.type,\n"
-                    + "       d.value,\n"
-                    + "       d.did,\n"
-                    + "	   d.[from],\n"
-                    + "	   d.[to]\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.value\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS value,\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.did\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS did,\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.[from]\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS [from],\n"
+                    + "       CASE WHEN (d.[from] IS NULL OR d.[to] IS NULL OR (d.[from] <= GETDATE() AND d.[to] >= GETDATE()))\n"
+                    + "            THEN d.[to]\n"
+                    + "            ELSE NULL\n"
+                    + "       END AS [to]\n"
                     + "FROM ProductItem pi\n"
                     + "JOIN Color c ON pi.cid = c.cid\n"
                     + "JOIN Size s ON s.sid = pi.sid\n"
                     + "LEFT JOIN Discount d ON pi.piid = d.piid\n"
-                    + "LEFT JOIN DiscountType dt on d.dtid = dt.dtid\n"
-                    + "WHERE pi.pid = ?\n";
+                    + "LEFT JOIN DiscountType dt ON d.dtid = dt.dtid\n"
+                    + "WHERE pi.pid = ?;";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, pid);
             ResultSet rs = stm.executeQuery();
@@ -51,7 +63,8 @@ public class ProductItemDBContext extends DBContext {
                 Product p = pdb.getProductDetail(pid);
                 pi.setProduct(p);
 
-                if (rs.getString("type") != null) {
+                if (rs.getString("type") != null && rs.getInt("value") != 0) {
+
                     Discount discount = new Discount();
                     discount.setDid(rs.getInt("did"));
                     discount.setDtype(rs.getString("type"));
@@ -192,32 +205,12 @@ public class ProductItemDBContext extends DBContext {
         try {
             String sql = "SELECT \n"
                     + "    p.pid,\n"
-                    + "    p.pname,\n"
-                    + "    p.price,\n"
-                    + "    p.[description],\n"
-                    + "    p.catid,\n"
-                    + "    p.bid,\n"
-                    + "    p.islisted,\n"
-                    + "    p.Date,\n"
-                    + "	b.bname,\n"
-                    + "	c.catname,\n"
                     + "    SUM(pi.stockcount) AS totalStockcount\n"
                     + "FROM \n"
                     + "    Product p\n"
                     + "LEFT JOIN ProductItem pi ON p.pid = pi.pid\n"
-                    + "LEFT JOIN Brand b on p.bid = b.bid\n"
-                    + "LEFT JOIN Category c on p.catid = c.catid\n"
                     + "GROUP BY \n"
-                    + "    p.pid, \n"
-                    + "    p.pname, \n"
-                    + "    p.price, \n"
-                    + "    p.[description], \n"
-                    + "    p.catid, \n"
-                    + "    p.bid, \n"
-                    + "    p.islisted, \n"
-                    + "    p.Date,\n"
-                    + "	b.bname,\n"
-                    + "	c.catname";
+                    + "    p.pid";
             PreparedStatement stm = connection.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -363,4 +356,28 @@ public class ProductItemDBContext extends DBContext {
         return false;
     }
 
+    public ArrayList<ProductItem> getRecentBoughtProductItems(int aid) {
+        ArrayList<ProductItem> pis = new ArrayList<>();
+        try {
+            String sql = "SELECT DISTINCT piid\n"
+                    + "FROM (\n"
+                    + "    SELECT TOP 100 PERCENT oi.piid, o.date\n"
+                    + "    FROM OrderItem oi\n"
+                    + "    JOIN [Order] o ON oi.orid = o.orid\n"
+                    + "	WHERE aid = ?\n"
+                    + "    ORDER BY o.date DESC\n"
+                    + ") AS recent_orders;";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, aid);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int piid = rs.getInt("piid");
+                ProductItem pi = getByPiid(piid);
+                pis.add(pi);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return pis;
+    }
 }

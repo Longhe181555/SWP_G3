@@ -1,12 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
         <style>
             .color-square {
@@ -31,12 +32,21 @@
             .out-of-stock {
                 color: red;
             }
+            .ok-button {
+                margin-left: 10px;
+            }
         </style>
     </head>
     <body>
         <%@ include file="../public/navbar.jsp" %>
+
+
+
         <div class="container">
-            <input type="hidden" value='${carts}' id="cartItems" />
+
+
+            <h2 style="text-align: center;color: darkorange">Your Cart</h2>
+            <input type="hidden" value='${carts}' id="cartItems"/>
             <table id="cart-table" class="table table-striped">
                 <thead>
                     <tr>
@@ -55,9 +65,22 @@
                     <c:forEach var="cart" items="${carts}">
                         <tr>
                             <td><img src="${pageContext.request.contextPath}/${cart.productItem.product.productimgs[0].imgpath}" class="img-fluid" alt="${cart.productItem.product.pname}" style="width: 50px; height: 50px;"></td>
-                            <td>${fn:substring(cart.productItem.product.pname, 0, 20)}...</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${cart.product_status == 'AR'}">
+                                        Product Unavailable, please remove it to be able to checkout
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="productdetail?pid=${cart.productItem.product.pid}" style="text-decoration: none;">
+                                            ${fn:substring(cart.productItem.product.pname, 0, 20)}...
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                             <td>${cart.productItem.size}</td>
-                            <td><div class="color-square" style="background-color: ${cart.productItem.color};"></div>${cart.productItem.color}</td>
+                            <td>
+                                <div class="color-square" style="background-color: ${cart.productItem.color};"></div>${cart.productItem.color}
+                            </td>
                             <td>
                                 <c:choose>
                                     <c:when test="${not empty cart.productItem.discount.dtype}">
@@ -92,7 +115,9 @@
                                     </c:otherwise>
                                 </c:choose>
                             </td>
-                            <td><button class="btn btn-danger" onclick="removeCartItem(${cart.cartid})">Remove</button></td>
+                            <td>
+                                <button class="btn btn-danger" onclick="removeCartItem(${cart.cartid})">Remove</button>
+                            </td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -101,109 +126,232 @@
                         <td colspan="6" style="text-align: right;"><strong>Total Price:</strong></td>
                         <td><strong id="totalBill"><fmt:formatNumber type="number" pattern="#,###" value="${totalBill}" /> vnd</strong></td>
                         <td></td>
-                        <td><button class="btn btn-primary" onclick="checkout()">Check Out</button></td>
+                        <td>
+                            <c:if test="${not containsARStatus}">
+                                <button class="btn btn-primary" onclick="checkout()">Check Out</button>
+                            </c:if>
+                        </td>
                     </tr>
                 </tfoot>
             </table>
         </div>
 
+        <div id="statusAlert" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
+            <span id="alertMessage"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <button type="button" class="btn btn-primary ok-button" onclick="clearProductStatus()">OK</button>
+        </div>
+        <div class="container">
+            <h2 style="text-align: center;">Previous Bought Items</h2>
+            <table id="previous-bought-table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="previousItem" items="${recentbought}" varStatus="loop">
+                        <c:if test="${loop.index < 4}"> 
+                            <tr>
+                                <td><img src="${previousItem.product.productimgs[0].imgpath}" class="img-fluid" style="max-width: 50px; max-height: 50px;" alt="${previousItem.product.pname}"></td>
+                                <td><a href="productdetail?pid=${previousItem.product.pid}" style="text-decoration: none;">
+                                        ${previousItem.product.pname}
+                                    </a></td>
+                                <td>${previousItem.size}</td>
+                                <td>
+                                    <div style="width: 20px; height: 20px; display: inline-block; background-color: ${previousItem.color};"></div>
+                                    ${previousItem.color}
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${previousItem.product.price != previousItem.getDiscountedPrice()}">
+                                            <span style="color: red; text-decoration: line-through;">
+                                                <fmt:formatNumber value="${previousItem.product.price}" type="number" pattern="#,###" /> VND
+                                            </span>
+                                            <br/>
+                                            <fmt:formatNumber value="${previousItem.getDiscountedPrice()}" type="number" pattern="#,###" /> VND
+                                        </c:when>
+                                        <c:otherwise>
+                                            <fmt:formatNumber value="${previousItem.product.price}" type="number" pattern="#,###" /> VND
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success" onclick="quickAddToCart(${previousItem.piid})">Buy Again</button>
+                                </td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                </tbody>
+            </table>  
+        </div> 
+
+
+
+
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         <script>
-                            $(document).ready(function () {
-                                $('.cart-amount').on('input', function () {
-                                    var cartId = $(this).data('cartid');
-                                    var newAmount = $(this).val();
-                                    newAmount = validateAmountRange(newAmount, $(this).attr('min'), $(this).attr('max'));
-                                    if (newAmount !== $(this).data('lastvalue')) {
-                                        $(this).data('lastvalue', newAmount); 
-                                        updateCartAmount(cartId, newAmount);
-                                    }
-                                });
+            <c:forEach var="cart" items="${carts}">
+                                        displayProductStatusAlert('${cart.product_status}', '${cart.productItem.product.pname}');
+            </c:forEach>
+                                        function quickAddToCart(piid) {
+                                            var quantity = 1; // Fixed quantity
 
-                                function validateAmountRange(value, min, max) {
-                         
-                                    min = parseInt(min);
-                                    max = parseInt(max);
-
-                                    value = parseInt(value);
-
-                          
-                                    if (isNaN(value) || value < min) {
-                                        return min;
-                                    } else if (value > max) {
-                                        return max;
-                                    } else {
-                                        return value;
-                                    }
-                                }
-
-                                $('.cart-amount').on('keydown', function (e) {
-                                    var keyCode = e.keyCode || e.which;
-
-                                
-                                    if (keyCode === 38 || keyCode === 40) { 
-                                        e.preventDefault();
-
-                                        var currentVal = parseInt($(this).val());
-                                        var min = parseInt($(this).attr('min'));
-                                        var max = parseInt($(this).attr('max'));
-
-                                        if (keyCode === 38) { 
-                                            currentVal = validateAmountRange(currentVal + 1, min, max);
-                                        } else if (keyCode === 40) { 
-                                            currentVal = validateAmountRange(currentVal - 1, min, max);
+                                            // AJAX request to add to cart
+                                            $.ajax({
+                                                url: 'AddToCartController',
+                                                type: 'POST',
+                                                data: {piid: piid, quantity: quantity},
+                                                success: function (response) {
+                                                    if (response.success) {
+                                                        alert('Product added to cart');
+                                                        location.reload();
+                                                    } else {
+                                                    }
+                                                },
+                                                error: function (xhr, status, error) {
+                                                    console.error('Error adding to cart:', error);
+                                                    alert('Error adding to cart. Please try again.');
+                                                }
+                                            });
                                         }
 
-                                        $(this).val(currentVal);
 
-                                       
-                                        $(this).trigger('change');
-                                    }
-                                });
 
-                                function updateCartAmount(cartId, newAmount) {
-                                    $.ajax({
-                                        url: 'ChangeCartAmountController',
-                                        type: 'POST',
-                                        data: {
-                                            cartId: cartId,
-                                            amount: newAmount
-                                        },
-                                        success: function (response) {
-                                            if (response.success) {
-                                            
-                                                location.reload();
-                                            } else {
-                                                alert('Failed to update the cart. Please try again.');
+                                        function displayProductStatusAlert(productStatus, pname) {
+                                            var alertMessage = '';
+                                            switch (productStatus) {
+                                                case 'AR':
+                                                    alertMessage = 'A product inside your cart is set as archived status, please remove it <br/> ' + 'Product: ' + pname;
+                                                    break;
+                                                case 'PU':
+                                                    alertMessage = 'The price of a product inside your cart has just been updated, you can choose to remove it <br/> ' + 'Product: ' + pname;
+                                                    break;
+                                                case 'DE':
+                                                    alertMessage = 'Discount from a product inside your cart has just run out <br/> ' + 'Product: ' + pname;
+                                                    break;
                                             }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error('Error updating cart amount:', error);
+
+                                            if (alertMessage !== '') {
+                                                $('#statusAlert').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                                                        alertMessage +
+                                                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                                        '<span aria-hidden="true">&times;</span>' +
+                                                        '</button>' +
+                                                        '<button type="button" class="btn btn-primary ok-button" onclick="clearProductStatus()">OK</button>' +
+                                                        '</div>').show();
+                                            }
                                         }
-                                    });
-                                }
 
-                                function removeCartItem(cartId) {
-                                    if (confirm('Are you sure you want to remove this item from your cart?')) {
-                                        $.ajax({
-                                            url: 'removeCartItem',
-                                            type: 'POST',
-                                            data: {cartId: cartId},
-                                            success: function (response) {
-                                                location.reload();
-                                            },
-                                            error: function (xhr, status, error) {
-                                                console.error('Error removing item from cart:', error);
+                                        $(document).ready(function () {
+                                            $('.cart-amount').on('input', function () {
+                                                var cartId = $(this).data('cartid');
+                                                var newAmount = $(this).val();
+                                                newAmount = validateAmountRange(newAmount, $(this).attr('min'), $(this).attr('max'));
+                                                if (newAmount !== $(this).data('lastvalue')) {
+                                                    $(this).data('lastvalue', newAmount);
+                                                    updateCartAmount(cartId, newAmount);
+                                                }
+                                            });
+
+                                            $('.cart-amount').on('keydown', function (e) {
+                                                var keyCode = e.keyCode || e.which;
+                                                if (keyCode === 38 || keyCode === 40) {
+                                                    e.preventDefault();
+                                                    var currentVal = parseInt($(this).val());
+                                                    var min = parseInt($(this).attr('min'));
+                                                    var max = parseInt($(this).attr('max'));
+                                                    if (keyCode === 38) {
+                                                        currentVal = validateAmountRange(currentVal + 1, min, max);
+                                                    } else if (keyCode === 40) {
+                                                        currentVal = validateAmountRange(currentVal - 1, min, max);
+                                                    }
+                                                    $(this).val(currentVal);
+                                                    $(this).trigger('change');
+                                                }
+                                            });
+
+                                            function validateAmountRange(value, min, max) {
+                                                min = parseInt(min);
+                                                max = parseInt(max);
+                                                value = parseInt(value);
+                                                if (isNaN(value) || value < min) {
+                                                    return min;
+                                                } else if (value > max) {
+                                                    return max;
+                                                } else {
+                                                    return value;
+                                                }
                                             }
+
+                                            function updateCartAmount(cartId, newAmount) {
+                                                $.ajax({
+                                                    url: 'ChangeCartAmountController',
+                                                    type: 'POST',
+                                                    data: {
+                                                        cartId: cartId,
+                                                        amount: newAmount
+                                                    },
+                                                    success: function (response) {
+                                                        if (response.success) {
+                                                            location.reload();
+                                                        } else {
+                                                            alert('Failed to update the cart. Please try again.');
+                                                        }
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.error('Error updating cart amount:', error);
+                                                    }
+                                                });
+                                            }
+
+                                            window.removeCartItem = function (cartId) {
+                                                if (confirm('Are you sure you want to remove this item from your cart?')) {
+                                                    $.ajax({
+                                                        url: 'RemoveFromCartController',
+                                                        type: 'POST',
+                                                        data: {cartId: cartId},
+                                                        success: function (response) {
+                                                            if (response.success) {
+                                                                location.reload();
+                                                            } else {
+                                                                alert('Failed to remove the item: ' + response.message);
+                                                            }
+                                                        },
+                                                        error: function (xhr, status, error) {
+                                                            console.error('Error removing item from cart:', error);
+                                                            alert('Error removing item from cart. Please try again.');
+                                                        }
+                                                    });
+                                                }
+                                            };
+
+                                            window.clearProductStatus = function () {
+                                                $.ajax({
+                                                    url: 'ClearProductStatusController',
+                                                    type: 'POST',
+                                                    data: {},
+                                                    success: function (response) {
+                                                        if (response.success) {
+                                                            location.reload();
+                                                        } else {
+                                                            console.error('Failed to clear product status:', response.message);
+                                                        }
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.error('Error clearing product status:', error);
+                                                    }
+                                                });
+                                            };
                                         });
-                                    }
-                                }
-
-                                function checkout() {
-                                    alert('Proceeding to checkout...');
-                                }
-                            });
-
         </script>
     </body>
 </html>

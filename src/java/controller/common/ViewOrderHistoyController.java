@@ -6,57 +6,57 @@
 package controller.common;
 
 import controller.authentication.BaseRequiredAuthenticationController;
-import dal.CartDBContext;
+import dal.OrderDBContext;
 import dal.ProductItemDBContext;
 import entity.Account;
-import entity.Cart;
+import entity.Order;
 import entity.ProductItem;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
-/**
- *
- * @author ADMIN
- */
-public class AddToCartController extends BaseRequiredAuthenticationController {
+public class ViewOrderHistoyController extends BaseRequiredAuthenticationController {
+   
+  
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        ProductItemDBContext pidbc = new ProductItemDBContext();
-        Account account = (Account) request.getSession().getAttribute("account");
-        CartDBContext cartDB = new CartDBContext();
-        int amount = Integer.parseInt(request.getParameter("quantity"));
-        int piid = Integer.parseInt(request.getParameter("piid"));
-        System.out.println(piid + "| " + amount);
-        ProductItem p = pidbc.getByPiid(piid);
-        int soldPrice =  p.getDiscountedPrice();
-        if(p.getDiscount().getDtype()!=null) {
-        cartDB.addToCart(amount, soldPrice, account.getAid(), piid, p.getDiscount().getDid()); 
-        } else {
-        cartDB.addToCart(amount, soldPrice, account.getAid(), piid);
+        try (PrintWriter out = response.getWriter()) {
+            Account account = (Account) request.getSession().getAttribute("account");
+            OrderDBContext odb = new OrderDBContext();
+            ArrayList<Order> orders = odb.getByAid(account.getAid());
+            System.out.println(orders.size());
+            request.setAttribute("orders", orders);
+            ProductItemDBContext pidb = new ProductItemDBContext();
+            ArrayList<ProductItem> productItems = pidb.getRecentBoughtProductItems(account.getAid());
+            request.setAttribute("recentbought", productItems);
+            
+            request.getRequestDispatcher("common/orderhistory.jsp").forward(request, response);
         }
+    } 
 
-    }
+  
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response,Account account)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         processRequest(request, response);
-    }
+    } 
 
+ 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response,Account account)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
     public String getServletInfo() {
-        return "AddToCartController";
+        return "Short description";
     }
+
 }
