@@ -12,7 +12,7 @@ public class ProductItem implements IEntity {
   private Product product;
   private String size;
   private String color;
-
+  private Discount discount;
     public int getPiid() {
         return piid;
     }
@@ -52,4 +52,22 @@ public class ProductItem implements IEntity {
     public void setColor(String color) {
         this.color = color;
     }
+
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+    public int getDiscountedPrice() {
+    if (discount != null && "percentage".equalsIgnoreCase(discount.getDtype())) {
+        double discountValue = discount.getValue() / 100.0;
+        return (int) (product.getPrice() * (1 - discountValue));
+    } else {
+        return product.getPrice(); 
+    }
+}
+    
+    
 }

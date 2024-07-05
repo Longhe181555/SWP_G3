@@ -9,10 +9,9 @@ package entity;
 public class Cart {
  private int cartid;
  private int amount;
- private int totalPrice;
+ private int soldPrice;
  private int aid;
  private ProductItem productItem;
- private Discount discount;
  private String product_status;
 
     public int getCartid() {
@@ -31,12 +30,12 @@ public class Cart {
         this.amount = amount;
     }
 
-    public int getTotalPrice() {
-        return totalPrice;
+    public int getSoldPrice() {
+        return soldPrice;
     }
 
-    public void setTotalPrice(int totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setSoldPrice(int soldPrice) {
+        this.soldPrice = soldPrice;
     }
 
     public int getAid() {
@@ -53,14 +52,6 @@ public class Cart {
 
     public void setProductItem(ProductItem productItem) {
         this.productItem = productItem;
-    }
-
-    public Discount getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
     }
 
     public String getProduct_status() {

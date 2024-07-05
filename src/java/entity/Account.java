@@ -5,6 +5,7 @@
 
 package entity;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Account implements IEntity{
   private int aid;
@@ -15,7 +16,7 @@ public class Account implements IEntity{
   private String email;
   private String phonenumber;
   private java.sql.Date birthdate;
-
+  private ArrayList<String> addresses;
   private String img;
   private String role;
   Boolean gender;
@@ -113,8 +114,15 @@ public class Account implements IEntity{
         this.email = email;
     }
 
+    public ArrayList<String> getAddresses() {
+        return addresses;
+    }
 
-  
+    public void setAddresses(ArrayList<String> addresses) {
+        this.addresses = addresses;
+    }
+ 
+    
 
     public String getImg() {
         return img;

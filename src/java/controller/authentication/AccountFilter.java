@@ -5,7 +5,9 @@
 
 package controller.authentication;
 
+import dal.CartDBContext;
 import entity.Account;
+import entity.Cart;
 import java.io.IOException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -16,6 +18,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 
 
@@ -30,14 +33,17 @@ public class AccountFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String url = httpRequest.getRequestURL().toString();
-        System.out.println("URL accessed: " + url);
+//        System.out.println("URL accessed: " + url);
 
         HttpSession session = httpRequest.getSession(false);
         if (session != null) {
             Account currentUser = (Account) session.getAttribute("account");
             if (currentUser != null) {
                 request.setAttribute("Account", currentUser);
-                System.out.println(currentUser.getFullname());
+                CartDBContext cdb = new CartDBContext();
+                ArrayList<Cart> carts = cdb.getByAid(currentUser.getAid());
+                request.setAttribute("carts", carts);
+                request.setAttribute("cartcount", carts.size());
             }
         }
 

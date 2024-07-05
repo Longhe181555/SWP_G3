@@ -6,14 +6,13 @@ package entity;
 
 import java.sql.Date;
 
-class Discount {
+public class Discount {
 
     private int did;
     private String dtype;
-    private ProductItem productItem;
     private int value;
-    private java.sql.Date from;
-    private java.sql.Date to;
+    private Date from;
+    private Date to;
 
     public int getDid() {
         return did;
@@ -29,14 +28,6 @@ class Discount {
 
     public void setDtype(String dtype) {
         this.dtype = dtype;
-    }
-
-    public ProductItem getProductItem() {
-        return productItem;
-    }
-
-    public void setProductItem(ProductItem productItem) {
-        this.productItem = productItem;
     }
 
     public int getValue() {
