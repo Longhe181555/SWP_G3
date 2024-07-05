@@ -19,6 +19,9 @@ public class Order {
     private String note;
     private int totalPrice;
     private String address;
+    private String payment;
+    private Date processedDate;
+    private Account processedBy;
 
     public int getOrderId() {
         return orderId;
@@ -82,6 +85,30 @@ public class Order {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
+
+    public Date getProcessedDate() {
+        return processedDate;
+    }
+
+    public void setProcessedDate(Date processedDate) {
+        this.processedDate = processedDate;
+    }
+
+    public Account getProcessedBy() {
+        return processedBy;
+    }
+
+    public void setProcessedBy(Account processedBy) {
+        this.processedBy = processedBy;
     }
     
     

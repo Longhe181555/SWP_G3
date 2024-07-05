@@ -150,7 +150,9 @@ CREATE TABLE [Order](
    status int,
    totalPrice int,
    address varchar(Max),
-   pmid int FOREIGN KEY (pmid) REFERENCES Payment(pmid)
+   payment varchar(MAX),
+   processedDate date,
+   processedBy int FOREIGN KEY (processedBy) References Account(aid)
 )
 
 -- Giu thong tin tong cua order, OrderItem giu do trong order day
@@ -207,6 +209,7 @@ insert into Account(fullname,username,password,role,salt) values
 ('binhthhe151011', 'binhthhe151011','rGEutTob/BSpz5YtqXyXBJsaepDh9SRF8EfI4SlQ+eadPiHRst/GITju5ydMfaUKMsiAw6QXpu8UogMykIkKWQ==','admin','qnvXvpwbsWdgDtKmf69sag=='),
 ('danglhhe161145', 'danglhhe161145','46l9N+161aQAD2LY1SkNsLOj5Uus6oqnYHTPO9Ab8fZDACb8YZf5473sl1cH3Mpm3kXOEDT/8rC6hi6itOxTFw==','admin','AoaQBLzOP+YBa7Zgqo0BkQ==')
 
+
 INSERT INTO Account(fullname, username, password, role, salt) VALUES 
 ('nguyenvana', 'nguyenvana', 'Qp3BYQ18K/26dzuMGF0u+/JLtKVriQ4tcevm5dhtJNOzQqgiEPfhSRFRGZIf3XdKEgAOKJMa0ICOoc0fIhH/0A==', 'customer', '8siFHy6/+GPfGcGQyE71DA=='),
 ('tranthib', 'tranthib', 'EZ00+9qKTXyNfomW/8zCj/XdPh3TEIDnX+TSc1GRX0GHvYQlO8xwHF6unSIZuXVBxHaOgHkca2rThTF5j0LSMg==', 'customer', 'KAvxAu9ro0z+inKPCwD9jg=='),
@@ -219,7 +222,10 @@ INSERT INTO Account(fullname, username, password, role, salt) VALUES
 ('buiquynhm', 'buiquynhm', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
 ('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==');
 
-INSERT INTO Payment(aid,bname,bnumber) values(5,'TPBank','123456789')
+insert into Account(fullname,username,password,role,salt) values
+('staff', 'staff','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','staff','WrT79x+xWmhh8c3BBkkIkw==')
+
+
 INSERT INTO Address(aid,address) values (0,'Ha Noi'),(0, 'Hai Duong'),(0,'Hai Phong'),(0,'Kien An'),
 (1,'Ha Noi'),(1, 'Hai Duong'),(1,'Hai Phong'),(1,'Kien An'),
 (2,'Ha Noi'),(2, 'Hai Duong'),(2,'Hai Phong'),(2,'Kien An')
@@ -540,57 +546,31 @@ VALUES
 (0,46,30, DATEADD(day, -9, GETDATE()), DATEADD(day, -3, GETDATE()))
 
 
-INSERT INTO Cart (amount,piid,soldPrice,aid) values(1,1,391000,5),(1,13,191000,5),
-(1,1,391000,2),(1,13,191000,2),
-(1,1,391000,3),(1,13,191000,3),
-(1,1,391000,4),(1,13,191000,4)
 
-INSERT INTO Cart (amount,piid,soldPrice,aid,did) values (3,1,312800,0,2),(2,13,191000,0,null),(1,2,312800,0,3)
-
+--INSERT INTO Cart (amount,piid,soldPrice,aid,did,product_status) values (3,1,312800,0,2,null),(2,13,191000,0,null,'Archived'),(1,2,312800,0,3,null)
+INSERT INTO Cart (amount,piid,soldPrice,aid,did,product_status) values (3,1,312800,5,2,null),(2,13,191000,5,null,null),(1,2,312800,5,3,null)
 -- Order will insert of different month, week interval for testing purpose, from the same user, for now user aid 5 will be the tester
 
 
 --Order today pending
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate(),'',0,0,1000000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate(),'',null,0,1000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
 --Order last month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-30,'',0,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-30,'',null,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
 --Order last 2 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-60,'',0,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-60,'',null,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
 --Order last 3 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-90,'',0,1,1500000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-90,'',null,1,1500000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
 
 --Order yesterday approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-1,'',0,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-1,'',null,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
 --Order last week approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(0,'Ha Noi',getDate()-7,'',0,1,1146000)
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
-
-
---Order today pending
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate(),'',0,0,1000000)
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
---Order last month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-30,'',0,1,3000000)
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
---Order last 2 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-60,'',0,1,3000000)
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
---Order last 3 month
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-90,'',0,1,1500000)
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
-
---Order yesterday approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-1,'',0,1,1146000)
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
-
---Order last week approved
-INSERT INTO [Order] (aid,address,date,description,pmid,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 /*
 

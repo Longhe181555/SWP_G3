@@ -115,7 +115,7 @@ public class CartDBContext extends DBContext {
     }
 
     public void addToCart(int amount, int soldPrice, int aid, int piid) {
-        String selectSql = "SELECT cartid FROM Cart WHERE aid = ? AND piid = ?";
+        String selectSql = "SELECT cartid,amount FROM Cart WHERE aid = ? AND piid = ?";
         String insertSql = "INSERT INTO Cart (amount, soldPrice, aid, piid) VALUES (?, ?, ?, ?)";
         try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
             selectStmt.setInt(1, aid);
@@ -123,7 +123,8 @@ public class CartDBContext extends DBContext {
             ResultSet resultSet = selectStmt.executeQuery();
             if (resultSet.next()) {
                 int cartId = resultSet.getInt("cartid");
-                updateCartAmount(cartId, amount);
+                int prev_amount = resultSet.getInt("amount");
+                updateCartAmount(cartId, prev_amount + amount);
             } else {
                 try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
                     insertStmt.setInt(1, amount);
@@ -152,7 +153,7 @@ public class CartDBContext extends DBContext {
     public void checkValidDiscount(int cartid) {
         try {
             String sql = "UPDATE Cart "
-                    + "SET did = NULL, product_status = 'DE' "
+                    + "SET did = NULL, product_status = 'DiscountEnded' "
                     + "FROM Cart c "
                     + "LEFT JOIN Discount d ON c.did = d.did "
                     + "WHERE c.cartid = ? "
@@ -167,7 +168,7 @@ public class CartDBContext extends DBContext {
 
     public void clearProductStatus(int aid) {
     try {
-            String sql = "UPDATE Cart SET product_status = NULL WHERE aid = ? AND product_status <> 'AR'";
+            String sql = "UPDATE Cart SET product_status = NULL WHERE aid = ? AND product_status <> 'Archived'";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, aid);
             stm.executeUpdate();
@@ -175,5 +176,15 @@ public class CartDBContext extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(BrandDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
+}
+    public void removeCartByAid(int aid) {
+    try {
+        String sql = "DELETE FROM Cart WHERE aid = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, aid);
+        ps.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(CartDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
 }
 }

@@ -7,13 +7,15 @@ package entity;
 
 
 public class OrderItem {
+  private int orderId;
   private int piid;
   private ProductItem productItem;
   private int amount;
   private int soldPrice;
   private int oiid;
   private Discount discount;
-
+  private String product_status; 
+  
     public int getPiid() {
         return piid;
     }
@@ -60,6 +62,22 @@ public class OrderItem {
 
     public void setDiscount(Discount discount) {
         this.discount = discount;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getProduct_status() {
+        return product_status;
+    }
+
+    public void setProduct_status(String product_status) {
+        this.product_status = product_status;
     }
 
     

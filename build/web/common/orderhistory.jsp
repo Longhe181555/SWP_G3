@@ -64,7 +64,7 @@
                     <td>
                         <button class="btn btn-info" onclick="viewOrderDetails(${order.orderId})">Detail</button>
                         <c:if test="${order.status == 0}">
-                            <button class="btn btn-warning" onclick="editOrder(${order.orderId})">Edit</button>
+<!--                            <button class="btn btn-warning" onclick="editOrder(${order.orderId})">Edit</button>-->
                             <button class="btn btn-danger" onclick="confirmCancelOrder(${order.orderId})">Cancel</button>
                         </c:if>
                     </td>
@@ -140,8 +140,7 @@
     });
 
     function viewOrderDetails(orderId) {
-        // Redirect to order details page
-        window.location.href = 'orderdetails.jsp?orderId=' + orderId;
+        window.location.href = 'orderdetail?orderId=' + orderId;
     }
 
     function editOrder(orderId) {
@@ -185,6 +184,7 @@
                     alert('Product added to cart');
                     location.reload();
                 } else {
+                     location.reload();
                 }
             },
             error: function(xhr, status, error) {

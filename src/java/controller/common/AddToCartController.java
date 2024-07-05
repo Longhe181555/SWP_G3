@@ -35,7 +35,7 @@ public class AddToCartController extends BaseRequiredAuthenticationController {
         System.out.println(piid + "| " + amount);
         ProductItem p = pidbc.getByPiid(piid);
         int soldPrice =  p.getDiscountedPrice();
-        if(p.getDiscount().getDtype()!=null) {
+        if(p.getDiscount()!=null) {
         cartDB.addToCart(amount, soldPrice, account.getAid(), piid, p.getDiscount().getDid()); 
         } else {
         cartDB.addToCart(amount, soldPrice, account.getAid(), piid);

@@ -11,8 +11,8 @@ public class Discount {
     private int did;
     private String dtype;
     private int value;
-    private java.sql.Date from;
-    private java.sql.Date to;
+    private Date from;
+    private Date to;
 
     public int getDid() {
         return did;

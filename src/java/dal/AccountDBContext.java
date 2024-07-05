@@ -52,6 +52,7 @@ public class AccountDBContext extends DBContext {
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
                 account.setSalt(rs.getString("salt"));
+                account.setAddresses(getAddressByAid(account.getAid()));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";
@@ -160,7 +161,7 @@ public class AccountDBContext extends DBContext {
     
     
    
-    public IEntity get(int id) {
+    public Account get(int id) {
         try {
             String sql = "SELECT [aid]\n"
                     + "      ,[fullname]\n"
@@ -358,5 +359,20 @@ public class AccountDBContext extends DBContext {
         }
     }
 
-   
+   public ArrayList<String> getAddressByAid(int aid) {
+    ArrayList<String> addresses = new ArrayList<>();
+    try {
+        String sql = "SELECT address FROM Address WHERE aid = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, aid);
+        ResultSet rs = stm.executeQuery();
+        while (rs.next()) {
+            String address = rs.getString("address");
+            addresses.add(address);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return addresses;
+}
 }

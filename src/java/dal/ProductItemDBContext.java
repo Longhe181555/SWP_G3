@@ -64,7 +64,6 @@ public class ProductItemDBContext extends DBContext {
                 pi.setProduct(p);
 
                 if (rs.getString("type") != null && rs.getInt("value") != 0) {
-
                     Discount discount = new Discount();
                     discount.setDid(rs.getInt("did"));
                     discount.setDtype(rs.getString("type"));
@@ -125,7 +124,7 @@ public class ProductItemDBContext extends DBContext {
                 Product p = pdb.getProductDetail(pid);
                 pi.setProduct(p);
 
-                if (rs.getString("type") != null) {
+                if (rs.getString("type") != null && rs.getInt("value") != 0) {
                     Discount discount = new Discount();
                     discount.setDid(rs.getInt("did"));
                     discount.setDtype(rs.getString("type"));
@@ -183,7 +182,7 @@ public class ProductItemDBContext extends DBContext {
                 pi.setStockcount(rs.getInt("stockcount"));
                 Product p = pdb.getProductDetail(rs.getInt("pid"));
                 pi.setProduct(p);
-                if (rs.getString("type") != null) {
+                if (rs.getString("type") != null && rs.getInt("value") != 0) {
                     Discount discount = new Discount();
                     discount.setDid(rs.getInt("did"));
                     discount.setDtype(rs.getString("type"));

@@ -107,23 +107,7 @@
         </style>
     </head>
     <body>
-
-        <div class="header">
-            <div class="header-container">
-                <div class="header-options">
-                    <div class="header-left"> 
-                        <p class="header-link">Search </p>||
-                        <p class="header-link"> Order history</p>    
-                    </div>
-                    <div class="header-right">
-                        <a href="account" class="header-link">My Account</a>||  
-                        <p class="header-link"> Checkout</p>||
-                        <a href="logout" class="header-link">Logout</a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+         <%@ include file="../public/navbar.jsp" %>
         <main>
             <div class="mb-4 pb-4"></div>
             <section class="cd-position-relative cd-z-index-1 cd-padding-y-2xl">

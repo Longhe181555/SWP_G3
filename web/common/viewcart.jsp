@@ -44,7 +44,7 @@
 
         <div class="container">
 
-
+            <c:set var="containsARStatus" value="false" />
             <h2 style="text-align: center;color: darkorange">Your Cart</h2>
             <input type="hidden" value='${carts}' id="cartItems"/>
             <table id="cart-table" class="table table-striped">
@@ -67,7 +67,7 @@
                             <td><img src="${pageContext.request.contextPath}/${cart.productItem.product.productimgs[0].imgpath}" class="img-fluid" alt="${cart.productItem.product.pname}" style="width: 50px; height: 50px;"></td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${cart.product_status == 'AR'}">
+                                    <c:when test="${cart.product_status == 'Archived'}">
                                         Product Unavailable, please remove it to be able to checkout
                                     </c:when>
                                     <c:otherwise>
@@ -119,6 +119,7 @@
                                 <button class="btn btn-danger" onclick="removeCartItem(${cart.cartid})">Remove</button>
                             </td>
                         </tr>
+                        <c:set var="containsARStatus" value="${containsARStatus or cart.product_status == 'Archived'}" />
                     </c:forEach>
                 </tbody>
                 <tfoot>
@@ -127,22 +128,99 @@
                         <td><strong id="totalBill"><fmt:formatNumber type="number" pattern="#,###" value="${totalBill}" /> vnd</strong></td>
                         <td></td>
                         <td>
-                            <c:if test="${not containsARStatus}">
-                                <button class="btn btn-primary" onclick="checkout()">Check Out</button>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${not containsARStatus}">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#checkoutModal">
+                                        Checkout
+                                    </button>
+                                </c:when>
+                                <c:otherwise>
+                                    <button class="btn btn-secondary" disabled>Please remove unavailable product to checkout</button>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
                     </tr>
                 </tfoot>
             </table>
+            <div id="statusAlert" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
+                <span id="alertMessage"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <button type="button" class="btn btn-primary ok-button" onclick="clearProductStatus()">OK</button>
+            </div>
         </div>
 
-        <div id="statusAlert" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
-            <span id="alertMessage"></span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <button type="button" class="btn btn-primary ok-button" onclick="clearProductStatus()">OK</button>
+
+        <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="checkoutModalLabel">Your Cart</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <table id="cart-summary-table" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="cart" items="${carts}">
+                                            <tr>
+                                                <td>${fn:substring(cart.productItem.product.pname, 0, 20)}...</td>
+                                                <td><fmt:formatNumber type="number" pattern="#,###" value="${cart.soldPrice}" /> vnd</td>
+                                                <td>${cart.amount}</td>
+                                                <td><fmt:formatNumber type="number" pattern="#,###" value="${cart.soldPrice * cart.amount}" /> vnd</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-4">
+                                <form id="checkoutForm" action="createpayment" method="GET">
+                                    <div class="form-group">
+                                        <label for="address">Choose your address:</label>
+                                        <select class="form-control" id="address" name="address" onchange="toggleOtherAddress()">
+                                            <c:forEach var="address" items="${account.addresses}">
+                                                <option value="${address}">${address}</option>
+                                            </c:forEach>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="otherAddressInput" class="form-group" style="display: none;">
+                                        <label for="otherAddress">Enter other address:</label>
+                                        <input type="text" class="form-control" id="otherAddress" name="otherAddress">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="note">Note for shipper:</label>
+                                        <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+                                    </div>
+
+                                    <input type="hidden" id="amount" name="amount" value="${totalBill}">
+                                    <button type="submit" class="btn btn-primary">Pay</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
         <div class="container">
             <h2 style="text-align: center;">Previous Bought Items</h2>
             <table id="previous-bought-table" class="table table-striped">
@@ -199,6 +277,16 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         <script>
+                                        function toggleOtherAddress() {
+                                            var addressSelect = document.getElementById("address");
+                                            var otherAddressInput = document.getElementById("otherAddressInput");
+
+                                            if (addressSelect.value === "Other") {
+                                                otherAddressInput.style.display = "block";
+                                            } else {
+                                                otherAddressInput.style.display = "none";
+                                            }
+                                        }
             <c:forEach var="cart" items="${carts}">
                                         displayProductStatusAlert('${cart.product_status}', '${cart.productItem.product.pname}');
             </c:forEach>
@@ -215,6 +303,7 @@
                                                         alert('Product added to cart');
                                                         location.reload();
                                                     } else {
+                                                        location.reload();
                                                     }
                                                 },
                                                 error: function (xhr, status, error) {
@@ -229,13 +318,13 @@
                                         function displayProductStatusAlert(productStatus, pname) {
                                             var alertMessage = '';
                                             switch (productStatus) {
-                                                case 'AR':
+                                                case 'Archived':
                                                     alertMessage = 'A product inside your cart is set as archived status, please remove it <br/> ' + 'Product: ' + pname;
                                                     break;
-                                                case 'PU':
+                                                case 'PriceUpdate':
                                                     alertMessage = 'The price of a product inside your cart has just been updated, you can choose to remove it <br/> ' + 'Product: ' + pname;
                                                     break;
-                                                case 'DE':
+                                                case 'DiscountEnded':
                                                     alertMessage = 'Discount from a product inside your cart has just run out <br/> ' + 'Product: ' + pname;
                                                     break;
                                             }
