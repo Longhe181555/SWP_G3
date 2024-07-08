@@ -559,39 +559,54 @@ INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-30,'',null,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
 --Order last 2 month
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-60,'',null,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-60,'',null,2,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
 --Order last 3 month
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-90,'',null,1,1500000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-90,'',null,3,1500000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
 
 --Order yesterday approved
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-1,'',null,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-1,'',null,4,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
 --Order last week approved
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',0,1,1146000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',null,5,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 /*
 
 SELECT 
     o.orid,
-    o.totalPrice,
-    COUNT(DISTINCT oi.piid) AS productCount,
+    o.aid,
     o.date,
+    o.description,
     o.status,
+    o.totalPrice,
     o.address,
-	o.description
+    o.payment,
+    o.processedDate,
+    o.processedBy,
+    COUNT(DISTINCT pi.pid) AS Product_Amount
 FROM 
     [Order] o
 JOIN 
     OrderItem oi ON o.orid = oi.orid
-	WHERE o.aid = 0
+JOIN 
+    ProductItem pi ON oi.piid = pi.piid
+	WHERE o.status = 0
 GROUP BY 
-    o.orid, o.totalPrice, o.date, o.status, o.address, o.description
-ORDER BY 
-    o.orid ASC;
+    o.orid, 
+    o.aid, 
+    o.date, 
+    o.description, 
+    o.status, 
+    o.totalPrice, 
+    o.address, 
+    o.payment, 
+    o.processedDate, 
+    o.processedBy;
 
 
 
   */
+
+

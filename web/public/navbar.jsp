@@ -72,6 +72,7 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="pmanagement">Product Management</a></li>
                                 <li><a class="dropdown-item" href="smanagement">Stock Management</a></li>
+                                <li><a class="dropdown-item" href="ordermanagement">Order Management</a></li>
                             </ul>
                         </li>
                     </c:if>
