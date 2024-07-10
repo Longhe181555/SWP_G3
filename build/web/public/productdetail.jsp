@@ -82,6 +82,8 @@
             }
             .price-container p {
                 margin-right: 10px;
+
+
             </style>
         </head>
         <body>
@@ -134,7 +136,7 @@
                                     <button type="button" class="btn btn-secondary" onclick="location.href = 'updateProductStock'">Update Product Stock</button>
                                 </c:if>
                                 <div class="price-container">
-                                    <p class="font-weight-bold" id="originalPrice">${product.price}d</p>
+                                    <p class="font-weight-bold" id="originalPrice"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</p>
                                     <p class="font-weight-bold" id="discountedPrice"></p>
                                 </div>
                                 <div class="color-dropdowns">
@@ -149,17 +151,32 @@
                                 <div id="sizeOptions">
                                     <c:forEach var="entry" items="${groupedByColor}">
                                         <div class="size-options" data-color="${entry.key}" style="display: none;">
-                                            <c:forEach var="pi" items="${entry.value}">
-                                                <div class="size-option" data-size="${pi.size}" data-stock="${pi.stockcount}" onclick="selectSize(this)">
-                                                    ${pi.size} <span class="stock-count">(${pi.stockcount})</span>
-                                                    <c:if test="${pi.discount != null}">
-                                                        <span class="discount-indicator">discounted</span>
+                                            <c:set var="allSizes" value="${['S', 'M', 'L', 'XL']}"/>
+                                            <c:forEach var="size" items="${allSizes}">
+                                                <c:set var="found" value="false"/>
+                                                <c:forEach var="pi" items="${entry.value}">
+                                                    <c:if test="${pi.size == size}">
+                                                        <div class="size-option" data-size="${pi.size}" data-stock="${pi.stockcount}" onclick="selectSize(this)">
+                                                            ${pi.size} <span class="stock-count">(${pi.stockcount})</span>
+                                                            <c:if test="${pi.discount != null}">
+                                                                <span class="discount-indicator">discounted</span>
+                                                            </c:if>
+                                                        </div>
+                                                        <c:set var="found" value="true"/>
                                                     </c:if>
-                                                </div>
+                                                </c:forEach>
+                                                <c:if test="${!found}">
+                                                    <div class="size-option" style="text-decoration: line-through;
+                                                         color: #ccc;
+                                                         cursor: not-allowed;">
+                                                        ${size} <span class="stock-count">(0)</span>
+                                                    </div>
+                                                </c:if>
                                             </c:forEach>
                                         </div>
                                     </c:forEach>
                                 </div>
+
 
 
                             </div>
@@ -243,7 +260,6 @@
                     });
                     colorOption.classList.add('selected');
 
-
                     var selectedColor = colorOption.getAttribute('data-color');
                     var sizeOptions = document.querySelectorAll('.size-options');
                     sizeOptions.forEach(function (option) {
@@ -254,12 +270,11 @@
                         }
                     });
 
-
-                    var firstAvailableSizeOption = document.querySelector('.size-options[data-color="' + selectedColor + '"] .size-option:not([style*="display: none;"])');
+                    // Select the first available size option that is not crossed out
+                    var firstAvailableSizeOption = document.querySelector('.size-options[data-color="' + selectedColor + '"] .size-option:not([style*="text-decoration: line-through;"]');
                     if (firstAvailableSizeOption) {
                         firstAvailableSizeOption.click();
                     }
-
                 }
 
 
@@ -340,10 +355,15 @@
                             var discountedPriceElement = document.getElementById('discountedPrice');
                             var originalPrice = ${product.price};
                             var isDiscounted = discountedPrice < originalPrice;
-
+                               
+                            var formattedPrice = discountedPrice.toLocaleString('en-US', {
+                             style: 'currency',
+                             currency: 'VND'
+                                });   
+                               
                             if (isDiscounted) {
                                 originalPriceElement.classList.add('original-price');
-                                discountedPriceElement.textContent = 'Discount ' + value + '% off: ' + discountedPrice + 'd';
+                                discountedPriceElement.textContent = 'Discount ' + value + '% off: ' + formattedPrice;
                                 discountedPriceElement.classList.add('discounted-price');
                             } else {
                                 originalPriceElement.classList.remove('original-price');

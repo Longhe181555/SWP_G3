@@ -102,7 +102,13 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="accountDropdown">
                                             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/account">Account Detail</a></li>
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/vieworderhistory">Order History</a></li>
+
+                                            <c:if test="${Account.role == 'customer'}">
+                                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/vieworderhistory">Order History</a></li>
+                                                </c:if>
+
+
+
                                             <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
                                         </ul>
@@ -110,53 +116,58 @@
                                 </li>
                             </c:otherwise>
                         </c:choose>
-                        <li class="nav-item d-flex align-items-center">
-                            <a class="nav-link text-white" href="#"><i class="bi bi-bell"></i></a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <div class="dropdown">
-                                <a class="nav-link text-white dropdown-toggle cart-container" href="#" role="button" id="cartDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 4px">
-                                    <i class="bi bi-cart" style="font-size: 20px"></i> 
-                                    <c:if test="${cartcount > 0}">
-                                        ${cartcount}
-                                    </c:if>
-                                </a>
-                                <ul class="dropdown-menu cart-dropdown" aria-labelledby="cartDropdown">
-                                    <c:choose>
-                                        <c:when test="${empty carts}">
-                                            <c:if test="${empty account}">
-                                                <li><a class="dropdown-item" href="account">Login/Register to start shopping</a></li>
-                                                </c:if>
-                                                <c:if test="${not empty account}">
-                                                <li>| Cart is empty |</li>
-                                                </c:if>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <c:forEach var="cart" items="${carts}" varStatus="loop">
-                                                    <c:if test="${loop.index < 3}">
-                                                    <li class="dropdown-item">
-                                                        <div class="row">
-                                                            <div class="col-md-2" style="padding:0px">
-                                                                <img src="${pageContext.request.contextPath}/${cart.productItem.product.productimgs[0].imgpath}" class="img-fluid" alt="${cart.productItem.product.pname}" style="width: 100%; height: 100%;">
+                          <li class="nav-item d-flex align-items-center">
+                                <a class="nav-link text-white" href="#"><i class="bi bi-bell"></i></a>
+                            </li>             
+                       <c:if test="${account.role != 'admin' && account.role != 'staff'}">
+                            <li class="nav-item d-flex align-items-center">
+                                <div class="dropdown">
+                                    <a class="nav-link text-white dropdown-toggle cart-container" href="#" role="button" id="cartDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 4px">
+                                        <i class="bi bi-cart" style="font-size: 20px"></i> 
+                                        <c:if test="${cartcount > 0}">
+                                            ${cartcount}
+                                        </c:if>
+                                    </a>
+                                    <ul class="dropdown-menu cart-dropdown" aria-labelledby="cartDropdown">
+                                        <c:choose>
+                                            <c:when test="${empty carts}">
+                                                <c:if test="${empty account}">
+                                                    <li><a class="dropdown-item" href="account">Login/Register to start shopping</a></li>
+                                                    </c:if>
+                                                    <c:if test="${not empty account}">
+                                                    <li>| Cart is empty |</li>
+                                                    </c:if>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:forEach var="cart" items="${carts}" varStatus="loop">
+                                                        <c:if test="${loop.index < 3}">
+                                                        <li class="dropdown-item">
+                                                            <div class="row">
+                                                                <div class="col-md-2" style="padding:0px">
+                                                                    <img src="${pageContext.request.contextPath}/${cart.productItem.product.productimgs[0].imgpath}" class="img-fluid" alt="${cart.productItem.product.pname}" style="width: 100%; height: 100%;">
+                                                                </div>
+                                                                <div class="col-md-10">
+                                                                    ${fn:substring(cart.productItem.product.pname, 0, 20)}... <br/>
+                                                                    <span><fmt:formatNumber type="number" pattern="#,### đ" value="${cart.soldPrice}" /> x ${cart.amount}</span>
+                                                                </div>
                                                             </div>
-                                                            <div class="col-md-10">
-                                                                ${fn:substring(cart.productItem.product.pname, 0, 20)}... <br/>
-                                                                <span><fmt:formatNumber type="number" pattern="#,### đ" value="${cart.soldPrice}" /> x ${cart.amount}</span>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </c:if>
-                                            </c:forEach>
-                                            <c:if test="${cartcount > 3}">
-                                                <li><small>${cartcount - 3} more item(s)</small></li>
-                                                </c:if>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="vcart">See all cart items</a></li>
-                                            </c:otherwise>
-                                        </c:choose>
-                                </ul>
-                            </div>
-                        </li>
+                                                        </li>
+                                                    </c:if>
+                                                </c:forEach>
+                                                <c:if test="${cartcount > 3}">
+                                                    <li><small>${cartcount - 3} more item(s)</small></li>
+                                                    </c:if>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="vcart">See all cart items</a></li>
+                                                </c:otherwise>
+                                            </c:choose>
+                                    </ul>
+                                </div>
+                            </li>    
+                        </c:if>    
+
+
+
                     </ul>
                 </div>
             </div>

@@ -47,20 +47,20 @@
                 margin-top: 20px;
             }
             .status-pending {
-            color: orange;
-        }
-        .status-confirmed {
-            color: darkgreen;
-        }
-        .status-shipping {
-            color: blue;
-        }
-        .status-shipped {
-            color: green;
-        }
-        .status-rejected, .status-cancelled {
-            color: darkred;
-        }
+                color: orange;
+            }
+            .status-confirmed {
+                color: darkgreen;
+            }
+            .status-shipping {
+                color: blue;
+            }
+            .status-shipped {
+                color: green;
+            }
+            .status-rejected, .status-cancelled {
+                color: darkred;
+            }
         </style>
     </head>
     <body>
@@ -73,27 +73,30 @@
             <p>Payment: ${order.payment}</p>
             <p>Shipping Note: ${order.note}</p>
             <p>Shipping to: ${order.address}</p>
+            <c:if test="${Account.role == 'staff' || Account.role == 'admin'}">
+                <p>Processed By: ${order.processedBy.fullname}</p>
+            </c:if>
             <p>Shipping Status:
                 <c:choose>
-                        <c:when test="${order.status == 0}">
-                            <span class="status-pending">Pending</span>
-                        </c:when>
-                        <c:when test="${order.status == 1}">
-                            <span class="status-confirmed">Confirmed</span>
-                        </c:when>
-                        <c:when test="${order.status == 2}">
-                            <span class="status-shipping">Shipping</span>
-                        </c:when>
-                        <c:when test="${order.status == 3}">
-                            <span class="status-shipped">Shipped</span>
-                        </c:when>
-                        <c:when test="${order.status == 4}">
-                            <span class="status-rejected">Rejected</span>
-                        </c:when>
-                        <c:when test="${order.status == 5}">
-                            <span class="status-cancelled">Cancelled</span>
-                        </c:when>
-                    </c:choose>
+                    <c:when test="${order.status == 0}">
+                        <span class="status-pending">Pending</span>
+                    </c:when>
+                    <c:when test="${order.status == 1}">
+                        <span class="status-confirmed">Confirmed</span>
+                    </c:when>
+                    <c:when test="${order.status == 2}">
+                        <span class="status-shipping">Shipping</span>
+                    </c:when>
+                    <c:when test="${order.status == 3}">
+                        <span class="status-shipped">Shipped</span>
+                    </c:when>
+                    <c:when test="${order.status == 4}">
+                        <span class="status-rejected">Rejected</span>
+                    </c:when>
+                    <c:when test="${order.status == 5}">
+                        <span class="status-cancelled">Cancelled</span>
+                    </c:when>
+                </c:choose>
             </p>
             <p>Processed Date: ${empty order.processedDate ? 'Not yet' : order.processedDate}</p>
 
@@ -116,7 +119,16 @@
                             <td>
                                 <img src="${pageContext.request.contextPath}/${orderItem.productItem.product.productimgs[0].imgpath}" class="img-fluid" style="width: 50px; height: 50px;" alt="${orderItem.productItem.product.pname}">
                             </td>
-                            <td>${fn:substring(orderItem.productItem.product.pname, 0, 20)}...</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${orderItem.product_status == 'Archived'}">
+                                        <div style="color: red"> Unavailable product </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${fn:substring(orderItem.productItem.product.pname, 0, 20)}...
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                             <td>${orderItem.productItem.size}</td>
                             <td>
                                 <div class="color-square" style="background-color: ${orderItem.productItem.color};"></div>${orderItem.productItem.color}
@@ -135,7 +147,23 @@
                 </tbody>
             </table>
 
-            <a href="vieworderhistory" class="btn btn-secondary btn-back">Back to Order History</a>
+            <a href="<c:choose>
+                   <c:when test="${account.role == 'admin' or account.role == 'staff'}">
+                       ordermanagement
+                   </c:when>
+                   <c:otherwise>
+                       vieworderhistory
+                   </c:otherwise>
+               </c:choose>" class="btn btn-secondary btn-back">
+                <c:choose>
+                    <c:when test="${account.role == 'admin' or account.role == 'staff'}">
+                        Back to Order Management
+                    </c:when>
+                    <c:otherwise>
+                        Back to Order History
+                    </c:otherwise>
+                </c:choose>
+            </a>
         </div>
 
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

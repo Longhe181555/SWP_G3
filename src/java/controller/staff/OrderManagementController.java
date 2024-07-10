@@ -32,8 +32,19 @@ public class OrderManagementController extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OrderDBContext odb = new OrderDBContext();
-        ArrayList<Order> pendingOrder = odb.getPendingOrders();
+        ArrayList<Order> pendingOrder = odb.getByStatus(0);
+        ArrayList<Order> confirmedOrder = odb.getByStatus(1);
+        ArrayList<Order> shippingOrder = odb.getByStatus(2);
+        ArrayList<Order> shippedOrder = odb.getByStatus(3);
+        ArrayList<Order> rejectedOrder = odb.getByStatus(4);
+        ArrayList<Order> cancelledOrder = odb.getByStatus(5);
+        
         request.setAttribute("orders", pendingOrder);
+        request.setAttribute("confirmed", confirmedOrder);
+        request.setAttribute("shipping", shippingOrder);
+        request.setAttribute("shipped", shippedOrder);
+        request.setAttribute("rejected", rejectedOrder);
+        request.setAttribute("cancelled", cancelledOrder);
         ArrayList<Order> orderList = odb.listOrders();
         request.setAttribute("orderList", orderList);
         request.getRequestDispatcher("staff/ordermanagement.jsp").forward(request, response);

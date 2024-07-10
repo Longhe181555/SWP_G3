@@ -19,7 +19,6 @@ public class ViewCartController extends BaseRequiredAuthenticationController {
    
     protected void doGet(HttpServletRequest request, HttpServletResponse response,Account account)
             throws ServletException, IOException {
-        
         ArrayList<Cart> cs =  (ArrayList<Cart>) request.getAttribute("carts");
         if(cs != null) {
         int totalBill = 0;
@@ -31,8 +30,6 @@ public class ViewCartController extends BaseRequiredAuthenticationController {
         }
         ProductItemDBContext pidb = new ProductItemDBContext();
         
-        ArrayList<ProductItem> productItems = pidb.getRecentBoughtProductItems(account.getAid());
-            request.setAttribute("recentbought", productItems);
         request.getRequestDispatcher("/common/viewcart.jsp").forward(request, response);
     }
 

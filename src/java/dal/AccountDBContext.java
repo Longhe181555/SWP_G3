@@ -368,6 +368,7 @@ public class AccountDBContext extends DBContext {
         ResultSet rs = stm.executeQuery();
         while (rs.next()) {
             String address = rs.getString("address");
+            System.out.println(address);
             addresses.add(address);
         }
     } catch (SQLException ex) {

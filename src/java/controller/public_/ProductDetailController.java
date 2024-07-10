@@ -37,6 +37,7 @@ public class ProductDetailController extends HttpServlet {
         String pidStr = request.getParameter("pid");
         if (pidStr != null) {
             try {
+                request.setAttribute("allSizes", new String[]{"S", "M", "L", "XL"});
                 ProductSortHelper ph = new ProductSortHelper();
                 int pid = Integer.parseInt(pidStr);
                 Product product = productDB.get(pid);

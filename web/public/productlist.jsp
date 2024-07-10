@@ -94,7 +94,6 @@
                                     <input type="hidden" class="form-control" id="rating" name="rating" value="${param.rating}">
                                 </div>
                             </div>
-                            <input type="hidden" id="page" name="page" value="${param.page}">
                             <input type="hidden" id="order" name="order" value="${param.order}">
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="discount" name="discount" ${param.discount == 'on' ? 'checked' : ''}>
@@ -105,7 +104,7 @@
                         </form>
                     </div>
                 </div>
-
+                <input type="hidden" id="page" name="page" value="${param.page}">
                 <!-- Product list column -->
                 <div class="col-8 bg-light">
                     <div class="row bg-light py-2 mb-3">
@@ -155,7 +154,7 @@
                             <div class="row">
                                 <div class="col">
                                     <button id="toggleButton" class="btn btn-primary">
-                                        <span id="icon" class="bi bi-collection"></span> <!-- Default icon -->
+                                        <span id="icon" class="bi bi-collection"></span> 
                                     </button>
                                 </div>
 
@@ -210,11 +209,11 @@
                                                     <c:if test="${not empty product.discountDescription}">
                                                         <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
                                                         <span class="discount-description">Up to ${product.discountDescription} values</span><br>
-                                                        <span class="original-price" style="text-decoration: line-through;">${product.price}đ</span> -
-                                                        <span class="discounted-price">${product.discountedPrice}đ</span>
+                                                        <span class="original-price" style="text-decoration: line-through;"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</span> -
+                                                        <span class="discounted-price"><fmt:formatNumber value="${product.discountedPrice}" type="number" pattern="#,###" /> VND</span>
                                                     </c:if>
                                                     <c:if test="${empty product.discountDescription}">
-                                                        $${product.price}đ
+                                                        <fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND
                                                     </c:if>
                                                 </p>
                                                 <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}" class="btn btn-primary mt-auto">View Details</a>
@@ -236,7 +235,6 @@
                 const ratingInput = document.getElementById('rating');
                 const selectedRating = parseInt(ratingInput.value);
 
-                // Loop through each star and fill up stars based on the selected rating
                 stars.forEach((star, index) => {
                     if (index < selectedRating) {
                         star.classList.remove('bi-star');
@@ -262,24 +260,15 @@
                                 star.classList.add('bi-star');
                             }
                         });
-
-                        // Update the value of the hidden input to the clicked rating
                         ratingInput.value = clickedRating;
                     });
                 });
             });
 
             const sortingDropdown = document.getElementById('sortingDropdown');
-
-            // Add event listener for change event on sorting dropdown
             sortingDropdown.addEventListener('change', function () {
-                // Get the selected option value
                 const selectedOrder = sortingDropdown.value;
-
-                // Set the value of the hidden "order" input field in the filter form
                 document.getElementById('order').value = selectedOrder;
-
-                // Submit the filter form
                 document.querySelector('.filter-options form').submit();
             });
 
@@ -287,13 +276,15 @@
 
             toggleButton.addEventListener('click', function () {
                 let currentPage = new URLSearchParams(window.location.search).get('page');
-
                 currentPage = currentPage === null ? 1 : null;
                 let newURL = window.location.pathname + '?';
                 if (currentPage !== null) {
                     newURL += 'page=' + currentPage + '&';
                 }
-                newURL += '?page=${page}&search=${param.search}&category=${param.category}&brand=${param.brand}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&rating=${param.rating}&order=${param.order}';
+                newURL += 'search=${param.search}&category=${param.category}&brand=${param.brand}&minPrice=${param.minPrice}&maxPrice=${param.maxPrice}&rating=${param.rating}&order=${param.order}';
+                if (newURL.endsWith('&')) {
+                    newURL = newURL.slice(0, -1);
+                }
                 window.location.href = newURL;
             });
 

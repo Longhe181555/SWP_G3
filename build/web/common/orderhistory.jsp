@@ -85,126 +85,54 @@
                 </tbody>
             </table>
 
-
-            <h2 style="text-align: center;">Previous Bought Items</h2>
-            <table id="previous-bought-table" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                        <th>Price</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="previousItem" items="${recentbought}" varStatus="loop">
-                        <c:if test="${loop.index < 4}"> 
-                            <tr>
-                                <td><img src="${previousItem.product.productimgs[0].imgpath}" class="img-fluid" style="max-width: 50px; max-height: 50px;" alt="${previousItem.product.pname}"></td>
-                                <td><a href="productdetail?pid=${previousItem.product.pid}" style="text-decoration: none;">
-                                        ${previousItem.product.pname}
-                                    </a></td>
-                                <td>${previousItem.size}</td>
-                                <td>
-                                    <div style="width: 20px; height: 20px; display: inline-block; background-color: ${previousItem.color};"></div>
-                                    ${previousItem.color}
-                                </td>
-                                <td>
-                                    <c:choose>
-                                        <c:when test="${previousItem.product.price != previousItem.getDiscountedPrice()}">
-                                            <span style="color: red; text-decoration: line-through;">
-                                                <fmt:formatNumber value="${previousItem.product.price}" type="number" pattern="#,###" /> VND
-                                            </span>
-                                            <br/>
-                                            <fmt:formatNumber value="${previousItem.getDiscountedPrice()}" type="number" pattern="#,###" /> VND
-                                        </c:when>
-                                        <c:otherwise>
-                                            <fmt:formatNumber value="${previousItem.product.price}" type="number" pattern="#,###" /> VND
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
-                                <td>
-                                    <button class="btn btn-success" onclick="addToCart(${previousItem.piid})">Buy Again</button>
-                                </td>
-                            </tr>
-                        </c:if>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </div>
-
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-        <script>
-                                        $(document).ready(function () {
-                                            // Initialize DataTable without search and paging
-                                            $('#order-history-table').DataTable({
-                                                paging: false
-                                            });
-
-                                            $('#previous-bought-table').DataTable({
-                                                searching: false,
-                                                paging: false,
-                                                ordering: false
-                                            });
-                                        });
-
-                                        function viewOrderDetails(orderId) {
-                                            window.location.href = 'orderdetail?orderId=' + orderId;
-                                        }
-
-                                        function editOrder(orderId) {
-                                            if (confirm('Are you sure you want to edit this order?')) {
-                                                window.location.href = 'editorder.jsp?orderId=' + orderId;
-                                            }
-                                        }
-
-                                        function confirmCancelOrder(orderId) {
-                                            if (confirm('Are you sure you want to cancel this order?')) {
-                                                $.ajax({
-                                                    url: 'CancelOrderController',
-                                                    type: 'POST',
-                                                    data: {orderId: orderId},
-                                                    success: function (response) {
-                                                        if (response.success) {
-                                                            alert('Order cancelled successfully.');
-                                                            location.reload();
-                                                        } else {
-                                                            alert('Failed to cancel the order. Please try again.');
-                                                        }
-                                                    },
-                                                    error: function (xhr, status, error) {
-                                                        console.error('Error cancelling order:', error);
-                                                        alert('Error cancelling order. Please try again.');
-                                                    }
+            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+            <script>
+                                            $(document).ready(function () {
+                                                // Initialize DataTable without search and paging
+                                                $('#order-history-table').DataTable({
+                                                    paging: false,
+                                                    order: [[3, 'desc']] 
                                                 });
-                                            }
-                                        }
 
-                                        function quickAddToCart(piid) {
-                                            var quantity = 1; // Fixed quantity
-
-                                            // AJAX request to add to cart
-                                            $.ajax({
-                                                url: 'AddToCartController',
-                                                type: 'POST',
-                                                data: {piid: piid, quantity: quantity},
-                                                success: function (response) {
-                                                    if (response.success) {
-                                                        alert('Product added to cart');
-                                                        location.reload();
-                                                    } else {
-                                                        location.reload();
-                                                    }
-                                                },
-                                                error: function (xhr, status, error) {
-                                                    console.error('Error adding to cart:', error);
-                                                    alert('Error adding to cart. Please try again.');
-                                                }
+                                                $('#previous-bought-table').DataTable({
+                                                    searching: false,
+                                                    paging: false,
+                                                    ordering: false
+                                                });
                                             });
-                                        }
-        </script>
+
+                                            function viewOrderDetails(orderId) {
+                                                window.location.href = 'orderdetail?orderId=' + orderId;
+                                            }
+
+                                            function editOrder(orderId) {
+                                                if (confirm('Are you sure you want to edit this order?')) {
+                                                    window.location.href = 'editorder.jsp?orderId=' + orderId;
+                                                }
+                                            }
+
+                                            function confirmCancelOrder(orderId) {
+                                                if (confirm('Are you sure you want to cancel this order?')) {
+                                                    $.ajax({
+                                                        url: 'CancelOrderController',
+                                                        type: 'POST',
+                                                        data: {orderId: orderId},
+                                                        success: function (response) {
+                                                            if (response.success) {
+                                                                alert('Order cancelled successfully.');
+                                                                location.reload();
+                                                            } else {
+                                                                alert('Failed to cancel the order. Please try again.');
+                                                            }
+                                                        },
+                                                        error: function (xhr, status, error) {
+                                                            console.error('Error cancelling order:', error);
+                                                            alert('Error cancelling order. Please try again.');
+                                                        }
+                                                    });
+                                                }
+                                            }
+            </script>
     </body>
 </html>

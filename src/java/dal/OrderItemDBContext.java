@@ -33,9 +33,7 @@ ProductItemDBContext pidb = new ProductItemDBContext();
                 oi.setPiid(rs.getInt("piid"));
                 oi.setOrderId(rs.getInt("orid"));
                 oi.setProduct_status(rs.getString("product_status"));
-                
                 oi.setProductItem(pidb.getByPiid(rs.getInt("piid")));
-               
                if (rs.getString("type") != null && rs.getInt("value") != 0) {
                     Discount discount = new Discount();
                     discount.setDid(rs.getInt("did"));

@@ -226,10 +226,7 @@ insert into Account(fullname,username,password,role,salt) values
 ('staff', 'staff','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','staff','WrT79x+xWmhh8c3BBkkIkw==')
 
 
-INSERT INTO Address(aid,address) values (0,'Ha Noi'),(0, 'Hai Duong'),(0,'Hai Phong'),(0,'Kien An'),
-(1,'Ha Noi'),(1, 'Hai Duong'),(1,'Hai Phong'),(1,'Kien An'),
-(2,'Ha Noi'),(2, 'Hai Duong'),(2,'Hai Phong'),(2,'Kien An')
-
+INSERT INTO Address(aid,address) values (5,'Ha Noi'),(5, 'Hai Duong'),(5,'Hai Phong'),(5,'Kien An')
 insert into Color(cname) values('purple')
 insert into Brand(bname) values('Zara')
 insert into Size(sname,height,weight,gender) values('ph','ph','ph',0)
@@ -548,13 +545,14 @@ VALUES
 
 
 --INSERT INTO Cart (amount,piid,soldPrice,aid,did,product_status) values (3,1,312800,0,2,null),(2,13,191000,0,null,'Archived'),(1,2,312800,0,3,null)
-INSERT INTO Cart (amount,piid,soldPrice,aid,did,product_status) values (3,1,312800,5,2,null),(2,13,191000,5,null,null),(1,2,312800,5,3,null)
+INSERT INTO Cart (amount,piid,soldPrice,aid,did,product_status) values (3,1,312800,5,2,null),(2,13,191000,5,null,'Archived'),(1,2,312800,5,3,null)
 -- Order will insert of different month, week interval for testing purpose, from the same user, for now user aid 5 will be the tester
 
 
 --Order today pending
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate(),'',null,0,1000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice, product_status) values (0,7,33,250000,'Archived')
 --Order last month
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-30,'',null,1,3000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
