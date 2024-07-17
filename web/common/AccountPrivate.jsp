@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
@@ -19,6 +20,9 @@
     
     <hr style="width: 90%">
     <div class="container rounded bg-white mt-5 mb-5">
+         <c:if test="${not empty sessionScope.activatedMessage}">
+                            <div class="alert alert-info">${sessionScope.activatedMessage}</div>
+                        </c:if>
         <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">

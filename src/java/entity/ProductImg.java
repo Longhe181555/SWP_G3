@@ -6,9 +6,9 @@ package entity;
 
 public class ProductImg {
 
-    int iid;
-    String imgpath;
-    int pid;
+    private int iid;
+    private String imgpath;
+    private int pid;
 
     public int getIid() {
         return iid;

@@ -76,7 +76,7 @@ CREATE TABLE Product(
 
 CREATE TABLE ProductImg(
   iid INT IDENTITY(0,1) PRIMARY KEY,
-  imgpath varchar(100),
+  imgpath varchar(max),
   pid int FOREIGN KEY (pid) REFERENCES Product(pid)
 )
 
@@ -102,8 +102,7 @@ email varchar(50),
 phonenumber varchar(50),
 gender BIT,
 birthdate DATE,
-address varchar(MAx),
-img varchar(100),
+img varchar(max),
 role varchar(100),
 status varchar(100),
 lastLogin Date
@@ -113,17 +112,11 @@ lastLogin Date
 
 CREATE TABLE [Address](
 adid INT IDENTITY(0,1) PRIMARY KEY,
-address varchar(100),
+address varchar(max),
 aid int FOREIGN KEY (aid) References Account(aid)
 )
 
 
-CREATE TABLE Payment(
- pmid  INT IDENTITY(0,1) PRIMARY KEY,
- bname nvarchar(100),
- bnumber nvarchar(100),
- aid int FOREIGN KEY (aid) REFERENCES Account(aid)
-)
 
 CREATE TABLE DiscountType(
  dtid INT IDENTITY(0,1) PRIMARY KEY,
@@ -202,28 +195,28 @@ CREATE TABLE Cart(
 -- chac la giu color o day
 
 
-insert into Account(fullname,username,password,role,salt) values
-('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw=='),
-('minhtnhe180070', 'minhtnhe180070','5DExJq2Tg429tJe+49JlKW3K656T8hongRAx4eK7JTEibToltE6Zzlafl1WJ/3OvHFJvbNX/V+oKYw3jgrFVyw==','admin','w51cFkFMQFSsjyT2YThmPw=='),
-('duyddhe173473', 'duyddhe173473','dOuNAbJRoxe4bDhXeiiiHzQVtebLrCxvybKfgHeLL1EI6K9uwUc700f2xzykx4sp7d96ZxpavpQj6RvqV09XEA==','admin','5yQ0jZsmtsEUHQR8CVgCrg=='),
-('binhthhe151011', 'binhthhe151011','rGEutTob/BSpz5YtqXyXBJsaepDh9SRF8EfI4SlQ+eadPiHRst/GITju5ydMfaUKMsiAw6QXpu8UogMykIkKWQ==','admin','qnvXvpwbsWdgDtKmf69sag=='),
-('danglhhe161145', 'danglhhe161145','46l9N+161aQAD2LY1SkNsLOj5Uus6oqnYHTPO9Ab8fZDACb8YZf5473sl1cH3Mpm3kXOEDT/8rC6hi6itOxTFw==','admin','AoaQBLzOP+YBa7Zgqo0BkQ==')
+insert into Account(fullname,username,password,role,salt,status,lastLogin) values
+('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==','Activated', getDate()),
+('minhtnhe180070', 'minhtnhe180070','5DExJq2Tg429tJe+49JlKW3K656T8hongRAx4eK7JTEibToltE6Zzlafl1WJ/3OvHFJvbNX/V+oKYw3jgrFVyw==','admin','w51cFkFMQFSsjyT2YThmPw==','Activated',getDate()-10),
+('duyddhe173473', 'duyddhe173473','dOuNAbJRoxe4bDhXeiiiHzQVtebLrCxvybKfgHeLL1EI6K9uwUc700f2xzykx4sp7d96ZxpavpQj6RvqV09XEA==','admin','5yQ0jZsmtsEUHQR8CVgCrg==','Activated',getDate()-10),
+('binhthhe151011', 'binhthhe151011','rGEutTob/BSpz5YtqXyXBJsaepDh9SRF8EfI4SlQ+eadPiHRst/GITju5ydMfaUKMsiAw6QXpu8UogMykIkKWQ==','admin','qnvXvpwbsWdgDtKmf69sag==','Activated',getDate()-10),
+('danglhhe161145', 'danglhhe161145','46l9N+161aQAD2LY1SkNsLOj5Uus6oqnYHTPO9Ab8fZDACb8YZf5473sl1cH3Mpm3kXOEDT/8rC6hi6itOxTFw==','admin','AoaQBLzOP+YBa7Zgqo0BkQ==','Activated',getDate()-10)
 
 
-INSERT INTO Account(fullname, username, password, role, salt) VALUES 
-('nguyenvana', 'nguyenvana', 'Qp3BYQ18K/26dzuMGF0u+/JLtKVriQ4tcevm5dhtJNOzQqgiEPfhSRFRGZIf3XdKEgAOKJMa0ICOoc0fIhH/0A==', 'customer', '8siFHy6/+GPfGcGQyE71DA=='),
-('tranthib', 'tranthib', 'EZ00+9qKTXyNfomW/8zCj/XdPh3TEIDnX+TSc1GRX0GHvYQlO8xwHF6unSIZuXVBxHaOgHkca2rThTF5j0LSMg==', 'customer', 'KAvxAu9ro0z+inKPCwD9jg=='),
-('phamvand', 'phamvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw=='),
-('lethiec', 'lethiec', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
-('hoangminhf', 'hoangminhf', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw=='),
-('nguyenthuh', 'nguyenthuh', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
-('doanvand', 'doanvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
-('dangthil', 'dangthil', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
-('buiquynhm', 'buiquynhm', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw=='),
-('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==');
+INSERT INTO Account(fullname, username, password, role, salt,status,lastLogin) VALUES 
+('nguyenvana', 'nguyenvana', 'Qp3BYQ18K/26dzuMGF0u+/JLtKVriQ4tcevm5dhtJNOzQqgiEPfhSRFRGZIf3XdKEgAOKJMa0ICOoc0fIhH/0A==', 'customer', '8siFHy6/+GPfGcGQyE71DA==','Activated',getDate()-100),
+('tranthib', 'tranthib', 'EZ00+9qKTXyNfomW/8zCj/XdPh3TEIDnX+TSc1GRX0GHvYQlO8xwHF6unSIZuXVBxHaOgHkca2rThTF5j0LSMg==', 'customer', 'KAvxAu9ro0z+inKPCwD9jg==','Activated',getDate()-100),
+('phamvand', 'phamvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
+('lethiec', 'lethiec', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
+('hoangminhf', 'hoangminhf', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
+('nguyenthuh', 'nguyenthuh', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
+('doanvand', 'doanvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
+('dangthil', 'dangthil', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
+('buiquynhm', 'buiquynhm', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
+('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100);
 
-insert into Account(fullname,username,password,role,salt) values
-('staff', 'staff','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','staff','WrT79x+xWmhh8c3BBkkIkw==')
+insert into Account(fullname,username,password,role,salt,status,lastLogin) values
+('staff', 'staff','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','staff','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100)
 
 
 INSERT INTO Address(aid,address) values (5,'Ha Noi'),(5, 'Hai Duong'),(5,'Hai Phong'),(5,'Kien An')
@@ -554,13 +547,13 @@ INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) val
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice, product_status) values (0,7,33,250000,'Archived')
 --Order last month
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-30,'',null,1,3000000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice, processedDate) values(5,'Ha Noi',getDate()-30,'',null,1,3000000,getDate())
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
 --Order last 2 month
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-60,'',null,2,3000000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-60,'',null,2,3000000,GETDATE())
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4,33,250000),(2,3,34,250000)
 --Order last 3 month
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-90,'',null,3,1500000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-90,'',null,3,1500000,GETDATE())
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
 
 --Order yesterday approved
@@ -603,7 +596,15 @@ GROUP BY
     o.processedDate, 
     o.processedBy;
 
-
+	SELECT CASE 
+                      WHEN oi.amount > pi.stockcount AND oi.product_status = 'Archived' THEN 'Not enough stock and an item is unavailable'
+                      WHEN oi.amount > pi.stockcount THEN 'Not enough stock' 
+                      WHEN oi.product_status = 'Archived' THEN 'An item in the order is unavailable' 
+                      ELSE 'Valid Order' 
+                    END AS order_status 
+                    FROM OrderItem oi 
+                    LEFT JOIN ProductItem pi ON oi.piid = pi.piid
+                    WHERE oi.orid = 0
 
   */
 

@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller.authentication;
 
 import dal.CartDBContext;
@@ -17,13 +16,9 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
-
-
-
-
-
 
 @WebFilter("/*") // Apply to all requests
 public class AccountFilter implements Filter {
@@ -32,8 +27,8 @@ public class AccountFilter implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String url = httpRequest.getRequestURL().toString();
-//        System.out.println("URL accessed: " + url);
 
         HttpSession session = httpRequest.getSession(false);
         if (session != null) {
@@ -44,6 +39,11 @@ public class AccountFilter implements Filter {
                 ArrayList<Cart> carts = cdb.getByAid(currentUser.getAid());
                 request.setAttribute("carts", carts);
                 request.setAttribute("cartcount", carts.size());
+                if (currentUser!=null&&currentUser.getStatus().equalsIgnoreCase("Not Activated")&&!url.contains("profile")) {
+                    httpRequest.getSession().setAttribute("activatedMessage", "You must fill the required information to finish setting up your account");
+                    httpResponse.sendRedirect("profile");
+                 return;
+                }
             }
         }
 
@@ -56,9 +56,10 @@ public class AccountFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+    }
 }
-

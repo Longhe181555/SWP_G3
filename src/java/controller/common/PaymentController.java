@@ -59,22 +59,7 @@ public class PaymentController extends HttpServlet {
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_BankCode", "NCB");
-       
-        
-//         if (bankCode != null && !bankCode.isEmpty()) {
-//            vnp_Params.put("vnp_BankCode", bankCode);
-//        }
-//        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-//        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
-//        vnp_Params.put("vnp_OrderType", orderType);
-//
-//        String locate = req.getParameter("language");
-//        if (locate != null && !locate.isEmpty()) {
-//            vnp_Params.put("vnp_Locale", locate);
-//        } else {
-//            vnp_Params.put("vnp_Locale", "vn");
-//        }
-        //This part if if you want to let people pay anything other than ncb bank
+      
         
         
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);

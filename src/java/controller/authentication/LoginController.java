@@ -47,7 +47,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
     AccountDBContext db = new AccountDBContext();
     Account account = db.checkAccountExist(username);
     
-    if (account != null) {
+    if (db.checkExisted(username)) {
         String storedSalt = account.getSalt();
         String hashedPassword = "";
         try {
@@ -55,7 +55,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("");
+     
         
         
         if (account.getPassword().equals(hashedPassword)) {
@@ -64,10 +64,11 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             Cookie c_user = new Cookie("username", username);
             c_user.setMaxAge(5000);
             response.addCookie(c_user);
+            db.setLastLogin(account.getAid());
             response.sendRedirect("homepage");
-            return;
+            
         } else {
-            // Password did not match
+      
             request.setAttribute("loginError", "Invalid username or password");
             response.sendRedirect("login");
         }

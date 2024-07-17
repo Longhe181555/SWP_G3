@@ -16,14 +16,32 @@
                 display: flex;
                 flex-wrap: wrap;
             }
-            .img-preview img {
+            .img-preview .image-container {
+                position: relative;
                 margin-right: 10px;
                 margin-bottom: 10px;
+            }
+            .img-preview img {
                 width: 200px;
                 height: 200px;
                 object-fit: cover;
                 border: 1px solid #ddd;
                 border-radius: 4px;
+            }
+            .img-preview .remove-btn {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                background: rgba(0, 0, 0, 0.5);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 25px;
+                height: 25px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .placeholder{
                 height: 64px;
@@ -45,12 +63,12 @@
                 </div>
                 <div class="form-group">
                     <label for="productName">Product Name:</label>
-                    <input type="text" class="form-control" id="pname" name="pname" required>
+                    <input type="text" class="form-control" id="pname" name="pname" required placeholder="Enter Product Name">
                     <div id="nameError" style="color:red; display:none;">Product name already exists!</div>
                 </div>
                 <div class="form-group">
                     <label for="price">Price:</label>
-                    <input type="number" class="form-control" id="price" name="price" required>
+                    <input type="number" class="form-control" id="price" name="price" required oninput="validity.valid||(value='');" placeholder="VND">
                 </div>
                 <div class="form-group">
                     <label for="description">Description:</label>
@@ -115,28 +133,62 @@
         }
     });
 
+    var fileList = [];
+
     function previewImages() {
         var preview = document.querySelector('#image-preview');
         var files = document.querySelector('input[type=file]').files;
         var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/avif'];
         
         preview.innerHTML = ''; // Clear previous previews
+        fileList = Array.from(files); // Update fileList with the new files
         
-        Array.from(files).forEach(function (file) {
+        fileList.forEach(function (file, index) {
             if (allowedTypes.includes(file.type)) {
                 var reader = new FileReader();
                 reader.addEventListener('load', function () {
+                    var imageContainer = document.createElement('div');
+                    imageContainer.classList.add('image-container');
+                    
                     var image = new Image();
                     image.title = file.name;
                     image.src = this.result;
                     image.classList.add('thumbnail');
-                    preview.appendChild(image);
+                    
+                    var removeButton = document.createElement('button');
+                    removeButton.classList.add('remove-btn');
+                    removeButton.innerHTML = 'X';
+                    removeButton.onclick = function () {
+                        removeImage(index);
+                    };
+                    
+                    imageContainer.appendChild(image);
+                    imageContainer.appendChild(removeButton);
+                    preview.appendChild(imageContainer);
                 });
                 reader.readAsDataURL(file);
             } else {
                 alert('Invalid file type: ' + file.name + '. Only JPG, JPEG, PNG, GIF, and AVIF files are allowed.');
             }
         });
+        
+        updateFileInput();
+    }
+
+    function removeImage(index) {
+        fileList.splice(index, 1);
+        updateFileInput();
+        previewImages(); // Re-render the previews
+    }
+
+    function updateFileInput() {
+        var dataTransfer = new DataTransfer();
+        
+        fileList.forEach(function(file) {
+            dataTransfer.items.add(file);
+        });
+        
+        document.querySelector('input[type=file]').files = dataTransfer.files;
     }
 </script>
 

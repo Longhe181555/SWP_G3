@@ -30,7 +30,6 @@ ProductItemDBContext pidb = new ProductItemDBContext();
                 oi.setOiid(rs.getInt("oiid"));
                 oi.setAmount(rs.getInt("amount"));
                 oi.setSoldPrice(rs.getInt("soldPrice"));
-                oi.setPiid(rs.getInt("piid"));
                 oi.setOrderId(rs.getInt("orid"));
                 oi.setProduct_status(rs.getString("product_status"));
                 oi.setProductItem(pidb.getByPiid(rs.getInt("piid")));

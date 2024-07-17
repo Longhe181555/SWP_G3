@@ -32,7 +32,6 @@ public class AddToCartController extends BaseRequiredAuthenticationController {
         CartDBContext cartDB = new CartDBContext();
         int amount = Integer.parseInt(request.getParameter("quantity"));
         int piid = Integer.parseInt(request.getParameter("piid"));
-        System.out.println(piid + "| " + amount);
         ProductItem p = pidbc.getByPiid(piid);
         int soldPrice =  p.getDiscountedPrice();
         if(p.getDiscount()!=null) {

@@ -68,11 +68,11 @@
 
                             <div class="form-group">
                                 <label for="minPrice">Price From</label>
-                                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="${param.minPrice}" min="0" step="1">
+                                <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Min Price" value="${param.minPrice}" min="0" step="1" oninput="validity.valid||(value='');">
                             </div>
                             <div class="form-group">
                                 <label for="maxPrice">Price To</label>
-                                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}" min="0" step="1">
+                                <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Max Price" value="${param.maxPrice}" min="0" step="1" oninput="validity.valid||(value='');">
                             </div>
 
 

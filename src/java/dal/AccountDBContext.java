@@ -6,6 +6,7 @@ package dal;
 
 import entity.Account;
 import entity.IEntity;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,6 +37,8 @@ public class AccountDBContext extends DBContext {
                     + "     ,[salt]\n"
                     + "      ,[role]\n"
                     + "      ,[salt]\n"
+                    + "      ,[status]\n"
+                    + "      ,[lastLogin]\n"
                     + "  FROM Account\n"
                     + "  Where username = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -59,6 +62,8 @@ public class AccountDBContext extends DBContext {
                 }
                 account.setImg(img);
                 account.setRole(rs.getString("role"));
+                account.setLastLogin(rs.getDate("lastLogin"));
+                account.setStatus(rs.getString("status"));
                 return account;
             }
         } catch (SQLException ex) {
@@ -66,10 +71,9 @@ public class AccountDBContext extends DBContext {
         }
         return null;
     }
-
-  
-    public ArrayList<Account> list() {
-        ArrayList<Account> accounts = new ArrayList<>();
+    
+    
+    public boolean checkExisted(String username) {
         try {
             String sql = "SELECT [aid]\n"
                     + "      ,[fullname]\n"
@@ -80,12 +84,43 @@ public class AccountDBContext extends DBContext {
                     + "      ,[gender]\n"
                     + "      ,[birthdate]\n"
                     + "      ,[img]\n"
+                    + "     ,[salt]\n"
                     + "      ,[role]\n"
+                    + "      ,[salt]\n"
+                    + "  FROM Account\n"
+                    + "  Where username = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            return rs.next(); 
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+  
+    public ArrayList<Account> list() {
+        ArrayList<Account> accounts = new ArrayList<>();
+        try {
+           String sql = "SELECT [aid]\n"
+                    + "      ,[fullname]\n"
+                    + "      ,[username]\n"
+                    + "      ,[password]\n"
+                    + "      ,[email]\n"
+                    + "      ,[phonenumber]\n"
+                    + "      ,[gender]\n"
+                    + "      ,[birthdate]\n"
+                    + "      ,[img]\n"
+                    + "     ,[salt]\n"
+                    + "      ,[role]\n"
+                    + "      ,[salt]\n"
                     + "  FROM Account\n";
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
-                Account account = new Account();
+                  Account account = new Account();
                 account.setAid(rs.getInt("aid"));
                 account.setFullname(rs.getString("fullname"));
                 account.setUsername(rs.getString("username"));
@@ -94,6 +129,8 @@ public class AccountDBContext extends DBContext {
                 account.setPhonenumber(rs.getString("phonenumber"));
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
+                account.setSalt(rs.getString("salt"));
+                account.setAddresses(getAddressByAid(account.getAid()));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";
@@ -111,7 +148,14 @@ public class AccountDBContext extends DBContext {
 
     
     public void setLastLogin(int aid) {
-        
+         String sql = "Update Account Set lastLogin = getDate() WHERE aid = ?";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, aid);
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
 
@@ -206,7 +250,8 @@ public class AccountDBContext extends DBContext {
 
     public void addNewAccount(String username, String email, String password, String salt) {
         // Adjust the SQL query to include the salt column
-        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [img], [role], [salt], [status]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
@@ -216,10 +261,10 @@ public class AccountDBContext extends DBContext {
             stm.setString(5, null);
             stm.setBoolean(6, Boolean.valueOf(null));
             stm.setDate(7, null);
-            stm.setString(9, "img/profile_picture/placeholder.png");
-            stm.setString(10, "customer");
-            // Set the salt parameter
-            stm.setString(11, salt);
+            stm.setString(8, "img/profile_picture/placeholder.png");
+            stm.setString(9, "customer");
+            stm.setString(10, salt);
+            stm.setString(11, "Not Activated");
             stm.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -348,7 +393,7 @@ public class AccountDBContext extends DBContext {
             stm.setString(4, account.getEmail());
             stm.setString(5, account.getPhonenumber());
             stm.setBoolean(6, account.getGender());
-            stm.setDate(7, account.getBirthdate());
+            stm.setDate(7, (Date) account.getBirthdate());
             stm.setString(9, account.getImg());
             stm.setString(10, account.getRole());
             stm.setInt(11, account.getAid());

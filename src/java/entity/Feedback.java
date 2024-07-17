@@ -10,7 +10,7 @@ public class Feedback implements IEntity{
   private String comment;
   private float rating;
   private Product product;
-  java.sql.Date Date;
+  Date Date;
 
     public int getFid() {
         return fid;
