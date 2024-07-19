@@ -14,7 +14,7 @@
         <title>JSP Page</title>
         <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
         <style>
-         
+
         </style>
     </head>
     <body>
@@ -76,7 +76,7 @@
                     });
                 };
 
-           
+
                 $.fn.dataTable.ext.order['date'] = function (a) {
                     var ukDatea = a.replace(/ /g, '');
                     return Date.parse(ukDatea);
@@ -94,14 +94,19 @@
                                     (!item.isListed ? 'checked' : '') +
                                     '/> No ';
 
-                           
+                            var formattedPrice = item.price.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'VND'
+                            });
+
+
                             var formattedDate = new Date(item.date).toISOString().slice(0, 10);
 
                             return {
                                 pid: item.pid,
                                 img: '<img src="' + item.productimgs[0].imgpath + '" class="card-img-top img-fluid" alt="' + item.pname + '" style="width:50px;height:50px">',
-                                pname: item.pname,
-                                price: item.price,
+                                pname: '<a href="productdetail?pid=' + item.pid + '" style="text-decoration: none;">' + item.pname + '</a>',
+                                price: formattedPrice,
                                 brand: item.brand.bname,
                                 category: item.category.catname,
                                 date: formattedDate,
@@ -130,7 +135,7 @@
                                 {data: 'isListed', title: 'Is Listed', orderDataType: 'dom-checkbox'},
                                 {data: 'actions', title: 'Actions'}
                             ],
-                            order: [[6, 'desc']], 
+                            order: [[6, 'desc']],
                             paging: true,
                             searching: true,
                             info: true
@@ -141,7 +146,7 @@
                     }
                 });
 
-              
+
                 $('#product-table').on('click', '.delete-button', function () {
                     var form = $(this).closest('.delete-form');
                     var confirmed = confirm('Deleting this product will delete all items from pending cart and order. Confirmed orders will appear as "Deleted Item". Are you sure?');
@@ -150,7 +155,7 @@
                     }
                 });
 
-            
+
                 $('#product-table').on('click', '.update-button', function () {
                     var form = $(this).closest('form');
                     var confirmed = confirm('Changing any field will remove the item from pending cart/order, and notify the customers, do you want to update it?');

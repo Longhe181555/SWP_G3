@@ -4,6 +4,7 @@
     Author     : ADMIN
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 
@@ -130,7 +131,7 @@
                         <div class="card h-100 d-flex flex-column position-relative">
                             <!-- Add NEW badge -->
                             <span class="badge bg-warning position-absolute top-0 end-0">NEW</span>
-                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
+                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}" style="max-height:194px">
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <h5 class="card-title product-title">${product.pname}</h5>
                                 <c:if test="${product.avarageRating > 0}">
@@ -153,12 +154,11 @@
                                     <c:if test="${not empty product.discountDescription}">
                                         <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
                                         <span class="badge bg-warning position-absolute top-0 end-0 mt-4">NEW</span>
-                                        <span class="discount-description">Up to ${product.discountDescription} values</span><br>
-                                        <span class="original-price" style="text-decoration: line-through;">${product.price}đ</span> -
-                                        <span class="discounted-price">${product.discountedPrice}đ</span>
+                                               <span class="original-price" style="text-decoration: line-through;"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</span> -
+                                               <span class="discounted-price"><fmt:formatNumber value="${product.discountedPrice}" type="number" pattern="#,###" /> VND</span>
                                     </c:if>
                                     <c:if test="${empty product.discountDescription}">
-                                        $${product.price}đ
+                                        <fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND
                                     </c:if>
                                 </p>
                                 <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}" class="btn btn-primary mt-auto">View Details</a>
@@ -185,7 +185,7 @@
                 <c:forEach var="product" items="${discountedProduct}">
                     <div class="col">
                         <div class="card h-100 d-flex flex-column position-relative">
-                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
+                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}" style="max-height:194px">
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
                                 <h5 class="card-title product-title">${product.pname}</h5>
@@ -208,8 +208,8 @@
                                 </c:if>
                                 <p class="card-text">
                                     <span class="discount-description">Up to ${product.discountDescription} values</span><br>
-                                    <span class="original-price">${product.price}đ</span> -
-                                    <span class="discounted-price">${product.discountedPrice}đ</span>
+                                   <span class="original-price" style="text-decoration: line-through;"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</span> -
+                                        <span class="discounted-price"><fmt:formatNumber value="${product.discountedPrice}" type="number" pattern="#,###" /> VND</span>
                                 </p>
                                 <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}" class="btn btn-primary mt-auto">View Details</a>
                             </div>
@@ -235,7 +235,7 @@
                 <c:forEach var="product" items="${highRatingProducts}">
                     <div class="col">
                         <div class="card h-100 d-flex flex-column position-relative">
-                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}">
+                            <img src="${pageContext.request.contextPath}/${product.productimgs[0].imgpath}" class="card-img-top img-fluid" alt="${product.pname}"style="max-height:194px">
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <h5 class="card-title product-title">${product.pname}</h5>
                                 <c:if test="${product.avarageRating > 0}">
@@ -259,11 +259,11 @@
                                     <c:if test="${not empty product.discountDescription}">
                                         <span class="badge bg-danger text-white position-absolute top-0 end-0 py-2 px-3">DISCOUNTED</span>
                                         <span class="discount-description">Up to ${product.discountDescription} values</span><br>
-                                        <span class="original-price" style="text-decoration: line-through;">${product.price}đ</span> -
-                                        <span class="discounted-price">${product.discountedPrice}đ</span>
+                                        <span class="original-price" style="text-decoration: line-through;"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</span> -
+                                        <span class="discounted-price"><fmt:formatNumber value="${product.discountedPrice}" type="number" pattern="#,###" /> VND</span>
                                     </c:if>
                                     <c:if test="${empty product.discountDescription}">
-                                        $${product.price}đ
+                                        <fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND
                                     </c:if>
                                 </p>
                                 <a href="${pageContext.request.contextPath}/productdetail?pid=${product.pid}" class="btn btn-primary mt-auto">View Details</a>
@@ -314,33 +314,7 @@
         </footer>
 
 
-        <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="productModalLabel">Product Details</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <img src="" id="productImg" class="img-fluid" alt="Product Image">
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="productName"></h5>
-                                <p id="productPrice"></p>
-                                <p id="productDescription"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
 
 
         <script>

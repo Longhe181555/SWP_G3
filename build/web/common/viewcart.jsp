@@ -89,7 +89,7 @@
                                         </span>
                                         <fmt:formatNumber type="number" pattern="#,###" value="${cart.productItem.discountedPrice}" /> vnd
                                         <br/>
-                                        <small>Valid until ${cart.productItem.discount.to}</small>
+                                        <small>Discount last until ${cart.productItem.discount.to}</small>
                                     </c:when>
                                     <c:otherwise>
                                         <fmt:formatNumber type="number" pattern="#,###" value="${cart.productItem.product.price}" /> vnd
@@ -97,7 +97,7 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <input type="number" class="cart-amount" data-cartid="${cart.cartid}" value="${cart.amount}" min="1" max="${cart.productItem.stockcount}">
+                                <input type="number" class="cart-amount" data-cartid="${cart.cartid}" value="${cart.amount}" min="1" max="${cart.productItem.stockcount}" oninput="validity.valid||(value='');">
                             </td>
                             <td class="cart-total-price">
                                 <fmt:formatNumber type="number" pattern="#,###" value="${cart.soldPrice * cart.amount}" /> vnd
@@ -186,7 +186,7 @@
                                 </table>
                             </div>
                             <div class="col-md-4">
-                                <form id="checkoutForm" action="createpayment" method="GET">
+                                <form id="checkoutForm" action="createpayment" method="GET" onsubmit="return validateForm()">
                                     <div class="form-group">
                                         <label for="address">Choose your address:</label>
                                         <select class="form-control" id="address" name="address" onchange="toggleOtherAddress()">
@@ -200,6 +200,7 @@
                                     <div id="otherAddressInput" class="form-group" style="display: none;">
                                         <label for="otherAddress">Enter other address:</label>
                                         <input type="text" class="form-control" id="otherAddress" name="otherAddress">
+                                        <small id="otherAddressError" class="text-danger"></small>
                                     </div>
 
                                     <div class="form-group">
@@ -221,100 +222,42 @@
         </div>
 
 
-        <div class="container">
-            <h2 style="text-align: center;">Previous Bought Items</h2>
-            <table id="previous-bought-table" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                        <th>Price</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="previousItem" items="${recentbought}" varStatus="loop">
-                        <c:if test="${loop.index < 4}"> 
-                            <tr>
-                                <td><img src="${previousItem.product.productimgs[0].imgpath}" class="img-fluid" style="max-width: 50px; max-height: 50px;" alt="${previousItem.product.pname}"></td>
-                                <td><a href="productdetail?pid=${previousItem.product.pid}" style="text-decoration: none;">
-                                        ${previousItem.product.pname}
-                                    </a></td>
-                                <td>${previousItem.size}</td>
-                                <td>
-                                    <div style="width: 20px; height: 20px; display: inline-block; background-color: ${previousItem.color};"></div>
-                                    ${previousItem.color}
-                                </td>
-                                <td>
-                                    <c:choose>
-                                        <c:when test="${previousItem.product.price != previousItem.getDiscountedPrice()}">
-                                            <span style="color: red; text-decoration: line-through;">
-                                                <fmt:formatNumber value="${previousItem.product.price}" type="number" pattern="#,###" /> VND
-                                            </span>
-                                            <br/>
-                                            <fmt:formatNumber value="${previousItem.getDiscountedPrice()}" type="number" pattern="#,###" /> VND
-                                        </c:when>
-                                        <c:otherwise>
-                                            <fmt:formatNumber value="${previousItem.product.price}" type="number" pattern="#,###" /> VND
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
-                                <td>
-                                    <button class="btn btn-success" onclick="quickAddToCart(${previousItem.piid})">Buy Again</button>
-                                </td>
-                            </tr>
-                        </c:if>
-                    </c:forEach>
-                </tbody>
-            </table>  
-        </div> 
-
-
-
-
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
         <script>
-                                        function toggleOtherAddress() {
-                                            var addressSelect = document.getElementById("address");
-                                            var otherAddressInput = document.getElementById("otherAddressInput");
 
-                                            if (addressSelect.value === "Other") {
-                                                otherAddressInput.style.display = "block";
-                                            } else {
-                                                otherAddressInput.style.display = "none";
-                                            }
+                                    function validateForm() {
+                                        var addressSelect = document.getElementById("address");
+                                        var otherAddressInput = document.getElementById("otherAddress");
+                                        var otherAddressError = document.getElementById("otherAddressError");
+
+                                        // Reset error message
+                                        otherAddressError.innerText = "";
+
+                                        // Check if "Other" is selected and otherAddress is empty
+                                        if (addressSelect.value === "Other" && (otherAddressInput.value === null || otherAddressInput.value.trim() === "")) {
+                                            otherAddressError.innerText = "Please enter your address or choose another option.";
+                                            return false;
                                         }
+
+                                        return true;
+                                    }
+
+
+
+                                    function toggleOtherAddress() {
+                                        var addressSelect = document.getElementById("address");
+                                        var otherAddressInput = document.getElementById("otherAddressInput");
+
+                                        if (addressSelect.value === "Other") {
+                                            otherAddressInput.style.display = "block";
+                                        } else {
+                                            otherAddressInput.style.display = "none";
+                                        }
+                                    }
             <c:forEach var="cart" items="${carts}">
-                                        displayProductStatusAlert('${cart.product_status}', '${cart.productItem.product.pname}');
+                                    displayProductStatusAlert('${cart.product_status}', '${cart.productItem.product.pname} - size: ${cart.productItem.size}');
             </c:forEach>
-                                        function quickAddToCart(piid) {
-                                            var quantity = 1; // Fixed quantity
-
-                                            // AJAX request to add to cart
-                                            $.ajax({
-                                                url: 'AddToCartController',
-                                                type: 'POST',
-                                                data: {piid: piid, quantity: quantity},
-                                                success: function (response) {
-                                                    if (response.success) {
-                                                        alert('Product added to cart');
-                                                        location.reload();
-                                                    } else {
-                                                        location.reload();
-                                                    }
-                                                },
-                                                error: function (xhr, status, error) {
-                                                    console.error('Error adding to cart:', error);
-                                                    alert('Error adding to cart. Please try again.');
-                                                }
-                                            });
-                                        }
-
-
-
                                         function displayProductStatusAlert(productStatus, pname) {
                                             var alertMessage = '';
                                             switch (productStatus) {
@@ -391,7 +334,7 @@
                                                     },
                                                     success: function (response) {
                                                         if (response.success) {
-                                                            location.reload();
+                                                        
                                                         } else {
                                                             alert('Failed to update the cart. Please try again.');
                                                         }
@@ -399,6 +342,7 @@
                                                     error: function (xhr, status, error) {
                                                         console.error('Error updating cart amount:', error);
                                                     }
+                                                    
                                                 });
                                             }
 

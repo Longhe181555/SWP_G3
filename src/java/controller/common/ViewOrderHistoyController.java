@@ -31,10 +31,6 @@ public class ViewOrderHistoyController extends BaseRequiredAuthenticationControl
             ArrayList<Order> orders = odb.getByAid(account.getAid());
             System.out.println(orders.size());
             request.setAttribute("orders", orders);
-            ProductItemDBContext pidb = new ProductItemDBContext();
-            ArrayList<ProductItem> productItems = pidb.getRecentBoughtProductItems(account.getAid());
-            request.setAttribute("recentbought", productItems);
-            
             request.getRequestDispatcher("common/orderhistory.jsp").forward(request, response);
         }
     } 

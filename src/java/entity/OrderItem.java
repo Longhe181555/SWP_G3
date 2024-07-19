@@ -8,7 +8,6 @@ package entity;
 
 public class OrderItem {
   private int orderId;
-  private int piid;
   private ProductItem productItem;
   private int amount;
   private int soldPrice;
@@ -16,14 +15,6 @@ public class OrderItem {
   private Discount discount;
   private String product_status; 
   
-    public int getPiid() {
-        return piid;
-    }
-
-    public void setPiid(int piid) {
-        this.piid = piid;
-    }
-
     public ProductItem getProductItem() {
         return productItem;
     }

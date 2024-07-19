@@ -121,7 +121,7 @@
                     </c:forEach>
                     <option value="All">All Colors</option>
                 </select>
-                <input type="number" id="stockCount" value="0" min="0">
+                <input type="number" id="stockCount" value="0" min="0" oninput="validity.valid||(value='');">
                 <button onclick="addStock()">Add Stock</button>  <button onclick="location.reload();">Reload Table</button>
                 <div id="errorText" class="error-message"></div>
             </div>
@@ -142,12 +142,12 @@
                     </c:forEach>
                     <option value="All">All Colors</option>
                 </select>
-                <input type="number" id="stockAdjustment" value="0">
+                <input type="number" id="stockAdjustment" value="0" oninput="validity.valid||(value='');">
                 <select id="adjustmentType">
                     <option value="increase">Increase</option>
                     <option value="decrease">Decrease</option>
                 </select>
-                <button onclick="addStockCountMulti()">Add Stock Count</button>
+                <button onclick="addStockCountMulti()">Add Stock Count To All Stock</button>
                 <div id="errorTextMulti" class="error-message"></div>
 
                 <!-- Quick add buttons -->
@@ -160,7 +160,7 @@
                     <button onclick="quickAdjustStock(-10)">-10</button>
                     <button onclick="quickAdjustStock(-100)">-100</button>
                     <div>
-                        <input type="number" id="customAdjustment" placeholder="Custom">
+                        <input type="number" id="customAdjustment" placeholder="Custom" oninput="validity.valid||(value='');">
                         <button onclick="quickAdjustStockCustom()">Add Custom Amount</button>
                     </div>
                 </div>

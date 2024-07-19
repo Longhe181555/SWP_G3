@@ -13,7 +13,7 @@
         <title>SWP G3</title>
         
         <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
             *{
                 margin: 0;
@@ -225,106 +225,112 @@
             }
         </style>
     </head>
-    
-    
-    <!--Đây là form để đăng kí tài khoản-->
-    <div class="container" id="container">
-        <div class="form-container sign-up">
-            <form action="signup" method="POST">
-                <h1>Create Account</h1>
-                <div class="social-icons">
-<!--                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>-->
-                </div>
-                <span>or use your email for registeration</span>
-                <input type="text" name="name" placeholder="Name">
-                <input type="email" name="email" placeholder="Email">
-                <input type="password" name="password" placeholder="Password">
-                <button>Sign Up</button>
-                
-            </form>
-        </div>
-        
-        
-        <div class="form-container sign-in">
-            
-            <form action="login" method="POST">
-                <h1>Sign In</h1>
-                <div class="social-icons">
-<!--                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>-->
-                </div>
-                <span>or use your email password</span>
-                <input type="text" name="username" placeholder="User name"/>
-                <input type="password" placeholder="Password" name="password"/>
-                <a href="#">Forget Your Password?</a>
-                <input type="submit" value="Login">
-                
-            </form>
-        </div>
-        
-        
-        
-        <div class="toggle-container">
-            <div class="toggle">
-                <div class="toggle-panel toggle-left">
-                    <h1>Look like you are not Logged in</h1>
-                    <p>Sign in/Login now</p>
-                    <button class="hidden" id="login">Sign In</button>
-                    <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
-                </div>
-                <div class="toggle-panel toggle-right">
-                    <h1>Look like you are not Logged in</h1>
-                    <p>Sign in/Login now</p>
-                    <button class="hidden" id="register">Sign Up</button>
-                    <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
+    <body>
+        <!-- Form for creating an account -->
+        <div class="container" id="container">
+            <div class="form-container sign-up">
+                <form id="signupForm" action="signup" method="POST">
+                    <h1>Create Account</h1>
+                    <span>or use your email for registration</span>
+                    <p id="Error" style="color:red;">${requestScope.signupError}</p>
+                    <input type="text" name="name" placeholder="Username" required>
+                    <input type="email" name="email" placeholder="Email" required pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/">
+                    <input type="password" name="password" placeholder="Password" id="signupPassword" required>
+                    <button type="submit">Sign Up</button>
+                    <p id="signupError" style="color:red;display:none;"></p>
+                </form>
+            </div>
+            <!-- Form for signing in -->
+            <div class="form-container sign-in">
+                <form id="loginForm" action="login" method="POST">
+                    <h1>Sign In</h1>
+                    <p id="Error" style="color:red;">${requestScope.signupError}</p>
+                    <span>or use your email password</span>
+                    <input type="text" name="username" placeholder="User name" required>
+                    <input type="password" name="password" placeholder="Password" id="loginPassword" required>
+                    <a href="#">Forget Your Password?</a>
+                    <button type="submit">Login</button>
+                    <p id="loginError" style="color:red;display:none;"></p>
+                </form>
+            </div>
+            <div class="toggle-container">
+                <div class="toggle">
+                    <div class="toggle-panel toggle-left">
+                        <h1>Look like you are not Logged in</h1>
+                        <p>Sign in/Login now</p>
+                        <button class="hidden" id="login">Sign In</button>
+                        <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
+                    </div>
+                    <div class="toggle-panel toggle-right">
+                        <h1>Look like you are not Logged in</h1>
+                        <p>Sign in/Login now</p>
+                        <button class="hidden" id="register">Sign Up</button>
+                        <a href="homepage" class="header-link" style="color: white">Back to homepage</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        const container = document.getElementById('container');
-        const registerBtn = document.getElementById('register');
-        const loginBtn = document.getElementById('login');
+        <script>     
+            
+            const container = document.getElementById('container');
+            const registerBtn = document.getElementById('register');
+            const loginBtn = document.getElementById('login');
+            const signupForm = document.getElementById('signupForm');
+        //    const loginForm = document.getElementById('loginForm');
+            const signupPassword = document.getElementById('signupPassword');
+        //    const loginPassword = document.getElementById('loginPassword');
+            const signupError = document.getElementById('signupError');
+        //    const loginError = document.getElementById('loginError');
 
-        registerBtn.addEventListener('click', () => {
+            const validatePassword = (password) => {
+                const passwordErrors = [];
+                if (password.length < 8) {
+                    passwordErrors.push("Password must be at least 8 characters long.");
+                }
+                if (!/[A-Z]/.test(password)) {
+                    passwordErrors.push("Password must contain at least one uppercase letter.");
+                }
+                if (!/\d/.test(password)) {
+                    passwordErrors.push("Password must contain at least one number.");
+                }
+                return passwordErrors;
+            };
+
+            signupForm.addEventListener('submit', (e) => {
+                const errors = validatePassword(signupPassword.value);
+                if (errors.length > 0) {
+                    e.preventDefault();
+                    signupError.innerHTML = errors.join("<br>");
+                    signupError.style.display = 'block';
+                } else {
+                    signupError.style.display = 'none';
+                }
+            });
+
+//            loginForm.addEventListener('submit', (e) => {
+//                const errors = validatePassword(loginPassword.value);
+//                if (errors.length > 0) {
+//                    e.preventDefault();
+//                    loginError.innerHTML = errors.join("<br>");
+//                    loginError.style.display = 'block';
+//                } else {
+//                    loginError.style.display = 'none';
+//                }
+//            });
+
+            registerBtn.addEventListener('click', () => {
+                container.classList.add("active");
+            });
+
+            loginBtn.addEventListener('click', () => {
+                container.classList.remove("active");
+            });
+
+            // Check if there's an error and activate sign-up form
+            <% if (request.getAttribute("signupError") != null) { %>
             container.classList.add("active");
-        });
-
-        loginBtn.addEventListener('click', () => {
-            container.classList.remove("active");
-        });
-        // Check if there's an error and activate sign-up form
-        <% if (request.getAttribute("signupError") != null) { %>
-        container.classList.add("active");
-        <% } %>
-    </script>
-</body>
-    
-    
-    
-    
-<!--    <body>
-        <p style="color: red;font: 40px;text-align: center">Connection:[ ${connection} ]- If empty sql is not connected</p>
-        <div style="text-align: center">
-            
-            <form action="login" method="POST" class="login-form">
-            <div class="input-container">
-                Username: <input type="text" name="username"/>
-            </div>
-            <div class="input-container">
-                Password: <input type="password" name="password"/>
-            </div>
-            <div class="button-container">
-                <input type="submit" value="Login">
-            </div>
-        </form>
-        </div>
-        
-    </body>-->
+            <% } %>
+        </script>
+    </body>
 </html>

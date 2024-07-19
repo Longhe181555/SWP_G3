@@ -32,41 +32,17 @@ public class SignupController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SignupController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SignupController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+         
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+ 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
   @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
@@ -78,7 +54,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     Account account = db.checkAccountExist(username);
     
     if (account != null) {
-        String signupError = "Username is existed";
+        String signupError = "Username already existed";
         request.setAttribute("signupError", signupError);
         request.getRequestDispatcher("common/login.jsp").forward(request, response);
     } else {
@@ -91,9 +67,10 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         } catch (InvalidKeySpecException ex) {
             Logger.getLogger(SignupController.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+        String signupSuccess = "Sign up Successfully";
+        request.setAttribute("signupSuccess", signupSuccess);
         db.addNewAccount(username, email, hashedPassword, salt);
-        response.sendRedirect("login");
+        request.getRequestDispatcher("common/login.jsp").forward(request, response);
     }
 }
     /**

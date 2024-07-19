@@ -4,8 +4,9 @@
  */
 
 package entity;
-import java.sql.*;
+
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Account implements IEntity{
   private int aid;
@@ -15,13 +16,13 @@ public class Account implements IEntity{
   private String salt;
   private String email;
   private String phonenumber;
-  private java.sql.Date birthdate;
+  private Date birthdate;
   private ArrayList<String> addresses;
   private String img;
   private String role;
   Boolean gender;
   private String status;
-  private java.sql.Date lastLogin;
+  private Date lastLogin;
 
     public String getStatus() {
         return status;
@@ -31,7 +32,7 @@ public class Account implements IEntity{
         this.status = status;
     }
 
-    public java.sql.Date getLastLogin() {
+    public Date getLastLogin() {
         return lastLogin;
     }
 

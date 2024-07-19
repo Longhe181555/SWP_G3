@@ -6,7 +6,7 @@
 package entity;
 
 
-public class Brand implements IEntity {
+public class Brand {
   private int bid;
   private String bname;
   private String img;

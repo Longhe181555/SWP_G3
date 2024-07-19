@@ -4,6 +4,7 @@
  */
 package dal;
 
+import entity.Account;
 import entity.Cart;
 import entity.Order;
 import entity.OrderItem;
@@ -22,7 +23,9 @@ import java.util.logging.Logger;
  * @author Admin
  */
 public class OrderDBContext extends DBContext {
-  AccountDBContext adb = new AccountDBContext();
+
+    AccountDBContext adb = new AccountDBContext();
+
     public List<Order> getOrdersByDate(Date date) {
         List<Order> orders = new ArrayList<>();
         try {
@@ -162,29 +165,406 @@ public class OrderDBContext extends DBContext {
             Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public Order getByOrid(int orid) {
-    Order order = null;
-    try {
-        String sql = "SELECT orid, aid, date, description, status, totalPrice, address, payment " +
-                     "FROM [Order] " +
-                     "WHERE orid = ?";
-        PreparedStatement stm = connection.prepareStatement(sql);
-        stm.setInt(1, orid);
-        ResultSet rs = stm.executeQuery();
-        if (rs.next()) {
-            order = new Order();
-            order.setOrderId(rs.getInt("orid"));
-            order.setDate(rs.getDate("date"));
-            order.setAccount(adb.get(rs.getInt("aid")));
-            order.setStatus(rs.getInt("status"));
-            order.setNote(rs.getString("description"));
-            order.setTotalPrice(rs.getInt("totalPrice"));
-            order.setAddress(rs.getString("address"));
-            order.setPayment(rs.getString("payment"));
+        Order order = null;
+        try {
+            String sql = "SELECT orid, aid, date, description, status, totalPrice, address, payment, processedDate, processedBy "
+                    + "FROM [Order] "
+                    + "WHERE orid = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, orid);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                order = new Order();
+                order.setOrderId(rs.getInt("orid"));
+                order.setDate(rs.getDate("date"));
+                order.setAccount(adb.get(rs.getInt("aid")));
+                order.setStatus(rs.getInt("status"));
+                order.setNote(rs.getString("description"));
+                order.setTotalPrice(rs.getInt("totalPrice"));
+                order.setProcessedBy(adb.get(rs.getInt("processedBy")));
+                order.setProcessedDate(rs.getDate("processedDate"));
+                System.out.println(rs.getDate("processedDate"));
+                order.setAddress(rs.getString("address"));
+                order.setPayment(rs.getString("payment"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } catch (SQLException ex) {
-        Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        return order;
     }
-    return order;
-}
+
+    public ArrayList<Order> getPendingOrders() {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    o.orid,\n"
+                + "    o.aid,\n"
+                + "    o.date,\n"
+                + "    o.description,\n"
+                + "    o.status,\n"
+                + "    o.totalPrice,\n"
+                + "    o.address,\n"
+                + "    o.payment,\n"
+                + "    o.processedDate,\n"
+                + "    o.processedBy,\n"
+                + "    COUNT(DISTINCT pi.pid) AS Product_Amount\n"
+                + "FROM \n"
+                + "    [Order] o\n"
+                + "JOIN \n"
+                + "    OrderItem oi ON o.orid = oi.orid\n"
+                + "JOIN \n"
+                + "    ProductItem pi ON oi.piid = pi.piid\n"
+                + "	WHERE o.status = 0\n"
+                + "GROUP BY \n"
+                + "    o.orid, \n"
+                + "    o.aid, \n"
+                + "    o.date, \n"
+                + "    o.description, \n"
+                + "    o.status, \n"
+                + "    o.totalPrice, \n"
+                + "    o.address, \n"
+                + "    o.payment, \n"
+                + "    o.processedDate, \n"
+                + "    o.processedBy;";
+        try (
+                PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderId(rs.getInt("orid"));
+                order.setAccount(adb.get(rs.getInt("aid")));
+                order.setDate(rs.getDate("date"));
+                order.setNote(checkOrderStatus(rs.getInt("orid")));
+                order.setStatus(rs.getInt("status"));
+                order.setTotalPrice(rs.getInt("totalPrice"));
+                order.setAddress(rs.getString("address"));
+                order.setTotalAmount(rs.getByte("Product_Amount"));
+                order.setPayment(rs.getString("payment"));
+                order.setProcessedDate(rs.getDate("processedDate"));
+                order.setProcessedBy(adb.get(rs.getInt("aid")));
+                orders.add(order);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return orders;
+    }
+
+    public ArrayList<Order> getByStatus(int status) {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    o.orid,\n"
+                + "    o.aid,\n"
+                + "    o.date,\n"
+                + "    o.description,\n"
+                + "    o.status,\n"
+                + "    o.totalPrice,\n"
+                + "    o.address,\n"
+                + "    o.payment,\n"
+                + "    o.processedDate,\n"
+                + "    o.processedBy,\n"
+                + "    COUNT(DISTINCT pi.pid) AS Product_Amount\n"
+                + "FROM \n"
+                + "    [Order] o\n"
+                + "JOIN \n"
+                + "    OrderItem oi ON o.orid = oi.orid\n"
+                + "JOIN \n"
+                + "    ProductItem pi ON oi.piid = pi.piid\n"
+                + "WHERE o.status = ?\n"
+                + "GROUP BY \n"
+                + "    o.orid, \n"
+                + "    o.aid, \n"
+                + "    o.date, \n"
+                + "    o.description, \n"
+                + "    o.status, \n"
+                + "    o.totalPrice, \n"
+                + "    o.address, \n"
+                + "    o.payment, \n"
+                + "    o.processedDate, \n"
+                + "    o.processedBy;";
+        try (
+                PreparedStatement stm = connection.prepareStatement(sql)) {
+
+            // Set the status parameter
+            stm.setInt(1, status);
+
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order();
+                    order.setOrderId(rs.getInt("orid"));
+                    order.setAccount(adb.get(rs.getInt("aid")));
+                    order.setDate(rs.getDate("date"));
+                    order.setNote(checkOrderStatus(rs.getInt("orid")));
+                    order.setStatus(rs.getInt("status"));
+                    order.setTotalPrice(rs.getInt("totalPrice"));
+                    order.setAddress(rs.getString("address"));
+                    order.setTotalAmount(rs.getInt("Product_Amount"));
+                    order.setPayment(rs.getString("payment"));
+                    order.setProcessedDate(rs.getDate("processedDate"));
+                    order.setProcessedBy(adb.get(rs.getInt("processedBy")));
+                    orders.add(order);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return orders;
+    }
+
+    public ArrayList<Order> listOrders() {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    o.orid,\n"
+                + "    o.aid,\n"
+                + "    o.date,\n"
+                + "    o.description,\n"
+                + "    o.status,\n"
+                + "    o.totalPrice,\n"
+                + "    o.address,\n"
+                + "    o.payment,\n"
+                + "    o.processedDate,\n"
+                + "    o.processedBy,\n"
+                + "    COUNT(DISTINCT pi.pid) AS Product_Amount\n"
+                + "FROM \n"
+                + "    [Order] o\n"
+                + "JOIN \n"
+                + "    OrderItem oi ON o.orid = oi.orid\n"
+                + "JOIN \n"
+                + "    ProductItem pi ON oi.piid = pi.piid\n"
+                + "GROUP BY \n"
+                + "    o.orid, \n"
+                + "    o.aid, \n"
+                + "    o.date, \n"
+                + "    o.description, \n"
+                + "    o.status, \n"
+                + "    o.totalPrice, \n"
+                + "    o.address, \n"
+                + "    o.payment, \n"
+                + "    o.processedDate, \n"
+                + "    o.processedBy;";
+        try (
+                PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderId(rs.getInt("orid"));
+                order.setAccount(adb.get(rs.getInt("aid")));
+                order.setDate(rs.getDate("date"));
+                order.setNote(rs.getString("description"));
+                order.setStatus(rs.getInt("status"));
+                order.setTotalPrice(rs.getInt("totalPrice"));
+                order.setAddress(rs.getString("address"));
+                order.setTotalAmount(rs.getByte("Product_Amount"));
+                order.setPayment(rs.getString("payment"));
+                order.setProcessedDate(rs.getDate("processedDate"));
+                order.setProcessedBy(adb.get(rs.getInt("processedBy")));
+                orders.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public ArrayList<Order> listPassedOrders() {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    o.orid,\n"
+                + "    o.aid,\n"
+                + "    o.date,\n"
+                + "    o.description,\n"
+                + "    o.status,\n"
+                + "    o.totalPrice,\n"
+                + "    o.address,\n"
+                + "    o.payment,\n"
+                + "    o.processedDate,\n"
+                + "    o.processedBy,\n"
+                + "    COUNT(DISTINCT pi.pid) AS Product_Amount\n"
+                + "FROM \n"
+                + "    [Order] o\n"
+                + "JOIN \n"
+                + "    OrderItem oi ON o.orid = oi.orid\n"
+                + "JOIN \n"
+                + "    ProductItem pi ON oi.piid = pi.piid\n"
+                + "WHERE o.status not in (0,4,5) \n"
+                + "GROUP BY \n"
+                + "    o.orid, \n"
+                + "    o.aid, \n"
+                + "    o.date, \n"
+                + "    o.description, \n"
+                + "    o.status, \n"
+                + "    o.totalPrice, \n"
+                + "    o.address, \n"
+                + "    o.payment, \n"
+                + "    o.processedDate, \n"
+                + "    o.processedBy;";
+        try (
+                PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderId(rs.getInt("orid"));
+                order.setAccount(adb.get(rs.getInt("aid")));
+                order.setDate(rs.getDate("date"));
+                order.setNote(rs.getString("description"));
+                order.setStatus(rs.getInt("status"));
+                order.setTotalPrice(rs.getInt("totalPrice"));
+                order.setAddress(rs.getString("address"));
+                order.setTotalAmount(rs.getByte("Product_Amount"));
+                order.setPayment(rs.getString("payment"));
+                order.setProcessedDate(rs.getDate("processedDate"));
+                order.setProcessedBy(adb.get(rs.getInt("processedBy")));
+                orders.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public boolean cancelOrderByOrid(int orid) {
+        try {
+            String sql = "UPDATE [Order] SET status = 5 WHERE orid = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, orid);
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public boolean setOrderStatusByOrid(int orid, int status, int aid) {
+        try {
+            String sql = "UPDATE [Order] SET status = ?, processedDate = getDate(), processedBy = ? WHERE orid = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, status);
+            stm.setInt(2, aid);
+            stm.setInt(3, orid);
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    public String checkOrderStatus(int orid) {
+        String status = "Valid Order";
+        try {
+            String sql = "SELECT CASE "
+                    + "    WHEN oi.amount > pi.stockcount AND oi.product_status = 'Archived' THEN 'Not enough stock and an item is unavailable' "
+                    + "    WHEN oi.amount > pi.stockcount THEN 'Not enough stock' "
+                    + "    WHEN oi.product_status = 'Archived' THEN 'An item in the order is unavailable' "
+                    + "    ELSE 'Valid Order' "
+                    + "END AS order_status "
+                    + "FROM OrderItem oi "
+                    + "LEFT JOIN ProductItem pi ON oi.piid = pi.piid "
+                    + "WHERE oi.orid = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, orid);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                if (!rs.getString("order_status").equalsIgnoreCase("Valid Order")) {
+                    status = rs.getString("order_status");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return status;
+    }
+
+    public List<Integer> getMonthlyRevenue() {
+        List<Integer> monthlyRevenue = new ArrayList<>();
+        String sql = "SELECT MONTH(o.date) as month, SUM(o.totalPrice) as revenue "
+                + "FROM [Order] o "
+                + "WHERE o.status NOT IN (0, 4, 5) "
+                + "GROUP BY MONTH(o.date) "
+                + "ORDER BY month";
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                monthlyRevenue.add(rs.getInt("revenue"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return monthlyRevenue;
+    }
+
+    public List<Integer> getYearlyRevenue() {
+        List<Integer> yearlyRevenue = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    years.year,\n"
+                + "    COALESCE(SUM(o.totalPrice), 0) as revenue\n"
+                + "FROM \n"
+                + "    (SELECT YEAR(GETDATE()) as year\n"
+                + "     UNION\n"
+                + "     SELECT YEAR(GETDATE()) - 1\n"
+                + "     UNION\n"
+                + "     SELECT YEAR(GETDATE()) - 2) as years\n"
+                + "LEFT JOIN [Order] o ON YEAR(o.date) = years.year AND o.status NOT IN (0, 4, 5)\n"
+                + "GROUP BY years.year\n"
+                + "ORDER BY years.year;";
+
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                int revenue = rs.getInt("revenue");
+                yearlyRevenue.add(revenue);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return yearlyRevenue;
+    }
+
+    public List<Integer> getWeeklyRevenue() {
+        List<Integer> weeklyRevenue = new ArrayList<>();
+        String sql = "SELECT DATEPART(WEEK, o.date) as week, SUM(o.totalPrice) as revenue "
+                + "FROM [Order] o "
+                + "WHERE o.status NOT IN (0, 4, 5) "
+                + "GROUP BY DATEPART(WEEK, o.date) "
+                + "ORDER BY week";
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                weeklyRevenue.add(rs.getInt("revenue"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return weeklyRevenue;
+    }
+
+    public ArrayList<Account> getTopBuyer() {
+        ArrayList<Account> topBuyer = new ArrayList<>();
+        String sql = "SELECT TOP 4 \n"
+                + "    a.fullname AS AccountName, \n"
+                + "    SUM(o.totalPrice) AS TotalRevenue,\n"
+                + "    COUNT(DISTINCT o.orid) AS NumberOfOrders\n"
+                + "FROM [Order] o\n"
+                + "INNER JOIN Account a ON o.aid = a.aid\n"
+                + "WHERE MONTH(o.date) = MONTH(GETDATE()) AND YEAR(o.date) = YEAR(GETDATE())\n"
+                + "  AND o.status NOT IN (0, 4, 5)\n"
+                + "GROUP BY a.fullname\n"
+                + "ORDER BY TotalRevenue DESC;";
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                Account a = new Account();
+                a.setFullname(rs.getString("AccountName"));
+                a.setStatus(rs.getString("TotalRevenue"));
+                a.setEmail(rs.getString("NumberOfOrders"));
+                topBuyer.add(a);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topBuyer;
+    }
+
 }
