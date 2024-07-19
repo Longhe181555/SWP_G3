@@ -25,12 +25,7 @@ public class StockManagementController extends BaseRequiredAuthenticationControl
         response.setContentType("application/json");
         List<ProductItem> productItems = pidbc.getStockList();
 
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        
-        for(ProductItem  p : productItems) {
-            System.out.println(p.getProduct().getIsListed());
-        }
-        
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create(); 
         String jsonData = gson.toJson(productItems);
 
         request.setAttribute("jsonData", jsonData);
@@ -40,13 +35,6 @@ public class StockManagementController extends BaseRequiredAuthenticationControl
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser != null) {
-            request.setAttribute("Account", currentUser);
-        }
-
         String action = request.getServletPath();
         if (action.equals("/getStockItems")) {
             response.setContentType("application/json");

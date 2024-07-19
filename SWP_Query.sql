@@ -546,6 +546,8 @@ INSERT INTO Cart (amount,piid,soldPrice,aid,did,product_status) values (3,1,3128
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate(),'',null,0,1000000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (0,4,32,250000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice, product_status) values (0,7,33,250000,'Archived')
+
+
 --Order last month
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice, processedDate) values(5,'Ha Noi',getDate()-30,'',null,1,3000000,getDate())
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (1,5,32,250000),(1,4,33,250000),(1,3,34,250000)
@@ -556,6 +558,7 @@ INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (2,5,32,250000),(2,4
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-90,'',null,3,1500000,GETDATE())
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (3,2,32,250000),(3,2,33,250000),(3,2,34,250000)
 
+
 --Order yesterday approved
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-1,'',null,4,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
@@ -563,6 +566,27 @@ INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2
 --Order last week approved
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',null,5,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
+
+
+--Order last year
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-365,'',null,3,1500000,GETDATE())
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (6,2,32,250000),(6,2,33,250000),(6,2,34,250000)
+
+
+--Order last 2 year
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-730,'',null,3,2000000,GETDATE())
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (7,2,32,250000),(7,2,33,250000),(7,2,34,250000)
+
+
+--Order this week
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-4,'',null,3,2000000,GETDATE())
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (8,2,32,250000),(8,2,33,250000),(8,2,34,250000)
+
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(6,'Ha Noi',getDate()-4,'',null,3,2500000,GETDATE())
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (8,2,32,250000),(8,2,33,250000),(8,2,34,250000)
+
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(7,'Ha Noi',getDate()-4,'',null,3,1800000,GETDATE())
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (8,2,32,250000),(8,2,33,250000),(8,2,34,250000)
 /*
 
 SELECT 
@@ -583,7 +607,8 @@ JOIN
     OrderItem oi ON o.orid = oi.orid
 JOIN 
     ProductItem pi ON oi.piid = pi.piid
-	WHERE o.status = 0
+WHERE
+    o.status NOT IN (0, 4, 5)
 GROUP BY 
     o.orid, 
     o.aid, 
@@ -605,6 +630,38 @@ GROUP BY
                     FROM OrderItem oi 
                     LEFT JOIN ProductItem pi ON oi.piid = pi.piid
                     WHERE oi.orid = 0
+
+DECLARE @StartDate DATE = DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0);
+DECLARE @EndDate DATE = DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) + 1, 0);
+
+WITH Weeks AS (
+    SELECT DISTINCT DATEPART(WEEK, [date]) AS WeekNumber
+    FROM [Order]
+    WHERE [date] >= @StartDate AND [date] < @EndDate
+),
+WeeklyRevenue AS (
+    SELECT
+        Weeks.WeekNumber,
+        COALESCE(SUM(o.totalPrice), 0) AS WeeklyTotalRevenue
+    FROM
+        Weeks
+    LEFT JOIN
+        [Order] o ON Weeks.WeekNumber = DATEPART(WEEK, o.[date])
+                 AND o.[date] >= @StartDate AND o.[date] < @EndDate
+                 AND o.status NOT IN (0, 4, 5)
+    GROUP BY
+        Weeks.WeekNumber
+)
+SELECT
+    Weeks.WeekNumber,
+    COALESCE(WeeklyRevenue.WeeklyTotalRevenue, 0) AS WeeklyTotalRevenue
+FROM
+    Weeks
+LEFT JOIN
+    WeeklyRevenue ON Weeks.WeekNumber = WeeklyRevenue.WeekNumber
+ORDER BY
+    Weeks.WeekNumber;
+
 
   */
 

@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                    <img src="${account.img}" alt="Profile Image" class="rounded-circle mt-5" width="150">
+                    <img src="${pageContext.request.contextPath}/${account.img}" alt="Profile Image" class="rounded-circle mt-5" width="150">
                 </div>
             </div>
             <div class="col-md-5 border-right">

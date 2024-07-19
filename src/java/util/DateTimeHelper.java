@@ -4,6 +4,9 @@
  */
 package util;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,6 +45,22 @@ public class DateTimeHelper {
         calendar.add(Calendar.DAY_OF_YEAR, days);
         return calendar.getTime();
     }
+    public static int getCurrentYear() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.YEAR);
+    }
+
+    public static ArrayList<String> generateYearlyLabels() {
+        ArrayList<String> yearlyLabels = new ArrayList<>();
+        int currentYear = getCurrentYear();
+
+        for (int i = -2; i <= 1; i++) {
+            yearlyLabels.add(String.valueOf(currentYear + i));
+        }
+
+        return yearlyLabels;
+    }
+
 
     public static ArrayList<java.sql.Date> getListBetween(Date from, Date to) {
         ArrayList<java.sql.Date> dates = new ArrayList<>();

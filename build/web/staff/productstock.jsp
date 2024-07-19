@@ -142,7 +142,7 @@
                     </c:forEach>
                     <option value="All">All Colors</option>
                 </select>
-                <input type="number" id="stockAdjustment" value="0">
+                <input type="number" id="stockAdjustment" value="0" oninput="validity.valid||(value='');">
                 <select id="adjustmentType">
                     <option value="increase">Increase</option>
                     <option value="decrease">Decrease</option>

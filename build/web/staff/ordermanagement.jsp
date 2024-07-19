@@ -237,7 +237,7 @@
                                         <button class="btn btn-info" onclick="viewOrderDetails(${order.orderId})">Detail</button>
                                     </td>
                                     <td>
-                                        <button class="btn btn-dark" onclick="confirmChangeStatus(${order.orderId}, 2)">Change Status to: Shipped</button>
+                                        <button class="btn btn-dark" onclick="confirmChangeStatus(${order.orderId}, 2)">Change Status to: Shipping</button>
                                     </td>
                                 </tr>
                             </c:forEach>

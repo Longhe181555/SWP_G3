@@ -32,7 +32,7 @@ public class ProfileServlet extends BaseRequiredAuthenticationController {
         if (account != null) {
        
             session.setAttribute("account", account);
-            request.getRequestDispatcher("common/AccountPrivate.jsp").forward(request, response);
+            request.getRequestDispatcher("common/editaccount.jsp").forward(request, response);
         } else {
             response.sendRedirect("common/login.jsp");
         }

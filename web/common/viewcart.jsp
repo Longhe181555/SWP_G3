@@ -97,7 +97,7 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <input type="number" class="cart-amount" data-cartid="${cart.cartid}" value="${cart.amount}" min="1" max="${cart.productItem.stockcount}">
+                                <input type="number" class="cart-amount" data-cartid="${cart.cartid}" value="${cart.amount}" min="1" max="${cart.productItem.stockcount}" oninput="validity.valid||(value='');">
                             </td>
                             <td class="cart-total-price">
                                 <fmt:formatNumber type="number" pattern="#,###" value="${cart.soldPrice * cart.amount}" /> vnd
@@ -334,7 +334,7 @@
                                                     },
                                                     success: function (response) {
                                                         if (response.success) {
-                                                            location.reload();
+                                                        
                                                         } else {
                                                             alert('Failed to update the cart. Please try again.');
                                                         }
@@ -342,6 +342,7 @@
                                                     error: function (xhr, status, error) {
                                                         console.error('Error updating cart amount:', error);
                                                     }
+                                                    
                                                 });
                                             }
 
