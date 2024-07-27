@@ -21,9 +21,13 @@
         <%@ include file="../public/navbar.jsp" %>
         <div class="container" style="margin-top:40px">
             <div>
-                <a id="btnAddProduct" href="cproduct" class="btn btn-primary">Add New Product</a>
-                <button id="btnAddBrand" class="btn btn-primary">Add New Brand</button>
-                <button id="btnManageStock" class="btn btn-primary">Manage Product Stock</button>
+                <c:if test="${account.role == 'admin'}">
+                    <a id="btnAddProduct" href="cproduct" class="btn btn-primary">Add New Product</a>
+                </c:if>
+                <c:if test="${account.role == 'admin'}">
+                   
+                </c:if>
+                <a id="btnManageStock" class="btn btn-primary" href="smanagement">Manage Product Stock</a>
             </div>
             <div class="container" style="margin-top:20px">
                 <div>
@@ -111,14 +115,17 @@
                                 category: item.category.catname,
                                 date: formattedDate,
                                 isListed: isListedRadios,
-                                actions: '<form action="updateProduct" method="get" style="display:inline-block;">' +
+                                 actions: 
+                                        '<form action="updateProduct" method="get" style="display:inline-block;">' +
                                         '<input type="hidden" name="pid" value="' + item.pid + '" />' +
                                         '<button type="button" class="btn btn-primary btn-sm update-button">Update</button>' +
                                         '</form>' +
+                                        '<c:if test="${account.role == 'admin'}">' +
                                         '<form action="deleteProduct" method="post" style="display:inline-block;" class="delete-form">' +
                                         '<input type="hidden" name="pid" value="' + item.pid + '" />' +
                                         '<button type="button" class="btn btn-danger btn-sm delete-button">Delete<i class="bi bi-trash"></i></button>' +
-                                        '</form>'
+                                        '</form>' +
+                                        '</c:if>'
                             };
                         });
 

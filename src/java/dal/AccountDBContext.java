@@ -96,21 +96,21 @@ public class AccountDBContext extends DBContext {
     public ArrayList<Account> list() {
         ArrayList<Account> accounts = new ArrayList<>();
         try {
-            String sql = "SELECT [aid]\n"
-                    + "      ,[fullname]\n"
-                    + "      ,[username]\n"
-                    + "      ,[password]\n"
-                    + "      ,[email]\n"
-                    + "      ,[phonenumber]\n"
-                    + "      ,[gender]\n"
-                    + "      ,[birthdate]\n"
-                    + "      ,[img]\n"
-                    + "     ,[salt]\n"
-                    + "      ,[role]\n"
-                    + "      ,[salt]\n"
-                    + "      ,[status]\n"
-                    + "      ,[lastLogin]\n"
-                    + "  FROM Account\n";
+            String sql = "SELECT \n"
+                    + "    aid,\n"
+                    + "    fullname,\n"
+                    + "    username,\n"
+                    + "    email,\n"
+                    + "    phonenumber,\n"
+                    + "    gender,\n"
+                    + "    birthdate,\n"
+                    + "    img,\n"
+                    + "    role,\n"
+                    + "    status,\n"
+                    + "    lastLogin,\n"
+                    + "    password,\n"
+                    + "    salt\n"
+                    + "FROM Account;";
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
@@ -118,13 +118,13 @@ public class AccountDBContext extends DBContext {
                 account.setAid(rs.getInt("aid"));
                 account.setFullname(rs.getString("fullname"));
                 account.setUsername(rs.getString("username"));
-                account.setPassword(rs.getString("password"));
                 account.setEmail(rs.getString("email"));
                 account.setPhonenumber(rs.getString("phonenumber"));
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
-                account.setSalt(rs.getString("salt"));
                 account.setAddresses(getAddressByAid(account.getAid()));
+                account.setSalt(rs.getString("salt"));
+                account.setPassword(rs.getString("password"));
                 account.setLastLogin(rs.getDate("lastLogin"));
                 account.setStatus(rs.getString("status"));
                 String img = rs.getString("img");
@@ -204,10 +204,13 @@ public class AccountDBContext extends DBContext {
                     + "      ,[gender]\n"
                     + "      ,[birthdate]\n"
                     + "      ,[img]\n"
-                    + "      ,[salt]\n"
+                    + "     ,[salt]\n"
                     + "      ,[role]\n"
+                    + "      ,[salt]\n"
+                    + "      ,[status]\n"
+                    + "      ,[lastLogin]\n"
                     + "  FROM Account\n"
-                    + "WHERE aid=?";
+                    + "  Where aid = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
@@ -221,13 +224,16 @@ public class AccountDBContext extends DBContext {
                 account.setPhonenumber(rs.getString("phonenumber"));
                 account.setGender(rs.getBoolean("gender"));
                 account.setBirthdate(rs.getDate("birthdate"));
+                account.setSalt(rs.getString("salt"));
+                account.setAddresses(getAddressByAid(account.getAid()));
                 String img = rs.getString("img");
                 if (img == null || img.trim().isEmpty()) {
                     img = "img/profile_picture/placeholder.png";
                 }
                 account.setImg(img);
                 account.setRole(rs.getString("role"));
-                account.setSalt(rs.getString("salt"));
+                account.setLastLogin(rs.getDate("lastLogin"));
+                account.setStatus(rs.getString("status"));
                 return account;
             }
         } catch (SQLException ex) {
@@ -259,47 +265,27 @@ public class AccountDBContext extends DBContext {
         }
     }
 
-    public int addNewStaff(Account account) {
-        // Adjust the SQL query to include the salt column
-        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [gender], [birthdate], [img], [role], [salt]) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-        try {
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, account.getFullname());
-            stm.setString(2, account.getUsername());
-            stm.setString(3, account.getPassword());
-            stm.setString(4, account.getEmail());
-            stm.setString(5, account.getPhonenumber());
-            stm.setBoolean(6, Boolean.valueOf(null));
-            stm.setDate(7, null);
-            stm.setString(9, "img/profile_picture/placeholder.png");
-            stm.setString(10, "staff");
-            // Set the salt parameter
-            stm.setString(11, account.getSalt());
-            return stm.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Fail");
-        }
-        return 0;
-    }
+    public void addNewAccount(String fullname, String username, String password, String email, String salt, String phonenumber, String role) {
+        // Adjust the SQL query to include the role column
+        String sql = "INSERT INTO [dbo].[Account] ([fullname], [username], [password], [email], [phonenumber], [salt], [role], [status]) VALUES (?,?,?,?,?,?,?,?)";
 
-    public int editStaff(Account account) {
-        // Adjust the SQL query to include the salt column
-        String sql = "UPDATE [dbo].[Account]\n"
-                + "   SET  "
-                + " [email] = ? , "
-                + " [phonenumber] = ? "
-                + " WHERE [aid] = ? ";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, account.getEmail());
-            stm.setString(3, account.getPhonenumber());
-            stm.setInt(4, account.getAid());
-            return stm.executeUpdate();
+            stm.setString(1, fullname);
+            stm.setString(2, username);
+            stm.setString(3, password);
+            stm.setString(4, email);
+            stm.setString(5, phonenumber);
+            stm.setString(6, salt);
+            stm.setString(7, role); 
+            stm.setString(8, "Activated"); 
+            stm.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0;
     }
+
+    
 
     public void changePassword(String aid, String newPass, String salt) {
         try {
@@ -366,21 +352,29 @@ public class AccountDBContext extends DBContext {
 
     public void update(Account account) {
         try {
-            String sql = "UPDATE Account SET fullname=?, username=?, password=?, email=?, phonenumber=?, gender=?, birthdate=?, img=?, role=? "
+            String sql = "UPDATE Account SET fullname=?, username=?, email=?, phonenumber=?, gender=?, birthdate=?, img=?, role=? "
                     + "WHERE aid=?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, account.getFullname());
             stm.setString(2, account.getUsername());
-            stm.setString(3, account.getPassword());
-            stm.setString(4, account.getEmail());
-            stm.setString(5, account.getPhonenumber());
-            stm.setBoolean(6, account.getGender());
-            stm.setDate(7, (Date) account.getBirthdate());
-            stm.setString(9, account.getImg());
-            stm.setString(10, account.getRole());
-            stm.setInt(11, account.getAid());
+            stm.setString(3, account.getEmail());
+            stm.setString(4, account.getPhonenumber());
+            stm.setBoolean(5, account.getGender());
+            stm.setDate(6, (Date) account.getBirthdate());
+            stm.setString(7, account.getImg());
+            stm.setString(8, account.getRole());
+            stm.setInt(9, account.getAid());
 
             stm.executeUpdate();
+
+            if (account.getPhonenumber() != null && !account.getPhonenumber().isEmpty()
+                    && account.getEmail() != null && !account.getEmail().isEmpty()) {
+                String sqlUpdateStatus = "UPDATE Account SET status='Activated' WHERE aid=?";
+                PreparedStatement stmUpdateStatus = connection.prepareStatement(sqlUpdateStatus);
+                stmUpdateStatus.setInt(1, account.getAid());
+
+                stmUpdateStatus.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -395,7 +389,6 @@ public class AccountDBContext extends DBContext {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 String address = rs.getString("address");
-                System.out.println(address);
                 addresses.add(address);
             }
         } catch (SQLException ex) {
@@ -403,4 +396,84 @@ public class AccountDBContext extends DBContext {
         }
         return addresses;
     }
+
+    public void addAddress(int aid, String address) {
+        try {
+            String sql = "INSERT INTO Address (aid, address) VALUES (?, ?)";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, aid);
+            stm.setString(2, address);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void deleteAddress(int aid, String address) {
+        try {
+            String sql = "DELETE FROM Address WHERE aid = ? AND address = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, aid);
+            stm.setString(2, address);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void editAddress(int aid, String oldAddress, String newAddress) {
+        try {
+            String sql = "UPDATE Address SET address = ? WHERE aid = ? AND address = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, newAddress);
+            stm.setInt(2, aid);
+            stm.setString(3, oldAddress);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateProfilePicture(int accountId, String picturePath) {
+        String sql = "UPDATE Account SET img = ? WHERE aid = ?";
+        try (
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, picturePath);
+            statement.setInt(2, accountId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    public void updateA(Account account) throws SQLException {
+    try {
+        String sql = "UPDATE Account SET fullname=?, username=?, password=?, email=?, phonenumber=?, salt=?,Gender = ? "
+                + "WHERE aid=?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setString(1, account.getFullname());
+        stm.setString(2, account.getUsername());
+        stm.setString(3, account.getPassword());
+        stm.setString(4, account.getEmail());
+        stm.setString(5, account.getPhonenumber());
+        stm.setString(6, account.getSalt());
+        stm.setBoolean(7, account.getGender());
+        stm.setInt(8, account.getAid());
+
+        stm.executeUpdate();
+
+        if (account.getPhonenumber() != null && !account.getPhonenumber().isEmpty()
+                && account.getEmail() != null && !account.getEmail().isEmpty()) {
+            String sqlUpdateStatus = "UPDATE Account SET status='Activated' WHERE aid=?";
+            PreparedStatement stmUpdateStatus = connection.prepareStatement(sqlUpdateStatus);
+            stmUpdateStatus.setInt(1, account.getAid());
+
+            stmUpdateStatus.executeUpdate();
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(AccountDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        throw ex;
+    }
+}
 }

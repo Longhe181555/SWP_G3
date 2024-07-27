@@ -5,8 +5,9 @@
 
 package controller.admin;
 
-import dal.*;
-import entity.*;
+import controller.authentication.BaseRequiredAuthenticationController;
+import dal.AccountDBContext;
+import entity.Account;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,46 +15,25 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author ADMIN
  */
-
-public class LoadedController extends HttpServlet {
+public class AccountManagementController extends BaseRequiredAuthenticationController {
    
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-           AccountDBContext adb = new AccountDBContext();
-           List<Account> acs = adb.list();
-           request.setAttribute("acs", acs);
-           
-           ProductDBContext pdb = new ProductDBContext();
-           List<Product> ps = pdb.list();
-           
-           ProductImgDBContext idb = new ProductImgDBContext();
-           int size = idb.getByPid(0).size();
-           
-           request.setAttribute("test", size);
-           request.setAttribute("ps", ps);
-           
-           
-           
-           
-           request.getRequestDispatcher("loaded_test.jsp").forward(request, response);
-         
+            AccountDBContext adb = new AccountDBContext();
+            ArrayList<Account> accounts = adb.list();
+            request.setAttribute("accounts", accounts);
+            request.getRequestDispatcher("admin/accountmanagement.jsp").forward(request, response);
         }
     } 
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -64,7 +44,7 @@ public class LoadedController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
     throws ServletException, IOException {
         processRequest(request, response);
     } 
@@ -77,7 +57,7 @@ public class LoadedController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
     throws ServletException, IOException {
         processRequest(request, response);
     }

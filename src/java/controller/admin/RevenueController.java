@@ -15,8 +15,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import com.google.gson.Gson;
+import controller.authentication.BaseRequiredAuthenticationController;
 import dal.AccountDBContext;
 import entity.Account;
+import entity.Product;
 import java.util.List;
 import util.DateTimeHelper;
 
@@ -24,7 +26,7 @@ import util.DateTimeHelper;
  *
  * @author ADMIN
  */
-public class RevenueController extends HttpServlet {
+public class RevenueController extends BaseRequiredAuthenticationController {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -32,6 +34,8 @@ public class RevenueController extends HttpServlet {
         OrderDBContext odb = new OrderDBContext();
         ArrayList<Account> topBuyer= odb.getTopBuyer();
         request.setAttribute("topbuyer", topBuyer);
+        ArrayList<Product> topSeller = odb.getTopSellingProduct();
+        request.setAttribute("topSeller", topSeller);
         ArrayList<Order> orders = odb.listPassedOrders();
         
       
@@ -78,7 +82,7 @@ public class RevenueController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -92,7 +96,7 @@ public class RevenueController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
         processRequest(request, response);
     }

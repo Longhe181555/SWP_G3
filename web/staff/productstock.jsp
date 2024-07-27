@@ -106,7 +106,7 @@
             <input type="hidden" id="productPid" value="${product.pid}">        
 
             <div class="add-stock-container">
-                <h2>Add New Stock</h2>
+                <h2>Add New Stock Type</h2>
                 <select id="sizeSelect">
                     <option value="">Size</option>
                     <c:forEach items="${sizes}" var="size">
@@ -122,12 +122,12 @@
                     <option value="All">All Colors</option>
                 </select>
                 <input type="number" id="stockCount" value="0" min="0" oninput="validity.valid||(value='');">
-                <button onclick="addStock()">Add Stock</button>  <button onclick="location.reload();">Reload Table</button>
+                <button onclick="addStock()">Adjust Stock Count</button>  <button onclick="location.reload();">Reload Table</button>
                 <div id="errorText" class="error-message"></div>
             </div>
 
             <div class="add-stock-container">
-                <h2>Add Stock Count to Multiple Items</h2>
+                <h2>Adjust Stock Count to Existing Stock Type</h2>
                 <select id="sizeSelectMulti">
                     <option value="">Size</option>
                     <c:forEach items="${sizes}" var="size">
@@ -152,7 +152,7 @@
 
                 <!-- Quick add buttons -->
                 <div class="quick-add-container">
-                    <h3>Quick add to all</h3>
+                    <h3>Quick add to all existing stock type</h3>
                     <button onclick="quickAdjustStock(1)">+1</button>
                     <button onclick="quickAdjustStock(10)">+10</button>
                     <button onclick="quickAdjustStock(100)">+100</button>

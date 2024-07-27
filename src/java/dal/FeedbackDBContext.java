@@ -52,7 +52,8 @@ public void insert(int aid, int pid, String comment, float rating) {
                     + "	from Feedback f\n"
                     + "	join Account a on f.aid = a.aid\n"
                     + "	join Product p on f.pid = p.pid\n"
-                    + "	Where f.pid = ?";
+                    + "	Where f.pid = ?"
+                    + "	Order by f.date desc";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, aid);
             ResultSet rs = stm.executeQuery();

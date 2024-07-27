@@ -5,7 +5,9 @@
 
 package controller.staff;
 
+import controller.authentication.BaseRequiredAuthenticationController;
 import dal.OrderDBContext;
+import entity.Account;
 import entity.Order;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
  *
  * @author ADMIN
  */
-public class OrderManagementController extends HttpServlet {
+public class OrderManagementController extends BaseRequiredAuthenticationController {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -59,7 +61,7 @@ public class OrderManagementController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
     throws ServletException, IOException {
         processRequest(request, response);
     } 
@@ -72,7 +74,7 @@ public class OrderManagementController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
     throws ServletException, IOException {
         processRequest(request, response);
     }

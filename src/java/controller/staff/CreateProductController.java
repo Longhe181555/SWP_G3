@@ -4,6 +4,7 @@
  */
 package controller.staff;
 
+import controller.authentication.BaseRequiredAuthenticationController;
 import dal.*;
 import entity.*;
 import java.io.IOException;
@@ -26,14 +27,14 @@ import org.apache.commons.io.FileUtils;
 
 @MultipartConfig
 @WebServlet("/CreateProductController")
-public class CreateProductController extends HttpServlet {
+public class CreateProductController extends BaseRequiredAuthenticationController {
 
     private ProductDBContext productDB = new ProductDBContext();
     private BrandDBContext brandDB = new BrandDBContext();
     private CategoryDBContext catDB = new CategoryDBContext();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account currentUser = (Account) session.getAttribute("account");
@@ -49,7 +50,7 @@ public class CreateProductController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
         String action = request.getParameter("action");
 

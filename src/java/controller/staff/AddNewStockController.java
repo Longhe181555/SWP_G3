@@ -1,6 +1,8 @@
 package controller.staff;
 
+import controller.authentication.BaseRequiredAuthenticationController;
 import dal.ProductItemDBContext;
+import entity.Account;
 import entity.Color;
 import entity.Size;
 import java.io.IOException;
@@ -13,10 +15,10 @@ import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name="AddNewStockController", urlPatterns={"/AddNewStockController"})
-public class AddNewStockController extends HttpServlet {
+public class AddNewStockController extends BaseRequiredAuthenticationController {
    
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, Account account)
             throws ServletException, IOException {
         String size = request.getParameter("size");
         String color = request.getParameter("color");
@@ -79,5 +81,10 @@ public class AddNewStockController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp, Account account) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

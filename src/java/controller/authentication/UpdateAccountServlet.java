@@ -34,11 +34,10 @@ public class UpdateAccountServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String gender = request.getParameter("gender");
         String dob = request.getParameter("dob");
-        String address = request.getParameter("address");
 
         boolean genderBoolean = gender.equals("male");
         Date birthdate = Date.valueOf(dob);
-
+        System.out.println("Hi");
         HttpSession session = request.getSession();
         Account currentUser = (Account) session.getAttribute("account");
 

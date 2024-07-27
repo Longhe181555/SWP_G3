@@ -195,31 +195,32 @@ CREATE TABLE Cart(
 -- chac la giu color o day
 
 
-insert into Account(fullname,username,password,role,salt,status,lastLogin) values
-('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==','Activated', getDate()),
-('minhtnhe180070', 'minhtnhe180070','5DExJq2Tg429tJe+49JlKW3K656T8hongRAx4eK7JTEibToltE6Zzlafl1WJ/3OvHFJvbNX/V+oKYw3jgrFVyw==','admin','w51cFkFMQFSsjyT2YThmPw==','Activated',getDate()-10),
-('duyddhe173473', 'duyddhe173473','dOuNAbJRoxe4bDhXeiiiHzQVtebLrCxvybKfgHeLL1EI6K9uwUc700f2xzykx4sp7d96ZxpavpQj6RvqV09XEA==','admin','5yQ0jZsmtsEUHQR8CVgCrg==','Activated',getDate()-10),
-('binhthhe151011', 'binhthhe151011','rGEutTob/BSpz5YtqXyXBJsaepDh9SRF8EfI4SlQ+eadPiHRst/GITju5ydMfaUKMsiAw6QXpu8UogMykIkKWQ==','admin','qnvXvpwbsWdgDtKmf69sag==','Activated',getDate()-10),
-('danglhhe161145', 'danglhhe161145','46l9N+161aQAD2LY1SkNsLOj5Uus6oqnYHTPO9Ab8fZDACb8YZf5473sl1cH3Mpm3kXOEDT/8rC6hi6itOxTFw==','admin','AoaQBLzOP+YBa7Zgqo0BkQ==','Activated',getDate()-10)
+insert into Account(fullname,username,password,role,salt,status,lastLogin,birthdate) values
+('longvnhe181555', 'longvnhe181555','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==','Activated', getDate(), '12/05/2000'),
+('minhtnhe180070', 'minhtnhe180070','5DExJq2Tg429tJe+49JlKW3K656T8hongRAx4eK7JTEibToltE6Zzlafl1WJ/3OvHFJvbNX/V+oKYw3jgrFVyw==','admin','w51cFkFMQFSsjyT2YThmPw==','Activated',getDate()-10,'12/05/2000'),
+('duyddhe173473', 'duyddhe173473','dOuNAbJRoxe4bDhXeiiiHzQVtebLrCxvybKfgHeLL1EI6K9uwUc700f2xzykx4sp7d96ZxpavpQj6RvqV09XEA==','admin','5yQ0jZsmtsEUHQR8CVgCrg==','Activated',getDate()-10,'12/05/2000'),
+('binhthhe151011', 'binhthhe151011','rGEutTob/BSpz5YtqXyXBJsaepDh9SRF8EfI4SlQ+eadPiHRst/GITju5ydMfaUKMsiAw6QXpu8UogMykIkKWQ==','admin','qnvXvpwbsWdgDtKmf69sag==','Activated',getDate()-10, '12/05/2000'),
+('danglhhe161145', 'danglhhe161145','46l9N+161aQAD2LY1SkNsLOj5Uus6oqnYHTPO9Ab8fZDACb8YZf5473sl1cH3Mpm3kXOEDT/8rC6hi6itOxTFw==','admin','AoaQBLzOP+YBa7Zgqo0BkQ==','Activated',getDate()-10, '12/05/2000')
 
 
-INSERT INTO Account(fullname, username, password, role, salt,status,lastLogin) VALUES 
-('nguyenvana', 'nguyenvana', 'Qp3BYQ18K/26dzuMGF0u+/JLtKVriQ4tcevm5dhtJNOzQqgiEPfhSRFRGZIf3XdKEgAOKJMa0ICOoc0fIhH/0A==', 'customer', '8siFHy6/+GPfGcGQyE71DA==','Activated',getDate()-100),
-('tranthib', 'tranthib', 'EZ00+9qKTXyNfomW/8zCj/XdPh3TEIDnX+TSc1GRX0GHvYQlO8xwHF6unSIZuXVBxHaOgHkca2rThTF5j0LSMg==', 'customer', 'KAvxAu9ro0z+inKPCwD9jg==','Activated',getDate()-100),
-('phamvand', 'phamvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
-('lethiec', 'lethiec', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
-('hoangminhf', 'hoangminhf', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
-('nguyenthuh', 'nguyenthuh', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
-('doanvand', 'doanvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
-('dangthil', 'dangthil', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
-('buiquynhm', 'buiquynhm', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100),
-('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100);
+INSERT INTO Account(fullname, username, password, role, salt,status,lastLogin, birthdate, phonenumber, email) VALUES 
+('nguyenvana', 'nguyenvana', 'Qp3BYQ18K/26dzuMGF0u+/JLtKVriQ4tcevm5dhtJNOzQqgiEPfhSRFRGZIf3XdKEgAOKJMa0ICOoc0fIhH/0A==', 'customer', '8siFHy6/+GPfGcGQyE71DA==','Activated',getDate()-100, '2000-12-09',12345678910, 'email1@gmail.com'),
+('tranthib', 'tranthib', 'EZ00+9qKTXyNfomW/8zCj/XdPh3TEIDnX+TSc1GRX0GHvYQlO8xwHF6unSIZuXVBxHaOgHkca2rThTF5j0LSMg==', 'customer', 'KAvxAu9ro0z+inKPCwD9jg==','Activated',getDate()-100, '12/05/2000',12345678910, 'email1@gmail.com'),
+('phamvand', 'phamvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com'),
+('lethiec', 'lethiec', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com'),
+('hoangminhf', 'hoangminhf', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com'),
+('nguyenthuh', 'nguyenthuh', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com'),
+('doanvand', 'doanvand', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com'),
+('dangthil', 'dangthil', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com'),
+('buiquynhm', 'buiquynhm', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com'),
+('truonganhp', 'truonganhp', 'rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==', 'customer', 'WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, '12/05/2000', 12345678910, 'email1@gmail.com');
 
-insert into Account(fullname,username,password,role,salt,status,lastLogin) values
-('staff', 'staff','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','staff','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100)
+insert into Account(fullname,username,password,role,salt,status,lastLogin,email, phonenumber) values
+('staff', 'staff','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','staff','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, 'staff123@gmail.com',1234567890),
+('Admin', 'admin','rrCK1A1O+C9t/V+gri/EDuAqlh7roC7gJtto3wDvJ1C3uIVsAPdR1HQNJIbmh4mlw5F7DBV6Cmr8yjJ5numf+Q==','admin','WrT79x+xWmhh8c3BBkkIkw==','Activated',getDate()-100, 'admin123@gmail.com',1234567890)
 
 
-INSERT INTO Address(aid,address) values (5,'Ha Noi'),(5, 'Hai Duong'),(5,'Hai Phong'),(5,'Kien An')
+INSERT INTO Address(aid,address) values (5,'Ha Noi'),(5, '1 Nguyen Luong Bang Hai Duong'),(5,'18-19 Lot O Bau Cat Area Ward 13, Hai Phong'),(5,'Kien An')
 insert into Color(cname) values('purple')
 insert into Brand(bname) values('Zara')
 insert into Size(sname,height,weight,gender) values('ph','ph','ph',0)
@@ -564,7 +565,7 @@ INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) val
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (4,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
 --Order last week approved
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',null,5,1146000)
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice) values(5,'Ha Noi',getDate()-7,'',null,2,1146000)
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (5,2,13,191000),(3,2,33,191000),(3,2,34,191000)
 
 
@@ -579,14 +580,14 @@ INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (7,2,32,250000),(7,2
 
 
 --Order this week
-INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-4,'',null,3,2000000,GETDATE())
+INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(5,'Ha Noi',getDate()-4,'',null,0,2000000,GETDATE())
 INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (8,2,32,250000),(8,2,33,250000),(8,2,34,250000)
 
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(6,'Ha Noi',getDate()-4,'',null,3,2500000,GETDATE())
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (8,2,32,250000),(8,2,33,250000),(8,2,34,250000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (9,2,32,250000),(9,2,33,250000),(9,2,34,250000)
 
 INSERT INTO [Order] (aid,address,date,description,payment,status,totalPrice,processedDate) values(7,'Ha Noi',getDate()-4,'',null,3,1800000,GETDATE())
-INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (8,2,32,250000),(8,2,33,250000),(8,2,34,250000)
+INSERT INTO [OrderItem] (orid,amount,piid,soldPrice) values (10,2,32,250000),(10,2,33,250000),(10,2,34,250000)
 /*
 
 SELECT 
@@ -661,8 +662,75 @@ LEFT JOIN
     WeeklyRevenue ON Weeks.WeekNumber = WeeklyRevenue.WeekNumber
 ORDER BY
     Weeks.WeekNumber;
+	WITH WeeklyRevenue AS (
+    SELECT 
+        DATEADD(WEEK, -3, DATEADD(WEEK, DATEDIFF(WEEK, 0, EOMONTH(GETDATE())), 0)) AS WeekStart,
+        DATEADD(WEEK, -2, DATEADD(WEEK, DATEDIFF(WEEK, 0, EOMONTH(GETDATE())), 0)) AS WeekEnd,
+        1 AS WeekNumber
+    UNION ALL
+    SELECT 
+        DATEADD(WEEK, 1, WeekStart),
+        DATEADD(WEEK, 1, WeekEnd),
+        WeekNumber + 1
+    FROM WeeklyRevenue
+    WHERE WeekNumber < 4
+)
 
 
+WITH WeeklyRevenue AS (
+    SELECT 
+        DATEADD(WEEK, -3, DATEADD(WEEK, DATEDIFF(WEEK, 0, EOMONTH(GETDATE())), 0)) AS WeekStart,
+        DATEADD(WEEK, -2, DATEADD(WEEK, DATEDIFF(WEEK, 0, EOMONTH(GETDATE())), 0)) AS WeekEnd,
+        1 AS WeekNumber
+    UNION ALL
+    SELECT 
+        DATEADD(WEEK, 1, WeekStart),
+        DATEADD(WEEK, 1, WeekEnd),
+        WeekNumber + 1
+    FROM WeeklyRevenue
+    WHERE WeekNumber < 4
+)
+SELECT 
+    wr.WeekNumber,
+    wr.WeekStart,
+    wr.WeekEnd,
+    COALESCE(SUM(o.totalPrice), 0) AS revenue
+FROM 
+    WeeklyRevenue wr
+LEFT JOIN 
+    [Order] o ON o.date >= wr.WeekStart 
+             AND o.date < DATEADD(DAY, 1, wr.WeekEnd)
+             AND o.status NOT IN (0, 4, 5)
+GROUP BY 
+    wr.WeekNumber, wr.WeekStart, wr.WeekEnd
+ORDER BY 
+    wr.WeekNumber;
+
+
+
+
+
+	SELECT TOP 4
+	p.pid,
+    P.pname AS ProductName,
+    SUM(OI.amount) AS TotalQuantitySold
+FROM
+    [Order] O
+INNER JOIN
+    OrderItem OI ON O.orid = OI.orid
+INNER JOIN
+    ProductItem PI ON OI.piid = PI.piid
+INNER JOIN
+    Product P ON PI.pid = P.pid
+WHERE
+    O.[date] >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0) -- Start of current month
+    AND O.[date] < DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE()), 0) -- Start of next month
+    AND O.status NOT IN (0, 4, 5) -- Filter out statuses 0, 4, 5
+GROUP BY
+    P.pname
+ORDER BY
+    TotalQuantitySold DESC;
   */
 
-
+ 
+ 

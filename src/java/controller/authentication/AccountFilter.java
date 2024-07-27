@@ -4,6 +4,7 @@
  */
 package controller.authentication;
 
+import dal.AccountDBContext;
 import dal.CartDBContext;
 import entity.Account;
 import entity.Cart;
@@ -34,12 +35,14 @@ public class AccountFilter implements Filter {
         if (session != null) {
             Account currentUser = (Account) session.getAttribute("account");
             if (currentUser != null) {
-                request.setAttribute("Account", currentUser);
+                AccountDBContext adb = new AccountDBContext();
+                request.setAttribute("Account", adb.get(currentUser.getAid()));
+                session.setAttribute("account", adb.get(currentUser.getAid()));
                 CartDBContext cdb = new CartDBContext();
                 ArrayList<Cart> carts = cdb.getByAid(currentUser.getAid());
                 request.setAttribute("carts", carts);
                 request.setAttribute("cartcount", carts.size());
-                if (currentUser!=null&&currentUser.getStatus().equalsIgnoreCase("Not Activated")&&!url.contains("profile")) {
+                if (currentUser!=null&&currentUser.getStatus().equalsIgnoreCase("Not Activated")&&!url.contains("profile")&&!url.contains("updateAccount")) {
                     httpRequest.getSession().setAttribute("activatedMessage", "You must fill the required information to finish setting up your account");
                     httpResponse.sendRedirect("profile");
                  return;

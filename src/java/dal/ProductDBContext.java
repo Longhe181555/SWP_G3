@@ -19,9 +19,6 @@ public class ProductDBContext extends DBContext {
 
     ProductImgDBContext pdb = new ProductImgDBContext();
 
-    
-    
-    
     public ArrayList<Product> list() {
         ArrayList<Product> products = new ArrayList<>();
         try {
@@ -55,7 +52,7 @@ public class ProductDBContext extends DBContext {
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
                     + "Where \n"
-                    + "(GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL)\n"
+                    + "(GETDATE() BETWEEN d.[from] AND d.[to] OR d.[from] IS NULL OR d.[to] IS NULL) And p.isListed != 3\n"
                     + "GROUP BY p.pid, \n"
                     + "         p.pname, \n"
                     + "         p.price, \n"
@@ -129,7 +126,7 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid "
                     + "JOIN Category c ON p.catid = c.catid "
                     + "JOIN Brand b ON p.bid = b.bid "
-                    + "WHERE p.isListed != 0 ";
+                    + "WHERE p.isListed != 0 and p.isListed != 3";
 
             // Add filters based on parameters
             if (search != null && !search.isEmpty()) {
@@ -218,39 +215,87 @@ public class ProductDBContext extends DBContext {
             stm.executeUpdate();
             int pid = getPidByPname(pname);
             for (String path : imgpath) {
-            insertImagePath(pid, path);
-        }
+                insertImagePath(pid, path);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    private void insertImagePath(int pid, String imagePath) {
+
+   public void update(int pid, String pname, int price, String description, int bid, boolean isListed, ArrayList<String> imgpath) {
     try {
-        String sql = "INSERT INTO ProductImg(pid, imgpath) VALUES (?, ?)";
-        PreparedStatement stm = connection.prepareStatement(sql);
-        stm.setInt(1, pid);
-        stm.setString(2, imagePath);
-        stm.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-    public int getPidByPname(String pname) {
-    int pid = -1; // Default value if pname is not found or query fails
-    try {
-        String sql = "SELECT pid FROM Product WHERE pname = ?";
+       
+        Product oldProduct = get(pid);
+        int oldPrice = oldProduct.getPrice();
+
+      
+        String sql = "UPDATE Product SET pname = ?, price = ?, description = ?, bid = ?, isListed = ?, Date = GETDATE() WHERE pid = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setString(1, pname);
-        ResultSet rs = stm.executeQuery();
-        if (rs.next()) {
-            pid = rs.getInt("pid");
+        stm.setInt(2, price);
+        stm.setString(3, description);
+        stm.setInt(4, bid);
+        stm.setBoolean(5, isListed);
+        stm.setInt(6, pid);
+
+    
+        stm.executeUpdate();
+
+      
+        if (oldPrice != price) {
+        
+            String updateCartSql = "UPDATE Cart SET product_status = 'PriceUpdate' WHERE piid IN (SELECT piid FROM ProductItem WHERE pid = ?)";
+            PreparedStatement updateCartStm = connection.prepareStatement(updateCartSql);
+            updateCartStm.setInt(1, pid);
+            updateCartStm.executeUpdate();
+        }
+
+        for (String path : imgpath) {
+            insertImagePath(pid, path);
         }
     } catch (SQLException e) {
         e.printStackTrace();
     }
-    return pid;
 }
-   
+
+    public void removeImage(String imagePath) {
+        String sql = "DELETE FROM ProductImg WHERE imgpath = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, imagePath);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle exception
+        }
+    }
+
+    private void insertImagePath(int pid, String imagePath) {
+        try {
+            String sql = "INSERT INTO ProductImg(pid, imgpath) VALUES (?, ?)";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, pid);
+            stm.setString(2, imagePath);
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getPidByPname(String pname) {
+        int pid = -1; // Default value if pname is not found or query fails
+        try {
+            String sql = "SELECT pid FROM Product WHERE pname = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, pname);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                pid = rs.getInt("pid");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pid;
+    }
+
     public Product get(int pid) {
         Product p = new Product();
         try {
@@ -330,10 +375,6 @@ public class ProductDBContext extends DBContext {
         }
         return p;
     }
-    
-    
-    
-    
 
     public Product getProductDetail(int pid) {
         Product p = new Product();
@@ -373,7 +414,7 @@ public class ProductDBContext extends DBContext {
                 b.setBid(rs.getInt("bid"));
                 b.setBname(rs.getString("bname"));
                 p.setBrand(b);
-                ArrayList<ProductImg> productImages = pdb.getByPid(p.getPid());
+                ArrayList<ProductImg> productImages = pdb.getByPid(pid);
                 p.setProductimgs(productImages);
             }
         } catch (SQLException ex) {
@@ -392,7 +433,7 @@ public class ProductDBContext extends DBContext {
             sql.append("FROM [Product] p ");
             sql.append("JOIN Brand b ON b.bid = p.bid ");
             sql.append("JOIN Category c ON c.catid = p.catid ");
-            sql.append("WHERE p.isListed = 1 ");
+            sql.append("WHERE p.isListed = 1 and p.isListed != 3 ");
 
             if (filter != null && !filter.isEmpty()) {
                 sql.append("AND c.cattype = ? ");
@@ -487,7 +528,7 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where p.pid != 0\n"
+                    + "Where p.isListed != 0 and p.isListed != 3\n"
                     + "GROUP BY p.pid, \n"
                     + "         p.pname, \n"
                     + "         p.price, \n"
@@ -567,7 +608,7 @@ public class ProductDBContext extends DBContext {
                     + "LEFT JOIN Feedback f ON p.pid = f.pid \n"
                     + "JOIN Category c ON p.catid = c.catid \n"
                     + "JOIN Brand b ON p.bid = b.bid \n"
-                    + "Where p.isListed != 0\n"
+                    + "Where p.isListed != 0 and p.isListed != 3\n"
                     + "AND d.did is not null \n"
                     + "GROUP BY p.pid, \n"
                     + "         p.pname, \n"
@@ -657,16 +698,48 @@ public class ProductDBContext extends DBContext {
 
     public boolean productNameExists(String productName) {
         try {
-        String sql = "SELECT * from Product WHERE pname = ?";
-        PreparedStatement ps = connection.prepareStatement(sql);
+            String sql = "SELECT * from Product WHERE pname = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, productName);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 return true;
             }
-             } catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+    
+    
+    
+    public void delete(int pid) {
+    try {
+     
+        String updateProductSql = "UPDATE Product SET isListed = 3 WHERE pid = ?";
+        PreparedStatement updateProductStm = connection.prepareStatement(updateProductSql);
+        updateProductStm.setInt(1, pid);
+        updateProductStm.executeUpdate();
+
+      
+        String updateCartSql = "UPDATE Cart SET product_status = 'Archived' WHERE piid IN (SELECT piid FROM ProductItem WHERE pid = ?)";
+        PreparedStatement updateCartStm = connection.prepareStatement(updateCartSql);
+        updateCartStm.setInt(1, pid);
+        updateCartStm.executeUpdate();
+
+        String updateOrderItemSql = "UPDATE OrderItem SET product_status = 'Archived' WHERE piid IN (SELECT piid FROM ProductItem WHERE pid = ?)";
+        PreparedStatement updateOrderItemStm = connection.prepareStatement(updateOrderItemSql);
+        updateOrderItemStm.setInt(1, pid);
+        updateOrderItemStm.executeUpdate();
+
+ 
+        String updateOrderSql = "UPDATE [Order] SET status = 4 WHERE status = 0 AND orid IN (SELECT orid FROM OrderItem WHERE piid IN (SELECT piid FROM ProductItem WHERE pid = ?))";
+        PreparedStatement updateOrderStm = connection.prepareStatement(updateOrderSql);
+        updateOrderStm.setInt(1, pid);
+        updateOrderStm.executeUpdate();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
 }

@@ -8,6 +8,7 @@ import entity.Account;
 import entity.Cart;
 import entity.Order;
 import entity.OrderItem;
+import entity.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -441,19 +442,67 @@ public class OrderDBContext extends DBContext {
     }
 
     public boolean setOrderStatusByOrid(int orid, int status, int aid) {
-        try {
-            String sql = "UPDATE [Order] SET status = ?, processedDate = getDate(), processedBy = ? WHERE orid = ?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setInt(1, status);
-            stm.setInt(2, aid);
-            stm.setInt(3, orid);
-            int rowsAffected = stm.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException ex) {
-            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+    PreparedStatement stm = null;
+    ResultSet rs = null;
+    try {
+        connection.setAutoCommit(false);
+
+        // Update the order status
+        String updateOrderSql = "UPDATE [Order] SET status = ?, processedDate = getDate(), processedBy = ? WHERE orid = ?";
+        stm = connection.prepareStatement(updateOrderSql);
+        stm.setInt(1, status);
+        stm.setInt(2, aid);
+        stm.setInt(3, orid);
+        int rowsAffected = stm.executeUpdate();
+
+        if (rowsAffected > 0 && status == 1) { // Status is 1, proceed with stock update
+            // Retrieve the order items
+            String selectOrderItemsSql = "SELECT piid, amount FROM OrderItem WHERE orid = ?";
+            stm = connection.prepareStatement(selectOrderItemsSql);
+            stm.setInt(1, orid);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                int piid = rs.getInt("piid");
+                int amount = rs.getInt("amount");
+
+                // Update stock count for each product item
+                String updateStockSql = "UPDATE ProductItem SET stockcount = stockcount - ? WHERE piid = ?";
+                PreparedStatement stockStm = connection.prepareStatement(updateStockSql);
+                stockStm.setInt(1, amount);
+                stockStm.setInt(2, piid);
+                stockStm.executeUpdate();
+            }
+            
+            // Commit transaction
+            connection.commit();
+            return true;
+        } else {
+            // Rollback transaction if update fails or status is not 1
+            connection.rollback();
             return false;
         }
+    } catch (SQLException ex) {
+        if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException sQLException) {
+                Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, sQLException);
+            }
+        }
+        Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        return false;
+    } finally {
+        // Clean up resources
+        try {
+            if (rs != null) rs.close();
+            if (stm != null) stm.close();
+            if (connection != null) connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrderDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+}
 
     public String checkOrderStatus(int orid) {
         String status = "Valid Order";
@@ -526,11 +575,34 @@ public class OrderDBContext extends DBContext {
 
     public List<Integer> getWeeklyRevenue() {
         List<Integer> weeklyRevenue = new ArrayList<>();
-        String sql = "SELECT DATEPART(WEEK, o.date) as week, SUM(o.totalPrice) as revenue "
-                + "FROM [Order] o "
-                + "WHERE o.status NOT IN (0, 4, 5) "
-                + "GROUP BY DATEPART(WEEK, o.date) "
-                + "ORDER BY week";
+        String sql = "WITH WeeklyRevenue AS (\n"
+                + "    SELECT \n"
+                + "        DATEADD(WEEK, -3, DATEADD(WEEK, DATEDIFF(WEEK, 0, EOMONTH(GETDATE())), 0)) AS WeekStart,\n"
+                + "        DATEADD(WEEK, -2, DATEADD(WEEK, DATEDIFF(WEEK, 0, EOMONTH(GETDATE())), 0)) AS WeekEnd,\n"
+                + "        1 AS WeekNumber\n"
+                + "    UNION ALL\n"
+                + "    SELECT \n"
+                + "        DATEADD(WEEK, 1, WeekStart),\n"
+                + "        DATEADD(WEEK, 1, WeekEnd),\n"
+                + "        WeekNumber + 1\n"
+                + "    FROM WeeklyRevenue\n"
+                + "    WHERE WeekNumber < 4\n"
+                + ")\n"
+                + "SELECT \n"
+                + "    wr.WeekNumber,\n"
+                + "    wr.WeekStart,\n"
+                + "    wr.WeekEnd,\n"
+                + "    COALESCE(SUM(o.totalPrice), 0) AS revenue\n"
+                + "FROM \n"
+                + "    WeeklyRevenue wr\n"
+                + "LEFT JOIN \n"
+                + "    [Order] o ON o.date >= wr.WeekStart \n"
+                + "             AND o.date < DATEADD(DAY, 1, wr.WeekEnd)\n"
+                + "             AND o.status NOT IN (0, 4, 5)\n"
+                + "GROUP BY \n"
+                + "    wr.WeekNumber, wr.WeekStart, wr.WeekEnd\n"
+                + "ORDER BY \n"
+                + "    wr.WeekNumber;";
         try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
             while (rs.next()) {
                 weeklyRevenue.add(rs.getInt("revenue"));
@@ -567,4 +639,40 @@ public class OrderDBContext extends DBContext {
         return topBuyer;
     }
 
+    public ArrayList<Product> getTopSellingProduct() {
+        ArrayList<Product> topSellingProducts = new ArrayList<>();
+        String sql = "	SELECT TOP 4\n"
+                + "	p.pid,\n"
+                + "    P.pname AS ProductName,\n"
+                + "    SUM(OI.amount) AS TotalQuantitySold\n"
+                + "FROM\n"
+                + "    [Order] O\n"
+                + "INNER JOIN\n"
+                + "    OrderItem OI ON O.orid = OI.orid\n"
+                + "INNER JOIN\n"
+                + "    ProductItem PI ON OI.piid = PI.piid\n"
+                + "INNER JOIN\n"
+                + "    Product P ON PI.pid = P.pid\n"
+                + "WHERE\n"
+                + "    O.[date] >= DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0) -- Start of current month\n"
+                + "    AND O.[date] < DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE()), 0) -- Start of next month\n"
+                + "    AND O.status NOT IN (0, 4, 5) -- Filter out statuses 0, 4, 5\n"
+                + "GROUP BY\n"
+                + "    P.pname,\n"
+                + "	p.pid\n"
+                + "ORDER BY\n"
+                + "    TotalQuantitySold DESC;";
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                Product p = new Product();
+                p.setPid(rs.getInt("pid"));
+                p.setPname(rs.getString("ProductName"));
+                p.setDiscountedPrice(rs.getInt("TotalQuantitySold")); // Assuming discountedPrice is used to store the total quantity sold
+                topSellingProducts.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topSellingProducts;
+    }
 }

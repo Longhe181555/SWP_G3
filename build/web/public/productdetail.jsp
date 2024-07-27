@@ -5,6 +5,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Product Details</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .color-option {
                 display: inline-block;
@@ -82,8 +83,8 @@
             }
             .price-container p {
                 margin-right: 10px;
-
-
+            }
+             
             </style>
         </head>
         <body>
@@ -132,8 +133,8 @@
                                     </p>
                                 </c:if>
                                 <c:if test="${Account.role == 'staff'}">
-                                    <button type="button" class="btn btn-primary" onclick="location.href = 'updateProduct'">Update Product</button>
-                                    <button type="button" class="btn btn-secondary" onclick="location.href = 'updateProductStock'">Update Product Stock</button>
+                                    <button type="button" class="btn btn-primary" onclick="location.href = 'updateProduct?pid=${product.pid}'">Update Product</button>
+                                    <button type="button" class="btn btn-secondary" onclick="location.href = 'updateProductStock?pid=${product.pid}'">Update Product Stock</button>
                                 </c:if>
                                 <div class="price-container">
                                     <p class="font-weight-bold" id="originalPrice"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</p>
@@ -245,9 +246,7 @@
 
             <script>
 
-
-
-
+  
 
                 function goBack() {
                     window.history.back();
@@ -355,12 +354,12 @@
                             var discountedPriceElement = document.getElementById('discountedPrice');
                             var originalPrice = ${product.price};
                             var isDiscounted = discountedPrice < originalPrice;
-                               
+
                             var formattedPrice = discountedPrice.toLocaleString('en-US', {
-                             style: 'currency',
-                             currency: 'VND'
-                                });   
-                               
+                                style: 'currency',
+                                currency: 'VND'
+                            });
+
                             if (isDiscounted) {
                                 originalPriceElement.classList.add('original-price');
                                 discountedPriceElement.textContent = 'Discount ' + value + '% off: ' + formattedPrice;
@@ -385,5 +384,8 @@
                 }
 
             </script>
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         </body>
     </html>

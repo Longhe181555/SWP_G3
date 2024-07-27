@@ -334,9 +334,10 @@
                                                     },
                                                     success: function (response) {
                                                         if (response.success) {
-                                                        
+                                                           location.reload();
                                                         } else {
                                                             alert('Failed to update the cart. Please try again.');
+                                                            location.reload();
                                                         }
                                                     },
                                                     error: function (xhr, status, error) {

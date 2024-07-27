@@ -28,8 +28,7 @@
     <%@ include file="../public/navbar.jsp" %>
     <div class="container" style="margin-top:40px">
         <div>
-            <a id="btnAddStock" href="cstock" class="btn btn-primary">Add New Stock</a>
-            <button id="btnManageProducts" class="btn btn-primary">Manage Products</button>
+            <a id="btnManageProducts" class="btn btn-primary" href="pmanagement">Manage Products</a>
         </div>
         <div class="container" style="margin-top:20px">
             <div>
@@ -64,7 +63,7 @@
                     {data: 'addedDate'},
                     {data: 'actions'}
                 ],
-                order: [[5, 'desc']], // Sort by addedDate descending by default
+                order: [[2, 'desc']], 
                 paging: true,
                 searching: true,
                 info: true

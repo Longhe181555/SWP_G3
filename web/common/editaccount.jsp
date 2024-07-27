@@ -68,7 +68,7 @@
                         </c:if>
                     </form>
                                 <a href="${pageContext.request.contextPath}/homepage" class="btn-cancel" style="text-decoration: none;padding: 5px">Back to homepage</a>
-
+                                <a href="${pageContext.request.contextPath}/ad" class="btn-cancel" style="text-decoration: none;padding: 5px">Back to Account detail</a>
                 </div>
             </div>
         </div>

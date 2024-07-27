@@ -20,7 +20,6 @@ public class RemoveFromCartController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int cartId = Integer.parseInt(request.getParameter("cartId"));
-        System.out.println(cartId);
         
         CartDBContext db = new CartDBContext();
         db.removeCartItem(cartId);

@@ -112,6 +112,26 @@
         <servlet-name>RevenueController</servlet-name>
         <servlet-class>controller.admin.RevenueController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AccountDetailController</servlet-name>
+        <servlet-class>controller.authentication.AccountDetailController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AccountManagementController</servlet-name>
+        <servlet-class>controller.admin.AccountManagementController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddNewAccountController</servlet-name>
+        <servlet-class>controller.admin.AddNewAccountController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateAccountController</servlet-name>
+        <servlet-class>controller.admin.UpdateAccountController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deleteProductController</servlet-name>
+        <servlet-class>controller.admin.deleteProductController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -231,6 +251,26 @@
     <servlet-mapping>
         <servlet-name>RevenueController</servlet-name>
         <url-pattern>/revenue</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AccountDetailController</servlet-name>
+        <url-pattern>/ad</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AccountManagementController</servlet-name>
+        <url-pattern>/amanagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddNewAccountController</servlet-name>
+        <url-pattern>/admin/addaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateAccountController</servlet-name>
+        <url-pattern>/admin/updateaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteProductController</servlet-name>
+        <url-pattern>/deleteProduct</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>public/homepage</welcome-file>

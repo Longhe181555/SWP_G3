@@ -342,43 +342,43 @@
     <script>
                                             $(document).ready(function () {
                                                 $('#pending-orders-table').DataTable({
-                                                    paging: false,
+                                                    paging: true,
                                                     searching: false,
 
                                                     order: [[4, 'desc']]
                                                 });
                                                 $('#shipping-orders-table').DataTable({
-                                                    paging: false,
+                                                    paging: true,
                                                     searching: false,
 
                                                     order: [[4, 'desc']]
                                                 });
                                                 $('#confirmed-orders-table').DataTable({
-                                                    paging: false,
+                                                    paging: true,
                                                     searching: false,
 
                                                     order: [[4, 'desc']]
                                                 });
                                                 $('#shipped-orders-table').DataTable({
-                                                    paging: false,
+                                                    paging: true,
                                                     searching: false,
 
                                                     order: [[4, 'desc']]
                                                 });
                                                 $('#rejected-orders-table').DataTable({
-                                                    paging: false,
+                                                    paging: true,
                                                     searching: false,
 
                                                     order: [[4, 'desc']]
                                                 });
                                                 $('#cancelled-orders-table').DataTable({
-                                                    paging: false,
+                                                    paging: true,
                                                     searching: false,
 
                                                     order: [[4, 'desc']]
                                                 });
                                                 $('#order-log-table').DataTable({
-                                                    paging: false,
+                                                    paging: true,
                                                     searching: false,
 
                                                     order: [[3, 'desc']]

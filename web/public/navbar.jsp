@@ -73,6 +73,10 @@
                                 <li><a class="dropdown-item" href="pmanagement">Product Management</a></li>
                                 <li><a class="dropdown-item" href="smanagement">Stock Management</a></li>
                                 <li><a class="dropdown-item" href="ordermanagement">Order Management</a></li>
+                                <c:if test="${ Account.role == 'admin'}">
+                                 <li><a class="dropdown-item" href="revenue">Revenue</a></li>
+                                 <li><a class="dropdown-item" href="amanagement">Account Management</a></li>
+                                </c:if>
                             </ul>
                         </li>
                     </c:if>
@@ -101,7 +105,7 @@
                                             <img src="${Account.img}" alt="Profile Image" style="border-radius: 50%; width: 40px; height: 40px;">
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="accountDropdown">
-                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/account">Account Detail</a></li>
+                                            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/ad">Account Detail</a></li>
 
                                             <c:if test="${Account.role == 'customer'}">
                                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/vieworderhistory">Order History</a></li>
@@ -115,10 +119,7 @@
                                     </div>
                                 </li>
                             </c:otherwise>
-                        </c:choose>
-                          <li class="nav-item d-flex align-items-center">
-                                <a class="nav-link text-white" href="#"><i class="bi bi-bell"></i></a>
-                            </li>             
+                        </c:choose>           
                        <c:if test="${account.role != 'admin' && account.role != 'staff'}">
                             <li class="nav-item d-flex align-items-center">
                                 <div class="dropdown">
